@@ -16,6 +16,7 @@ The repository contains a Laravel application foundation, a read-only Firestore 
 - Firestore-backed settings/projects with generic demo fallback when Firestore is not configured.
 - Standalone interactive UI prototype.
 - Firestore data model, security guidance, and implementation roadmap.
+- Docker build with PHP/Composer and Node.js build stages.
 
 ## Planned stack
 
@@ -38,7 +39,24 @@ php -S 127.0.0.1:8080 -t prototype
 
 Visit http://127.0.0.1:8080. The prototype lets you switch themes and edit sample headings locally; it saves only to that browser and does not connect to Laravel or Firestore.
 
-### Laravel application
+### Docker deployment (recommended for hosts without PHP preinstalled)
+
+The included Dockerfile installs Composer dependencies, builds Tailwind assets with Node.js 22, and runs the app using PHP 8.3.
+
+Required runtime environment variables:
+- `APP_KEY`: generate with `php artisan key:generate --show` in a local Laravel environment and set the generated value in the host's secret/environment settings.
+- `APP_ENV=production`
+- `APP_DEBUG=false`
+- `FIRESTORE_PROJECT_ID`: Google Cloud project ID if using Firestore.
+- Google Application Default Credentials or a securely mounted service-account file if using Firestore.
+
+Set the host's Docker/build mode to use the repository `Dockerfile`. Do not use the Node-only build command or a Node.js start command. The container listens on `$PORT` (defaults to 8080) and runs Laravel migrations on startup.
+
+**Database warning:** SQLite inside a container is ephemeral unless the host provides a persistent disk. For production admin accounts and sessions, configure a managed SQL database and set `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD`. If using SQLite, mount persistent storage and point `DB_DATABASE` to that persistent path.
+
+The current starter does not yet include the full admin dashboard or CMS write operations. Review the roadmap before treating it as production-ready.
+
+### Local Laravel application
 See [Local setup](docs/LOCAL_SETUP.md) for prerequisites and instructions.
 
 ## Documentation
