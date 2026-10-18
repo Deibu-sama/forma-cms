@@ -41,16 +41,22 @@ Set `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, and `FIRESTORE_PROJECT_I
 
 ## Docker
 
-A Dockerfile is provided for platforms that explicitly support Docker deployments.
+Use the repository's Dockerfile only on platforms that explicitly support Dockerfile/container deployments. It installs the native PHP `grpc` extension required by `google/cloud-firestore`, enables it for Composer dependency resolution and runtime, builds Vite assets in a Node stage, and runs Laravel on PHP 8.3.
+
+Build and test locally:
 
 ```bash
 docker build -t formacms .
 docker run --rm -p 8080:8080 \
-  -e APP_KEY='base64:REPLACE_WITH_A_REAL_GENERATED_KEY' \
+  -e APP_KEY="$(php artisan key:generate --show)" \
   -e APP_ENV=production \
   -e APP_DEBUG=false \
   formacms
 ```
+
+Generate `APP_KEY` from a local PHP/Laravel environment and set it as a secret in the hosting dashboard; do not put a real key in source control. The Docker image's PHP build installs the gRPC extension using PECL. A standard Abasthan PHP App build does not automatically inherit extensions installed in this Dockerfile, so use the Docker deployment type for this setup unless Abasthan separately documents how to enable `grpc` in its managed PHP runtime.
+
+For real Firestore content, set `FIRESTORE_PROJECT_ID` and configure Google Application Default Credentials or a securely mounted service-account file. Never commit credentials. The container runs migrations on startup. SQLite inside the container is ephemeral unless you mount persistent storage. For production, prefer a managed SQL database for administrator accounts and sessions, and configure the DB environment variables.
 
 Generate a real key in a local PHP/Laravel environment using `php artisan key:generate --show`; do not use the placeholder above. Set Firestore project ID and credentials separately if you want real Firestore content.
 
