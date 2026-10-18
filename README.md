@@ -2,59 +2,54 @@
 
 **A theme-driven, customizable portfolio CMS starter built with Laravel, Tailwind CSS, and Firebase Cloud Firestore.**
 
-FormaCMS is an open-source foundation for portfolio, freelancer, consultant, and small-business websites. It is intended to be customized for different brands, not hardcoded for one person.
+FormaCMS is an open-source foundation for portfolio, freelancer, consultant, and small-business websites. It is intended to be configured for different brands, not hardcoded for one person.
 
 ## Project status
 
-This repository contains the product plan, security and data-model documentation, and a working responsive UI prototype. The prototype demonstrates the visual direction and client-side theme switching; it is not yet a connected Laravel/Firestore CMS. See [Roadmap](docs/ROADMAP.md) for implementation status. Do not deploy the prototype as a production contact or admin system.
+The repository contains a Laravel application foundation, a read-only Firestore content adapter, a responsive Blade homepage, a standalone UI prototype, and technical documentation. Full admin CRUD, admin login screens, inquiry processing, comprehensive tests, and production deployment automation remain roadmap work. Do not deploy as a production CMS until those milestones are complete.
 
-## Product goals
+## Features in the foundation
 
-- Three built-in themes plus configurable design tokens.
-- Editable sections with ordering and visibility controls.
-- Portfolio projects with external HTTPS image URLs.
-- Editable services, packages, FAQs, navigation, and contact settings.
-- Laravel-managed admin authentication.
-- Firestore-backed website content and inquiries.
-- Responsive Blade views styled with Tailwind CSS.
-- Secure-by-default guidance, testing, and deployment docs.
+- Generic branding and sample content.
+- Three visual theme tokens: Classic Corporate, Modern Minimal, and Premium Dark.
+- Responsive public homepage and portfolio cards.
+- Firestore-backed settings/projects with generic demo fallback when Firestore is not configured.
+- Standalone interactive UI prototype.
+- Firestore data model, security guidance, and implementation roadmap.
 
 ## Planned stack
 
-- PHP and Laravel (select a supported stable release compatible with hosting)
-- Blade templates, Tailwind CSS, and Vite
+- PHP and Laravel 12
+- Blade templates, Tailwind CSS v4, and Vite
 - Google Cloud Firestore PHP client
-- Laravel authentication with a SQL-backed admin-user/session store
-- Laravel Mail and a queue backend for inquiry notifications
+- Laravel authentication with SQL-backed admin users/sessions
+- Laravel Mail and queue-backed inquiry notifications
 
-Laravel's conventional authentication stack is simplest with a relational database. Use Firestore for content and inquiry documents, and a small SQL database for admin users and sessions.
+Laravel's conventional authentication stack is simpler with a relational database. FormaCMS uses Firestore for website content and inquiries, with SQL for admin users and sessions.
 
 ## Quick preview
 
-Open [prototype/index.html](prototype/index.html) in a browser, or serve it locally:
+### Standalone prototype
+Open [prototype/index.html](prototype/index.html) in a browser, or run:
 
 ```bash
 php -S 127.0.0.1:8080 -t prototype
 ```
 
-Then visit http://127.0.0.1:8080. The prototype includes a theme selector and editable demo text stored in local browser storage. This is a UI preview only; it does not persist to Firestore or provide authentication.
+Visit http://127.0.0.1:8080. The prototype lets you switch themes and edit sample headings locally; it saves only to that browser and does not connect to Laravel or Firestore.
+
+### Laravel application
+See [Local setup](docs/LOCAL_SETUP.md) for prerequisites and instructions.
 
 ## Documentation
 
+- [Local setup](docs/LOCAL_SETUP.md)
 - [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
 - [Firestore data model](docs/FIRESTORE_SCHEMA.md)
 - [Security model](docs/SECURITY.md)
 - [Roadmap and acceptance criteria](docs/ROADMAP.md)
 - [Contributing](CONTRIBUTING.md)
 - [Security reporting](SECURITY.md)
-
-## Themes
-
-1. **Classic Corporate** — navy, ivory, muted gold.
-2. **Modern Minimal** — light surfaces and a restrained green accent.
-3. **Premium Dark** — deep charcoal and warm gold.
-
-These are starting presets. Each installation should be able to configure its own brand, content, links, and theme.
 
 ## Security basics
 
@@ -63,7 +58,7 @@ These are starting presets. Each installation should be able to configure its ow
 - Use least-privilege Google Cloud IAM.
 - If browsers do not access Firestore directly, deny client access in Firestore Security Rules.
 - Validate form input and external image URLs; do not fetch arbitrary URLs from the server.
-- Protect admin routes with authentication and authorization.
+- Protect admin routes with authentication and authorization before adding CMS write operations.
 - Add rate limiting and spam protection to public forms.
 - Define inquiry retention and privacy practices before production.
 
