@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FormaCMS — a flexible, theme-driven portfolio CMS starter.">
+  <title>FormaCMS — Your work, your way</title>
+  <style>
+    :root{color-scheme:light;--primary:#14283f;--bg:#f5f1e8;--accent:#b99a61;--surface:#fff;--text:#14283f;--muted:#526174;--line:rgba(20,40,63,.15);--radius:18px;--shadow:0 18px 50px rgba(20,40,63,.09)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit}button,input,textarea,select{font:inherit}button{cursor:pointer}.wrap{width:min(1120px,calc(100% - 40px));margin:auto}.topbar{background:var(--primary);color:#fff}.nav{min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-weight:850;letter-spacing:-.04em;font-size:1.3rem;text-decoration:none}.brand span{color:var(--accent)}.links{display:flex;gap:24px;align-items:center}.links a{text-decoration:none;color:#f3f4f6;font-size:.93rem}.links a:hover{color:var(--accent)}.hero{background:var(--primary);color:#fff;padding:76px 0 86px;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:420px;height:420px;border:1px solid rgba(185,154,97,.28);border-radius:50%;right:-110px;top:-150px;box-shadow:0 0 0 45px rgba(185,154,97,.035),0 0 0 90px rgba(185,154,97,.025);pointer-events:none}.eyebrow{color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.13em;font-size:.78rem}.hero h1{font-size:clamp(2.5rem,6vw,5rem);letter-spacing:-.06em;line-height:1.02;max-width:850px;margin:18px 0}.hero p{max-width:650px;color:#d9e0e7;font-size:1.15rem}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid transparent;border-radius:999px;padding:12px 20px;font-weight:750;text-decoration:none;transition:transform .15s ease,opacity .15s ease}.btn:hover{transform:translateY(-2px)}.btn-primary{background:var(--accent);color:var(--primary)}.btn-ghost{border-color:#728096;color:#fff;background:transparent}.section{padding:76px 0}.section-head{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:28px}.section h2{font-size:clamp(1.8rem,3vw,2.7rem);line-height:1.1;letter-spacing:-.045em;margin:8px 0}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}.card .num{display:inline-grid;place-items:center;width:42px;height:42px;border-radius:12px;background:color-mix(in srgb,var(--accent) 25%,var(--surface));font-weight:850;margin-bottom:20px}.card h3{margin:0 0 8px;font-size:1.15rem}.card p{margin:0;color:var(--muted)}.band{background:var(--surface);border-block:1px solid var(--line)}.split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}.theme-panel{background:var(--primary);color:#fff;padding:28px;border-radius:var(--radius);box-shadow:var(--shadow)}.theme-panel label{display:block;font-size:.86rem;color:#e5e7eb;margin:14px 0 6px}.theme-panel select,.theme-panel input{width:100%;padding:11px 12px;border:1px solid #607086;background:#fff;color:#14283f;border-radius:10px}.theme-panel .btn{margin-top:16px}.theme-note{font-size:.8rem;color:#d9e0e7;margin-top:10px}.project{padding:0;overflow:hidden}.project-art{height:160px;background:linear-gradient(135deg,var(--primary),#29435e);display:grid;place-items:center;color:var(--accent);font-size:2.2rem;font-weight:900;letter-spacing:-.06em}.project-body{padding:22px}.pill{display:inline-block;border-radius:999px;padding:5px 10px;background:color-mix(in srgb,var(--accent) 25%,var(--surface));font-size:.75rem;font-weight:800;margin-bottom:12px}.cta{background:var(--primary);color:#fff;border-radius:var(--radius);padding:38px;display:flex;justify-content:space-between;align-items:center;gap:22px}.cta h2{margin:0 0 8px}.cta p{color:#d9e0e7;margin:0}.footer{padding:30px 0;color:var(--muted);font-size:.9rem}.footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:22px}.edit-note{font-size:.8rem;color:var(--muted);margin-top:10px}.toast{position:fixed;bottom:18px;right:18px;background:var(--primary);color:#fff;padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);display:none}.skip{position:absolute;top:-100px;left:12px;background:var(--surface);padding:12px;z-index:10}.skip:focus{top:12px}
+    [data-theme="minimal"]{--primary:#23372f;--bg:#f7f7f2;--accent:#a3b18a;--surface:#fff;--text:#23372f;--muted:#58675e;--line:rgba(35,55,47,.15);--radius:12px;--shadow:0 12px 32px rgba(35,55,47,.06)}
+    [data-theme="dark"]{color-scheme:dark;--primary:#101820;--bg:#171f27;--accent:#d6b875;--surface:#222d37;--text:#f8f5ef;--muted:#b5c0ca;--line:rgba(248,245,239,.13);--radius:10px;--shadow:0 18px 50px rgba(0,0,0,.18)}
+    [data-theme="dark"] .band{background:#1b252e}[data-theme="dark"] .theme-panel{border:1px solid var(--line)}[data-theme="dark"] .project-art{background:linear-gradient(135deg,#222d37,#344554)}[data-theme="dark"] .theme-panel label{color:#f8f5ef}
+    @media(max-width:760px){.nav{align-items:flex-start;flex-direction:column;padding:18px 0}.links{gap:14px;flex-wrap:wrap}.hero{padding:58px 0}.grid{grid-template-columns:1fr}.split{grid-template-columns:1fr;gap:26px}.section{padding:54px 0}.section-head{display:block}.cta{align-items:flex-start;flex-direction:column}.wrap{width:min(100% - 28px,1120px)}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+  </style>
+</head>
+<body data-theme="classic">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="wrap nav">
+      <a class="brand" href="#" aria-label="FormaCMS home">forma<span>cms</span></a>
+      <nav class="links" aria-label="Main navigation"><a href="#features">Features</a><a href="#themes">Themes</a><a href="#portfolio">Portfolio</a><a href="#contact">Contact</a></nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <div class="eyebrow" contenteditable="true" data-edit="eyebrow">A flexible website foundation</div>
+        <h1 contenteditable="true" data-edit="headline">Your work. Your story. Your style.</h1>
+        <p contenteditable="true" data-edit="intro">A customizable portfolio starter for independent professionals and small businesses. Shape your content, choose a theme, and build a site that feels like your own.</p>
+        <div class="actions"><a class="btn btn-primary" href="#features">Explore the features</a><a class="btn btn-ghost" href="#themes">Preview themes</a></div>
+        <div class="edit-note" style="color:#cbd5df">Demo mode: select any headline or paragraph marked editable to change its text, then save your local preview.</div>
+      </div>
+    </section>
+    <section class="section" id="features">
+      <div class="wrap">
+        <div class="section-head"><div><div class="eyebrow">Built to adapt</div><h2>Everything you need to make it yours.</h2></div><p class="muted" style="max-width:360px">A reusable foundation, not a one-person website. Start with the basics and extend it as your needs grow.</p></div>
+        <div class="grid">
+          <article class="card"><div class="num">01</div><h3>Theme presets</h3><p>Switch between carefully designed palettes and tune your brand colors without rewriting page templates.</p></article>
+          <article class="card"><div class="num">02</div><h3>Editable sections</h3><p>Organize hero areas, service cards, project galleries, FAQs, and calls to action into reusable sections.</p></article>
+          <article class="card"><div class="num">03</div><h3>Portfolio by URL</h3><p>Add externally hosted images with captions and alternative text. Keep your media workflow lightweight.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="section band" id="themes">
+      <div class="wrap split">
+        <div><div class="eyebrow">Your visual identity</div><h2>One foundation. Multiple looks.</h2><p class="muted">Try the theme switcher. In the full application, the selected theme and custom tokens will be saved by the admin dashboard and rendered by Laravel.</p><p class="muted">This standalone prototype saves the selected theme and editable demo text in this browser only.</p></div>
+        <div class="theme-panel">
+          <h3 style="margin:0;font-size:1.35rem">Appearance preview</h3>
+          <label for="theme">Choose a theme</label>
+          <select id="theme"><option value="classic">Classic Corporate</option><option value="minimal">Modern Minimal</option><option value="dark">Premium Dark</option></select>
+          <label for="accent">Accent color</label>
+          <select id="accent"><option value="">Theme default</option><option value="#b99a61">Muted gold</option><option value="#a3b18a">Soft green</option><option value="#6d9fd1">Blue</option><option value="#cf8990">Rose</option></select>
+          <button class="btn btn-primary" id="save">Save preview settings</button>
+          <div class="theme-note">No account or server is required for this preview.</div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="portfolio">
+      <div class="wrap">
+        <div class="section-head"><div><div class="eyebrow">Flexible content</div><h2>Show the work that matters.</h2></div><p class="muted" style="max-width:360px">Example project cards are placeholders. Replace them with your own work in a real FormaCMS installation.</p></div>
+        <div class="grid">
+          <article class="card project"><div class="project-art" aria-hidden="true">Aa</div><div class="project-body"><span class="pill">Case study</span><h3 contenteditable="true" data-edit="project1">Project showcase</h3><p>Describe the challenge, your approach, and the result.</p></div></article>
+          <article class="card project"><div class="project-art" aria-hidden="true">✳</div><div class="project-body"><span class="pill">Service</span><h3 contenteditable="true" data-edit="project2">Service overview</h3><p>Explain what you offer and who it helps.</p></div></article>
+          <article class="card project"><div class="project-art" aria-hidden="true">▤</div><div class="project-body"><span class="pill">Portfolio</span><h3 contenteditable="true" data-edit="project3">Featured work</h3><p>Present a project with a clear caption and accessible image.</p></div></article>
+        </div>
+        <p class="edit-note">Click the editable headings above to customize this browser preview.</p>
+      </div>
+    </section>
+    <section class="section" id="contact">
+      <div class="wrap"><div class="cta"><div><h2>Ready to shape your own site?</h2><p>Use this prototype to explore the design direction for FormaCMS.</p></div><a class="btn btn-primary" href="https://github.com/Deibu-sama/forma-cms">View the project on GitHub</a></div></div>
+    </section>
+  </main>
+  <footer class="footer"><div class="wrap footer-inner"><span>© <span id="year"></span> FormaCMS · Open-source starter</span><span>Built for customization, not one brand.</span></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite">Preview settings saved in this browser.</div>
+  <script>
+    (() => {
+      const body = document.body;
+      const theme = document.querySelector('#theme');
+      const accent = document.querySelector('#accent');
+      const toast = document.querySelector('#toast');
+      const editables = [...document.querySelectorAll('[data-edit]')];
+      const key = 'formacms-preview-v1';
+      const defaults = { theme: 'classic', accent: '', text: {} };
+      let state = { ...defaults };
+      try { state = { ...defaults, ...JSON.parse(localStorage.getItem(key) || '{}') }; } catch {}
+      function apply() {
+        body.dataset.theme = state.theme;
+        theme.value = state.theme;
+        accent.value = state.accent || '';
+        document.documentElement.style.setProperty('--accent', state.accent || '');
+        editables.forEach(el => { const value = state.text?.[el.dataset.edit]; if (typeof value === 'string') el.textContent = value; });
+      }
+      function save() {
+        state.theme = theme.value;
+        state.accent = accent.value;
+        state.text = Object.fromEntries(editables.map(el => [el.dataset.edit, el.textContent.trim()]));
+        try { localStorage.setItem(key, JSON.stringify(state)); toast.style.display = 'block'; setTimeout(() => toast.style.display = 'none', 2600); }
+        catch { alert('Browser storage is unavailable. Your changes may not persist.'); }
+        apply();
+      }
+      theme.addEventListener('change', () => { state.theme = theme.value; apply(); });
+      accent.addEventListener('change', () => { state.accent = accent.value; apply(); });
+      document.querySelector('#save').addEventListener('click', save);
+      editables.forEach(el => el.addEventListener('blur', () => { state.text ||= {}; state.text[el.dataset.edit] = el.textContent.trim(); }));
+      document.querySelector('#year').textContent = new Date().getFullYear();
+      apply();
+    })();
+  </script>
+</body>
+</html>
