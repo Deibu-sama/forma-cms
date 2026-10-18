@@ -4,7 +4,7 @@
 
 - PHP version supported by the chosen Laravel 12 release
 - Composer
-- Node.js and npm
+- Node.js and npm (needed to build Tailwind/Vite assets)
 - SQLite or MySQL with the matching PHP PDO extension
 - Google Cloud project with Firestore enabled (optional for demo fallback)
 - Required Google client extensions/dependencies for Firestore on your platform
@@ -23,11 +23,25 @@
 
 If Firestore is not configured, the public homepage uses generic demo content. To connect Firestore, set `FIRESTORE_PROJECT_ID` and configure Google Application Default Credentials for the server environment. Never commit a service-account key.
 
+## Abasthan deployment
+
+Use Abasthan's dedicated **PHP App** deployment type for this Laravel repository. Do not create a Node.js Web Service. The log `Environment: node 22` combined with `composer: not found` indicates the wrong runtime selection; the repository cannot install Composer from a Node-only runtime by changing the command.
+
+Abasthan PHP documentation describes Composer support for PHP apps. Use the PHP app flow and select a supported PHP version (the repository currently targets Laravel 12 and PHP 8.2+).
+
+The Blade layout uses Vite's `@vite` helper, so compiled assets must be available at `public/build/manifest.json`. If the PHP app environment includes Node/npm, use this build command:
+
+```bash
+composer install --no-dev --optimize-autoloader && npm install && npm run build
+```
+
+If Node/npm is unavailable in the PHP build environment, build the frontend assets in CI and deploy the resulting `public/build` directory with the PHP application. Do not switch back to a Node runtime for the Laravel app.
+
+Set `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, and `FIRESTORE_PROJECT_ID` as environment variables. Use a managed SQL database or persistent storage for Laravel's SQL-backed session/cache/job tables. Never commit service-account credentials.
+
 ## Docker
 
-A Dockerfile is provided for platforms that don't supply PHP and Composer in their native build environment.
-
-Build and run locally:
+A Dockerfile is provided for platforms that explicitly support Docker deployments.
 
 ```bash
 docker build -t formacms .

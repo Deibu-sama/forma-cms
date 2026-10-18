@@ -16,7 +16,7 @@ The repository contains a Laravel application foundation, a read-only Firestore 
 - Firestore-backed settings/projects with generic demo fallback when Firestore is not configured.
 - Standalone interactive UI prototype.
 - Firestore data model, security guidance, and implementation roadmap.
-- Docker build with PHP/Composer and Node.js build stages.
+- Docker build option for platforms requiring a Dockerfile.
 
 ## Planned stack
 
@@ -39,25 +39,25 @@ php -S 127.0.0.1:8080 -t prototype
 
 Visit http://127.0.0.1:8080. The prototype lets you switch themes and edit sample headings locally; it saves only to that browser and does not connect to Laravel or Firestore.
 
-### Docker deployment (recommended for hosts without PHP preinstalled)
+### Deploying on Abasthan
 
-The included Dockerfile installs Composer dependencies, builds Tailwind assets with Node.js 22, and runs the app using PHP 8.3.
+**Create a PHP App, not a Node.js Web Service.** Abasthan has a dedicated PHP runtime that supports Laravel and Composer. If the dashboard logs say `Environment: node 22` or `composer: not found`, the app was created with the wrong runtime. Create a new app from **Create App → PHP App**, connect this repository and the `main` branch, then let Abasthan detect Laravel/PHP. Do not use the Node.js runtime with Laravel's Composer build command.
 
-Required runtime environment variables:
-- `APP_KEY`: generate with `php artisan key:generate --show` in a local Laravel environment and set the generated value in the host's secret/environment settings.
-- `APP_ENV=production`
-- `APP_DEBUG=false`
-- `FIRESTORE_PROJECT_ID`: Google Cloud project ID if using Firestore.
-- Google Application Default Credentials or a securely mounted service-account file if using Firestore.
+The Laravel views use Vite, so the built frontend manifest and assets must exist. If the PHP app build environment supports Node/npm, use:
 
-Set the host's Docker/build mode to use the repository `Dockerfile`. Do not use the Node-only build command or a Node.js start command. The container listens on `$PORT` (defaults to 8080) and runs Laravel migrations on startup.
+```bash
+composer install --no-dev --optimize-autoloader && npm install && npm run build
+```
 
-**Database warning:** SQLite inside a container is ephemeral unless the host provides a persistent disk. For production admin accounts and sessions, configure a managed SQL database and set `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD`. If using SQLite, mount persistent storage and point `DB_DATABASE` to that persistent path.
+If Abasthan's PHP runtime does not provide Node/npm, build the Vite assets in a separate CI/build step and deploy the generated `public/build` assets with the PHP app, or adjust the deployment pipeline to support both PHP and Node build stages.
 
-The current starter does not yet include the full admin dashboard or CMS write operations. Review the roadmap before treating it as production-ready.
+Set `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, and `FIRESTORE_PROJECT_ID` in the host environment. Configure Google Application Default Credentials or a securely mounted service-account file if using Firestore. Never commit credentials.
 
-### Local Laravel application
-See [Local setup](docs/LOCAL_SETUP.md) for prerequisites and instructions.
+**Database warning:** SQLite in ephemeral hosting can lose data on replacement. For production admin accounts and sessions, configure a managed SQL database and set the database environment variables. The current starter does not yet include the full admin dashboard or CMS write operations.
+
+### Docker deployment on hosts that require it
+
+The root [Dockerfile](Dockerfile) builds Composer dependencies and Tailwind assets in separate stages and starts the app with PHP. Use this only when the hosting platform explicitly supports Dockerfile/container deployments.
 
 ## Documentation
 
