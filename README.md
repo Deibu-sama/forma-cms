@@ -57,7 +57,7 @@ Set `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, and `FIRESTORE_PROJECT_I
 
 ### Docker deployment on hosts that require it
 
-The root [Dockerfile](Dockerfile) builds Composer dependencies and Tailwind assets in separate stages and starts the app with PHP. Use this only when the hosting platform explicitly supports Dockerfile/container deployments.
+The root [Dockerfile](Dockerfile) installs and enables the native PHP `grpc` extension required by the Firestore SDK, builds Composer dependencies and Tailwind/Vite assets in separate stages, and runs the app on PHP 8.3. Use this on a hosting platform that explicitly supports Dockerfile/container deployments. A managed PHP runtime must separately provide/enable `grpc`; ignoring the Composer platform requirement is not a production fix.
 
 ## Documentation
 
