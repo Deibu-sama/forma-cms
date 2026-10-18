@@ -1,5 +1,16 @@
-# Multi-stage image: build PHP dependencies and Tailwind assets, then run Laravel on PHP.
-FROM composer:2 AS vendor
+# Build Composer dependencies and frontend assets, then run Laravel on PHP.
+# Firestore's PHP SDK requires the native gRPC extension.
+FROM php:8.3-cli-bookworm AS php-base
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends $PHPIZE_DEPS libsqlite3-dev libzip-dev libcurl4-openssl-dev unzip \
+    && pecl install grpc \
+    && docker-php-ext-enable grpc \
+    && docker-php-ext-install pdo_sqlite pdo_mysql zip curl \
+    && apt-get purge -y --auto-remove $PHPIZE_DEPS \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM php-base AS vendor
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 COPY . .
 RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
@@ -11,12 +22,7 @@ COPY resources ./resources
 COPY public ./public
 RUN npm install --no-audit --no-fund && npm run build
 
-FROM php:8.3-cli-bookworm AS runtime
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends libsqlite3-dev libzip-dev libcurl4-openssl-dev unzip \
-    && docker-php-ext-install pdo_sqlite pdo_mysql zip curl \
-    && rm -rf /var/lib/apt/lists/*
-
+FROM php-base AS runtime
 WORKDIR /var/www/html
 ENV APP_ENV=production
 ENV APP_DEBUG=false
