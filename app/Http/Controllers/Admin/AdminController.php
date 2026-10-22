@@ -126,7 +126,7 @@ final class AdminController
         $settings = $content->settings();
         $sections = $settings['content_sections'] ?? [];
         $softwareTools = [];
-        $items = array_values(array_filter(array_map('trim', preg_split('/\\r\\n|\\r|\\n/', $data['items_text'] ?? '') ?: []), fn ($item) => $item !== ''));
+        $items = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $data['items_text'] ?? '') ?: []), fn ($item) => $item !== ''));
         if ($section === 'skills') {
             $items = [];
             foreach (($data['software_tools'] ?? []) as $tool) {
