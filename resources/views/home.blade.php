@@ -6,7 +6,7 @@
         <div class="container portfolio-hero-grid">
             <div class="portfolio-hero-copy">
                 <p class="eyebrow">{{ $settings['eyebrow'] ?? 'Independent creative professional' }}</p>
-                <h1>{{ $settings['headline'] ?? 'Thoughtful work.<br>Made with purpose.' }}</h1>
+                <h1>{!! nl2br(e($settings['headline'] ?? "Thoughtful work.\nMade with purpose.")) !!}</h1>
                 <p class="hero-description">{{ $settings['description'] ?? 'I turn ideas into meaningful experiences through considered design, clear strategy, and a little curiosity.' }}</p>
                 <div class="hero-actions">
                     <a href="#work" class="button button-primary">Explore my work <span aria-hidden="true">↗</span></a>
