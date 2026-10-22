@@ -42,7 +42,8 @@ Server Firestore SDKs bypass Firestore Security Rules and are authorized through
 - Use secure, HTTP-only, SameSite session cookies and HTTPS in production.
 - Rate-limit login and contact endpoints.
 - Require authentication and authorization on every admin endpoint.
-- Disable public administrator registration.
+- Disable public administrator registration; provision initial administrators using the server-only `bookkeeper:make-admin` Artisan command.
+- Require the `is_admin` flag and session authentication for every `/admin` route.
 - Validate requests with Form Requests and explicit field allowlists.
 - Escape output; do not render user-supplied HTML.
 - Do not trust hidden fields for ownership or permissions.
@@ -65,6 +66,7 @@ Server Firestore SDKs bypass Firestore Security Rules and are authorized through
 - Add rate limiting and honeypot/CAPTCHA protection as appropriate.
 - The current Laravel endpoint stores validated enquiries in Firestore when configured. Email notification dispatch is not implemented; if added, persist first.
 - Keep inquiry reads private and paginated.
+- If using `site_settings_fallback`, secure the SQL database and use persistent managed storage; it contains public website settings but must not be made directly accessible to visitors.
 - Define purpose, retention period, deletion workflow, and privacy notice before production.
 - Avoid collecting tax IDs, bank credentials, or client financial files through a public contact form.
 
