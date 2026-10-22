@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Firestore\ContentRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -189,7 +190,7 @@ final class AdminController
 
         $imageUrl = $this->resolveImageUrl($request, $data, $current['image_url'] ?? '', 'certificates');
         if ($imageUrl === '') {
-            return back()->withErrors(['image_file' => 'Upload a certificate image or provide a public HTTPS image URL.'])->withInput()->throwResponse();
+            throw ValidationException::withMessages(['image_file' => 'Upload a certificate image or provide a public HTTPS image URL.']);
         }
 
         return [
