@@ -29,13 +29,15 @@ Use Abasthan's dedicated **PHP App** deployment type for this Laravel repository
 
 Abasthan PHP documentation describes Composer support for PHP apps. Use the PHP app flow and select a supported PHP version (the repository currently targets Laravel 12 and PHP 8.2+).
 
-The Blade layout uses Vite's `@vite` helper, so compiled assets must be available at `public/build/manifest.json`. If the PHP app environment includes Node/npm, use this build command:
+The Blade layout uses Vite's `@vite` helper, so compiled assets must be available at `public/build/manifest.json`. For Abasthan's managed PHP runtime, use this build command if npm is available:
 
 ```bash
-composer install --no-dev --optimize-autoloader && npm install && npm run build
+composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc && npm install && npm run build
 ```
 
-If Node/npm is unavailable in the PHP build environment, build the frontend assets in CI and deploy the resulting `public/build` directory with the PHP application. Do not switch back to a Node runtime for the Laravel app.
+This is intentionally paired with the application's explicit Firestore REST transport in `ContentRepository`. The current public content adapter only performs document reads and a filtered query, which the REST transport supports. Do not remove the explicit `'transport' => 'rest'` setting while deploying without ext-grpc. This is different from blindly ignoring the platform requirement while leaving the client on its default gRPC transport.
+
+If Node/npm is unavailable in the PHP build environment, build the frontend assets in CI and deploy the resulting `public/build` directory with the PHP application. Do not switch back to a Node runtime for the Laravel app. If you need gRPC-only Firestore operations later (for example streaming listeners), use a runtime with ext-grpc installed.
 
 Set `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, and `FIRESTORE_PROJECT_ID` as environment variables. Use a managed SQL database or persistent storage for Laravel's SQL-backed session/cache/job tables. Never commit service-account credentials.
 
