@@ -32,18 +32,11 @@ function Icon({ name, size = 20, className = '' }) {
   return <svg {...common}>{paths[name] || paths.sparkle}</svg>;
 }
 
-function BrandMark({ compact = false }) {
+function BrandMark() {
   return (
-    <span className="inline-flex items-center gap-3">
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-accent text-brand-primary">
-        <Icon name="ledger" size={22} />
-      </span>
-      {!compact && (
-        <span className="flex flex-col leading-tight">
-          <span className="text-[15px] font-bold tracking-[-.04em] text-brand-primary">{settings.brand_name || 'Bookkeeper Pro'}</span>
-          <span className="mt-1 text-[9px] font-semibold uppercase tracking-[.17em] text-brand-muted">Books • Clarity • Confidence</span>
-        </span>
-      )}
+    <span className="flex flex-col leading-tight">
+      <span className="text-[15px] font-bold tracking-[-.04em] text-brand-primary">{settings.brand_name || settings.site_name || 'Your Name'}</span>
+      <span className="mt-1 text-[9px] font-semibold uppercase tracking-[.17em] text-brand-muted">{settings.tagline || 'Bookkeeping Professional'}</span>
     </span>
   );
 }
@@ -63,12 +56,12 @@ function Header() {
     ['Services', '#services'],
     ['Approach', '#approach'],
     ['Portfolio', '#portfolio'],
-    ['FAQs', '#faqs'],
+    ['FAQs', '#faqs'],\n    ['Invite / Share', '#invite'],
   ];
   return (
     <header className="sticky top-0 z-50 border-b border-brand-primary/10 bg-brand-background/95 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 sm:px-8 lg:px-10">
-        <a href="#home" aria-label="Bookkeeper Pro home" className="rounded-md no-underline">
+        <a href="#home" aria-label={(settings.brand_name || settings.site_name || "Portfolio") + " home"} className="rounded-md no-underline">
           <BrandMark />
         </a>
         <nav aria-label="Primary navigation" className="hidden items-center gap-7 lg:flex">
@@ -550,10 +543,19 @@ function App() {
         </section>
       </main>
 
+      <section id="invite" className="border-t border-brand-primary/10 bg-brand-surface px-5 py-12 sm:px-8 lg:px-10">
+        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-5 sm:flex-row sm:items-center">
+          <div><SectionLabel>Share this portfolio</SectionLabel><h2 className="text-2xl font-semibold tracking-tight text-brand-primary">Know someone hiring?</h2><p className="mt-2 max-w-xl text-sm leading-6 text-brand-muted">Invite a recruiter, employer, or potential client to view my portfolio and get in touch.</p></div>
+          <div className="flex flex-wrap gap-3">
+            <a href={`mailto:?subject=${encodeURIComponent('Professional portfolio — ' + (settings.brand_name || settings.site_name || 'Bookkeeping Professional'))}&body=${encodeURIComponent('I thought you might like to view this portfolio: ' + window.location.href)}`} className="inline-flex min-h-11 items-center gap-2 rounded-md bg-brand-primary px-5 py-3 text-xs font-bold text-white no-underline hover:bg-brand-accent hover:text-brand-primary"><Icon name="mail" size={15}/> Invite by email</a>
+            <button type="button" onClick={() => { if (navigator.share) navigator.share({ title: settings.site_title || 'Professional Portfolio', url: window.location.href }).catch(() => {}); else if (navigator.clipboard) navigator.clipboard.writeText(window.location.href); }} className="inline-flex min-h-11 items-center gap-2 rounded-md border border-brand-primary/20 px-5 py-3 text-xs font-bold text-brand-primary">Share portfolio <Icon name="arrowUp" size={15}/></button>
+          </div>
+        </div>
+      </section>
       <footer className="bg-brand-background px-5 py-7 sm:px-8 lg:px-10">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 border-t border-brand-primary/15 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <a href="#home" className="inline-flex w-fit items-center gap-3 no-underline"><BrandMark /></a>
-          <p className="max-w-xl text-[10px] leading-5 text-brand-muted">© {new Date().getFullYear()} {settings.site_name || 'Bookkeeper Pro Portfolio'}. {settings.footer_note ? settings.footer_note + ' · ' : ''}Bookkeeping and record-organization support only; not tax, legal, audit, or investment advice.</p>
+          <p className="max-w-xl text-[10px] leading-5 text-brand-muted">© {new Date().getFullYear()} {settings.site_name || settings.brand_name || 'Professional Portfolio'}. {settings.footer_note ? settings.footer_note + ' · ' : ''}Bookkeeping and record-organization support only; not tax, legal, audit, or investment advice.</p>
           <a href="#contact" className="inline-flex items-center gap-2 text-xs font-semibold text-brand-primary no-underline hover:text-brand-accent">Get in touch <Icon name="arrowUp" size={14} /></a>
         </div>
       </footer>
@@ -572,7 +574,7 @@ class AppErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error) {
-    console.error('Bookkeeper Pro Portfolio render error:', error);
+    console.error('Professional portfolio render error:', error);
   }
 
   render() {
@@ -580,7 +582,7 @@ class AppErrorBoundary extends React.Component {
       return (
         <main className="min-h-screen bg-[#f5f1e8] px-6 py-20 text-[#14283f]">
           <div className="mx-auto max-w-2xl rounded-2xl border border-[#14283f]/10 bg-white p-8 shadow-sm">
-            <p className="text-xs font-bold uppercase tracking-[.2em] text-[#9c865d]">Bookkeeper Pro Portfolio</p>
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-[#9c865d]">Portfolio</p>
             <h1 className="mt-4 text-2xl font-semibold">The page could not be displayed.</h1>
             <p className="mt-3 text-sm leading-6 text-[#68727b]">The website encountered a display error. Please refresh the page. If the problem continues, contact the site administrator.</p>
             <button type="button" onClick={() => window.location.reload()} className="mt-6 rounded-md bg-[#14283f] px-5 py-3 text-sm font-semibold text-white">Refresh page</button>
