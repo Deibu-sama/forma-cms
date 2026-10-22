@@ -56,7 +56,7 @@ final class InquiryController
         }
 
         return response()->json([
-            'message' => 'Thank you. Your enquiry has been received. I’ll review the details and follow up using the email address you provided.',
+            'message' => 'Thank you. Your enquiry has been received.',
         ], 201);
     }
 }
