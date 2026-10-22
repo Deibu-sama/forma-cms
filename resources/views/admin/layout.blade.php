@@ -62,8 +62,10 @@
                     <p class="text-[9px] font-bold uppercase tracking-[.2em] text-[#68727b]">Administration / @yield('eyebrow', 'Workspace')</p>
                     <h1 class="mt-1 text-lg font-semibold tracking-tight">@yield('page-title', 'Dashboard')</h1>
                 </div>
-                <div class="ml-auto flex items-center gap-4">
-                    <a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">View site ↗</a>
+                <div class="ml-auto flex items-center gap-3 sm:gap-4">
+                    <a href="{{ route('admin.dashboard') }}" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">Dashboard</a>
+                    <a href="{{ route('admin.settings') }}" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">Settings</a>
+                    <a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">View site ↗</a>
                     <span class="hidden text-right sm:block"><span class="block text-xs font-semibold">{{ auth()->user()->name }}</span><span class="mt-1 block text-[10px] text-[#68727b]">Administrator</span></span>
                     <span class="grid h-10 w-10 place-items-center rounded-full bg-[#e9dfca] text-xs font-bold text-[#14283f]">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
                 </div>
