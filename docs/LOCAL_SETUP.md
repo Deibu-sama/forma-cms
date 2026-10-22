@@ -19,7 +19,7 @@
 6. Run `php artisan migrate`.
 7. Install frontend dependencies: `npm install`.
 8. Build assets: `npm run build`.
-9. Create the first administrator interactively: `php artisan bookkeeper:make-admin admin@example.com`. Use an email you control; the command prompts for a display name and a hidden password of at least 12 characters, and it refuses to overwrite existing users.
+9. Configure `ADMIN_EMAIL`, `ADMIN_NAME`, and `ADMIN_PASSWORD` in your private server environment (use a strong unique password of at least 12 characters), then run `php artisan config:clear && php artisan bookkeeper:make-admin`. The command hashes the password into the SQL database and refuses to overwrite an existing user. Remove `ADMIN_PASSWORD` from the server environment and clear the config cache after account creation. Alternatively, leave all three variables blank and use `php artisan bookkeeper:make-admin admin@example.com` for secure prompts.
 10. Start the app: `php artisan serve`.
 11. Visit `/admin/login` to sign in, then use `/admin/settings` to edit the public website.
 
@@ -49,7 +49,7 @@ curl -fLsS https://raw.githubusercontent.com/Deibu-sama/forma-cms/main/scripts/s
 bash /tmp/sync-abasthan.sh
 ```
 
-The script overlays the latest application files and built Vite assets, clears Laravel caches, and applies pending migrations. It deliberately preserves `.env`, `vendor`, `storage`, and the existing database. After it completes, create the administrator if needed with `php artisan bookkeeper:make-admin your-admin-email@example.com`.
+The script overlays the latest application files and built Vite assets, clears Laravel caches, and applies pending migrations. It deliberately preserves `.env`, `vendor`, `storage`, and the existing database. After it completes, set `ADMIN_EMAIL`, `ADMIN_NAME`, and a strong unique `ADMIN_PASSWORD` in the private server environment, run `php artisan config:clear && php artisan bookkeeper:make-admin`, then remove the password variable and clear the config cache again. Do not put actual credentials in GitHub.
 
 Set `APP_NAME="Bookkeeper Pro Portfolio"`, `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, `FIRESTORE_PROJECT_ID`, and `FIREBASE_CREDENTIALS_BASE64` as environment variables. Use a managed SQL database or persistent storage for Laravel's SQL-backed session/cache/job tables. Never commit service-account credentials.
 
@@ -78,6 +78,6 @@ The container runs migrations on startup. SQLite inside the container is ephemer
 
 ## Admin and settings
 
-The starter includes a protected `/admin/login`, `/admin` dashboard, and `/admin/settings` editor. Create administrator accounts on the server with `php artisan bookkeeper:make-admin admin@example.com`; there is no public registration. Run migrations before first use. Website settings are saved to Firestore when available, otherwise to the SQL `site_settings_fallback` table. A persistent production SQL database is required for accounts, sessions, and fallback settings.
+The starter includes a protected `/admin/login`, `/admin` dashboard, and `/admin/settings` editor. Create the first administrator on the server using `ADMIN_EMAIL`, `ADMIN_NAME`, and `ADMIN_PASSWORD` environment variables with `php artisan bookkeeper:make-admin`; there is no public registration. Remove the password environment variable after the account has been created. Run migrations before first use. Website settings are saved to Firestore when available, otherwise to the SQL `site_settings_fallback` table. A persistent production SQL database is required for accounts, sessions, and fallback settings.
 
 Portfolio/service/FAQ CRUD, the enquiry inbox, email notifications, a privacy notice, retention/deletion workflows, complete feature tests, and production staging verification remain outstanding. Do not treat this as a production CMS until those milestones are implemented and tested.
