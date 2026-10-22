@@ -63,7 +63,8 @@ final class AdminAccessTest extends TestCase
             ->get('/admin/settings')
             ->assertOk()
             ->assertSee('Make it yours.')
-            ->assertSee('Favicon image URL');
+            ->assertSee('Favicon image URL')
+            ->assertDontSee('Default placeholder image URL for software logos');
     }
 
     public function test_admin_can_sign_in_with_valid_credentials(): void
@@ -204,6 +205,81 @@ final class AdminAccessTest extends TestCase
 
         $this->assertNotNull($user);
         $this->assertTrue(Hash::check('TeaCup!42', $user->password));
+    }
+
+    public function test_inquiries_are_protected_and_admin_inbox_handles_unconfigured_firestore(): void
+    {
+        $this->get('/admin/inquiries')->assertRedirect('/admin/login');
+
+        $admin = User::query()->create([
+            'name' => 'Portfolio Admin',
+            'email' => 'admin@example.com',
+            'password' => 'A-secure-test-password',
+            'is_admin' => true,
+        ]);
+
+        config(['services.firestore.project_id' => null, 'services.firestore.credentials_base64' => null]);
+
+        $this->actingAs($admin)->get('/admin/inquiries')->assertOk()
+            ->assertSee('Website enquiries')
+            ->assertSee('Firestore is not connected')
+            ->assertSee('No enquiries to show');
+    }
+
+    public function test_privacy_notice_and_sitemap_are_public_and_exclude_admin_routes(): void
+    {
+        $this->get('/privacy')->assertOk()->assertSee('Privacy notice')->assertSee('do not submit passwords');
+        $this->get('/sitemap.xml')->assertOk()
+            ->assertHeader('Content-Type', 'application/xml; charset=UTF-8')
+            ->assertSee('/privacy')
+            ->assertDontSee('/admin');
+    }
+
+    public function test_admin_can_save_individual_software_logo_urls(): void
+    {
+        config(['services.firestore.project_id' => null, 'services.firestore.credentials_base64' => null]);
+        $admin = User::query()->create([
+            'name' => 'Portfolio Admin',
+            'email' => 'admin@example.com',
+            'password' => 'A-secure-test-password',
+            'is_admin' => true,
+        ]);
+
+        $this->actingAs($admin)->put('/admin/content/skills', [
+            'title' => 'Software & Technical Skills',
+            'subtitle' => 'Tools',
+            'body' => 'Tools used in my workflow.',
+            'enabled' => '1',
+            'software_tools' => [
+                ['name' => 'QuickBooks', 'logo_url' => 'https://example.com/quickbooks.png'],
+                ['name' => 'Microsoft Excel', 'logo_url' => ''],
+            ],
+        ])->assertRedirect(route('admin.content.edit', 'skills'))->assertSessionHas('success');
+
+        $encoded = DB::table('site_settings_fallback')->where('id', 1)->value('settings');
+        $saved = json_decode((string) $encoded, true, 512, JSON_THROW_ON_ERROR);
+        $tools = $saved['content_sections']['skills']['software_tools'];
+        $this->assertSame('QuickBooks', $tools[0]['name']);
+        $this->assertSame('https://example.com/quickbooks.png', $tools[0]['logo_url']);
+        $this->assertSame('Microsoft Excel', $tools[1]['name']);
+        $this->assertSame('', $tools[1]['logo_url']);
+    }
+
+    public function test_software_logo_urls_must_use_https(): void
+    {
+        config(['services.firestore.project_id' => null, 'services.firestore.credentials_base64' => null]);
+        $admin = User::query()->create([
+            'name' => 'Portfolio Admin',
+            'email' => 'admin@example.com',
+            'password' => 'A-secure-test-password',
+            'is_admin' => true,
+        ]);
+
+        $this->actingAs($admin)->from('/admin/content/skills')->put('/admin/content/skills', [
+            'title' => 'Software & Technical Skills',
+            'enabled' => '1',
+            'software_tools' => [['name' => 'QuickBooks', 'logo_url' => 'http://example.com/logo.png']],
+        ])->assertSessionHasErrors('software_tools.0.logo_url');
     }
 
 }

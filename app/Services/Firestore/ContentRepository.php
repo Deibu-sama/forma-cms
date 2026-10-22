@@ -462,6 +462,62 @@ final class ContentRepository
         }
     }
 
+    /**
+     * Recent enquiries are available only to the authenticated admin inbox.
+     */
+    public function recentInquiries(int $limit = 100): array
+    {
+        $client = $this->client();
+        if (! $client || $this->firestoreUnavailable) {
+            return [];
+        }
+
+        try {
+            $items = $client->listDocuments('inquiries', $limit);
+            usort($items, static function (array $a, array $b): int {
+                $aTime = $a['created_at'] ?? null;
+                $bTime = $b['created_at'] ?? null;
+                $aStamp = $aTime instanceof \DateTimeInterface ? $aTime->getTimestamp() : 0;
+                $bStamp = $bTime instanceof \DateTimeInterface ? $bTime->getTimestamp() : 0;
+                return $bStamp <=> $aStamp;
+            });
+
+            return array_slice($items, 0, max(1, min(100, $limit)));
+        } catch (Throwable $exception) {
+            report($exception);
+            $this->firestoreUnavailable = true;
+            return [];
+        }
+    }
+
+    public function updateInquiryStatus(string $id, string $status): bool
+    {
+        if (! in_array($status, ['new', 'contacted', 'in_discussion', 'closed'], true)) {
+            return false;
+        }
+
+        $client = $this->client();
+        if (! $client || $this->firestoreUnavailable || ! preg_match('/^[A-Za-z0-9_-]{1,128}$/', $id)) {
+            return false;
+        }
+
+        try {
+            if ($client->getDocument('inquiries', $id) === null) {
+                return false;
+            }
+
+            $client->setDocument('inquiries', $id, [
+                'status' => $status,
+                'updated_at' => new \DateTimeImmutable(),
+            ]);
+            return true;
+        } catch (Throwable $exception) {
+            report($exception);
+            $this->firestoreUnavailable = true;
+            return false;
+        }
+    }
+
     private function readFallbackSettings(): ?array
     {
         try {

@@ -29,6 +29,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/certificates', [AdminController::class, 'storeCertificate'])->name('certificates.store');
         Route::put('/certificates/{index}', [AdminController::class, 'updateCertificate'])->whereNumber('index')->name('certificates.update');
         Route::delete('/certificates/{index}', [AdminController::class, 'destroyCertificate'])->whereNumber('index')->name('certificates.destroy');
+        Route::get('/inquiries', [AdminController::class, 'inquiries'])->name('inquiries');
+        Route::patch('/inquiries/{id}/status', [AdminController::class, 'updateInquiryStatus'])->where('id', '[A-Za-z0-9_-]{1,128}')->name('inquiries.status');
         Route::get('/projects', [AdminController::class, 'projects'])->name('projects');
         Route::post('/projects', [AdminController::class, 'storeProject'])->name('projects.store');
         Route::put('/projects/{index}', [AdminController::class, 'updateProject'])->whereNumber('index')->name('projects.update');
@@ -38,5 +40,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
+
+Route::view('/privacy', 'privacy')->name('privacy');
+Route::get('/sitemap.xml', function () {
+    $base = rtrim(config('app.url', url('/')), '/');
+    $urls = [$base.'/', $base.'/privacy'];
+    $entries = collect($urls)->map(fn ($url) => '<url><loc>'.e($url).'</loc></url>')->implode('');
+    return response('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.$entries.'</urlset>', 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
+})->name('sitemap');
 
 Route::get('/health-check', fn () => response()->json(['ok' => true, 'app' => config('app.name')]))->name('health-check');

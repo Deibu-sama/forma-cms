@@ -110,28 +110,30 @@ final class AdminController
     {
         $labels = $this->editableSections();
         abort_unless(isset($labels[$section]), 404);
-        $data = $request->validate([
+        $rules = [
             'title' => ['required', 'string', 'max:180'],
             'subtitle' => ['nullable', 'string', 'max:240'],
             'body' => ['nullable', 'string', 'max:5000'],
             'items_text' => ['nullable', 'string', 'max:6000'],
             'enabled' => ['nullable', 'boolean'],
-        ]);
+        ];
+        if ($section === 'skills') {
+            $rules['software_tools'] = ['nullable', 'array', 'max:60'];
+            $rules['software_tools.*.name'] = ['nullable', 'string', 'max:180'];
+            $rules['software_tools.*.logo_url'] = ['nullable', 'url:https', 'max:2048'];
+        }
+        $data = $request->validate($rules);
         $settings = $content->settings();
         $sections = $settings['content_sections'] ?? [];
         $softwareTools = [];
         $items = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $data['items_text'] ?? '') ?: []), fn ($item) => $item !== ''));
         if ($section === 'skills') {
             $items = [];
-            foreach (preg_split('/\r\n|\r|\n/', $data['items_text'] ?? '') ?: [] as $line) {
-                $line = trim($line);
-                if ($line === '') continue;
-                $parts = array_map('trim', explode('|', $line, 2));
-                $name = $parts[0] ?? '';
-                $logoUrl = $parts[1] ?? '';
-                if ($name === '' || mb_strlen($name) > 180 || ($logoUrl !== '' && (filter_var($logoUrl, FILTER_VALIDATE_URL) === false || ! str_starts_with(strtolower($logoUrl), 'https://')))) {
-                    return back()->withInput()->with('error', 'For software skills, use one item per line in the format: Software name | HTTPS logo image URL. The image URL can be left blank.');
-                }
+            foreach (($data['software_tools'] ?? []) as $tool) {
+                $name = trim((string) ($tool['name'] ?? ''));
+                $logoUrl = trim((string) ($tool['logo_url'] ?? ''));
+                if ($name === '' && $logoUrl === '') continue;
+                if ($name === '') return back()->withInput()->with('error', 'Enter a software name for each logo URL.');
                 $items[] = $name;
                 $softwareTools[] = ['name' => $name, 'logo_url' => $logoUrl];
             }
@@ -264,6 +266,27 @@ final class AdminController
         return view('admin.faqs', ['faqs' => $content->settings()['faqs'] ?? []]);
     }
 
+    public function inquiries(ContentRepository $content): View
+    {
+        return view('admin.inquiries', [
+            'inquiries' => $content->recentInquiries(),
+            'firestoreReady' => ! $content->isDemoMode(),
+        ]);
+    }
+
+    public function updateInquiryStatus(Request $request, string $id, ContentRepository $content): RedirectResponse
+    {
+        $data = $request->validate([
+            'status' => ['required', 'in:new,contacted,in_discussion,closed'],
+        ]);
+
+        if (! $content->updateInquiryStatus($id, $data['status'])) {
+            return back()->withInput()->with('error', 'The enquiry status could not be saved. Confirm Firestore access and try again.');
+        }
+
+        return redirect()->route('admin.inquiries')->with('success', 'Enquiry status updated.');
+    }
+
     public function projects(ContentRepository $content): View
     {
         return view('admin.projects', ['projects' => $content->settings()['projects'] ?? []]);
@@ -374,7 +397,6 @@ final class AdminController
             'tagline' => ['nullable', 'string', 'max:160'],
             'theme' => ['nullable', 'in:classic-corporate,sage-editorial,modern-lavender,ocean-professional,warm-minimal'],
             'favicon_url' => ['nullable', 'url:https', 'max:2048'],
-            'placeholder_image_url' => ['nullable', 'url:https', 'max:2048'],
             'profile_image_url' => ['nullable', 'url:https', 'max:2048'],
             'hero_image_url' => ['nullable', 'url:https', 'max:2048'],
             'hero_image_alt' => ['nullable', 'string', 'max:240'],
@@ -392,6 +414,8 @@ final class AdminController
         ]);
 
         $validated['theme'] = $validated['theme'] ?? 'classic-corporate';
+        // Software logos are configured per item in the Skills editor, not as a global placeholder.
+        unset($validated['placeholder_image_url']);
         $currentSettings = $content->settings();
         // These page-copy fields are edited in the dedicated section editors, not Website Settings.
         // Preserve existing values when the global settings form is submitted.

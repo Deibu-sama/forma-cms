@@ -27,7 +27,7 @@ Laravel remains the backend. React runs in the browser and never receives Firest
 - Website settings can be saved to Firestore, or to a SQL fallback while Firestore is unavailable.
 - A GitHub Actions workflow builds the Vite production assets for PHP-only hosting.
 
-Open `/admin/login` to sign in, `/admin` for the dashboard, and `/admin/settings` to edit the public brand name, browser title, favicon URL, homepage text, SEO description, contact email, and color palette. Admin accounts must be created on the server; do not create users directly from a public route. Migrations must be run before the admin login or settings fallback is used.
+Open `/admin/login` to sign in, `/admin` for the dashboard, `/admin/settings` to edit site identity and theme settings, `/admin/inquiries` to review recent enquiries and update follow-up status, and `/admin/content/skills` to manage software names and individual logo URLs. The public `/privacy` page is a starter notice that must be customized before production, and `/sitemap.xml` lists the public homepage and privacy notice only. Admin accounts must be created on the server; do not create users directly from a public route. Migrations must be run before the admin login or settings fallback is used.
 
 When Firestore is available, settings are saved to `site_settings/main`. If Firestore is unavailable, settings can be saved to the SQL `site_settings_fallback` table so the settings form still works in preview mode. Keep that SQL database persistent in production. Published portfolio projects and enquiries still use Firestore. The project uses clearly labelled illustrative bookkeeping workflows in fallback mode. It does not invent client testimonials, credentials, revenue outcomes, or years of experience.
 

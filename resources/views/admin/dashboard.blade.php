@@ -48,7 +48,7 @@
             <p class="mt-5 text-xs font-semibold text-[#68727b]">Enquiry form</p>
             <p class="mt-1 text-xl font-semibold tracking-tight">Protected endpoint</p>
             <p class="mt-2 text-[11px] leading-5 text-[#68727b]">Validation, CSRF protection, rate limiting, and private Firestore persistence when configured.</p>
-            <p class="mt-3 text-[10px] font-semibold text-[#866b3e]">Inbox management is a future milestone.</p>
+            <p class="mt-3 text-[10px] font-semibold text-[#866b3e]"><a href="{{ route('admin.inquiries') }}" class="mt-3 inline-flex items-center gap-2 text-[10px] font-bold text-[#14283f] no-underline hover:text-[#9b7a42]">Open enquiry inbox <span class="text-[#b99a61]">↗</span></a></p>
         </article>
     </div>
 

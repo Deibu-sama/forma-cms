@@ -39,6 +39,9 @@
                     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard
                 </a>
                 <p class="px-3 pb-2 pt-6 text-[9px] font-bold uppercase tracking-[.18em] text-white/40">Manage content</p>
+                <a href="{{ route('admin.inquiries') }}" @class(['admin-nav-link', 'admin-nav-link-active' => request()->routeIs('admin.inquiries*')])>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>Enquiries
+                </a>
                 <a href="{{ route('admin.projects') }}" @class(['admin-nav-link', 'admin-nav-link-active' => request()->routeIs('admin.projects*')])>
                     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 20V9"/></svg>Portfolio projects
                 </a>
@@ -58,7 +61,7 @@
                 </details>
                 <p class="px-3 pb-2 pt-6 text-[9px] font-bold uppercase tracking-[.18em] text-white/40">Configuration</p>
                 <a href="{{ route('admin.settings') }}" @class(['admin-nav-link', 'admin-nav-link-active' => request()->routeIs('admin.settings*')])>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19 13 2 1-2 3-2-1-2 1v2h-4v-2l-2-1-2 1-2-3 2-1v-2l-2-1 2-3 2 1 2-1V5h4v2l2 1 2-1 2 3-2 1z"/></svg>Website settings
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19 13 2 1-2 3-2-1-2 1v2h-4v-2l-2-1-2 1-2-3 2-1v-2l-2-1 2-3 2 1 2-1V5h4v2l2 1 2-1 2 3-2 1z"/></svg>Site appearance & settings
                 </a>
             </nav>
             <div class="border-t border-white/10 p-4">
@@ -91,6 +94,7 @@
                                 <p class="px-3 pb-2 pt-1 text-[9px] font-bold uppercase tracking-[.18em] text-[#68727b]">Overview</p>
                                 <a href="{{ route('admin.dashboard') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.dashboard')])>Dashboard</a>
                                 <p class="px-3 pb-2 pt-4 text-[9px] font-bold uppercase tracking-[.18em] text-[#68727b]">Manage content</p>
+                                <a href="{{ route('admin.inquiries') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.inquiries*')])>Enquiries</a>
                                 <a href="{{ route('admin.projects') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.projects*')])>Portfolio projects</a>
                                 <a href="{{ route('admin.faqs') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.faqs*')])>Frequently asked questions</a>
                                 <a href="{{ route('admin.certificates') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.certificates*')])>Certificates</a>
@@ -103,7 +107,7 @@
                                     </div>
                                 </details>
                                 <p class="px-3 pb-2 pt-4 text-[9px] font-bold uppercase tracking-[.18em] text-[#68727b]">Configuration</p>
-                                <a href="{{ route('admin.settings') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.settings*')])>Website settings</a>
+                                <a href="{{ route('admin.settings') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.settings*')])>Site settings & theme</a>
                                 <div class="mt-3 border-t border-[#14283f]/10 pt-3"><a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="admin-mobile-link">View live website ↗</a>
                                     <form method="POST" action="{{ route('admin.logout') }}">@csrf<button type="submit" class="admin-mobile-link w-full text-left">Sign out</button></form>
                                 </div>
