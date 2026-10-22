@@ -66,6 +66,10 @@
                     <a href="{{ route('admin.dashboard') }}" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">Dashboard</a>
                     <a href="{{ route('admin.settings') }}" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">Settings</a>
                     <a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">View site ↗</a>
+                    <form method="POST" action="{{ route('admin.logout') }}" class="lg:hidden">
+                        @csrf
+                        <button type="submit" class="text-[10px] font-semibold text-[#68727b] hover:text-[#14283f]">Sign out</button>
+                    </form>
                     <span class="hidden text-right sm:block"><span class="block text-xs font-semibold">{{ auth()->user()->name }}</span><span class="mt-1 block text-[10px] text-[#68727b]">Administrator</span></span>
                     <span class="grid h-10 w-10 place-items-center rounded-full bg-[#e9dfca] text-xs font-bold text-[#14283f]">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
                 </div>
