@@ -92,6 +92,8 @@ final class AdminController
             'work_intro' => ['nullable', 'string', 'max:500'],
             'footer_note' => ['nullable', 'string', 'max:180'],
             'meta_description' => ['required', 'string', 'max:320'],
+            'faqs_json' => ['nullable', 'string', 'max:12000', 'json'],
+            'projects_json' => ['nullable', 'string', 'max:20000', 'json'],
             'custom_colors.primary' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'custom_colors.background' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'custom_colors.accent' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
