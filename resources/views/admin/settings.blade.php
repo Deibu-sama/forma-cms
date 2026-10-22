@@ -50,25 +50,7 @@
                     <p class="mt-1.5 text-[10px] leading-5 text-[#68727b]">Paste a direct HTTPS link to your portrait image. The link must be publicly accessible; use a direct image URL, not a private Google Drive page or an album page.</p>
                 </div>
                 <div class="sm:col-span-2"><label for="favicon_url" class="mb-2 block text-xs font-semibold">Favicon image URL (optional)</label><input id="favicon_url" name="favicon_url" type="url" value="{{ old('favicon_url', $settings['favicon_url'] ?? '') }}" maxlength="2048" inputmode="url" placeholder="https://example.com/favicon.png" class="form-field text-sm"><p class="mt-1.5 text-[10px] leading-5 text-[#68727b]">Optional only; the portfolio header itself uses no logo.</p></div>
-                <div class="sm:col-span-2 rounded-lg border border-[#14283f]/10 bg-[#f5f1e8] p-4">
-                    <label for="placeholder_image_url" class="mb-2 block text-xs font-semibold">Default placeholder image URL for software logos</label>
-                    <input id="placeholder_image_url" name="placeholder_image_url" type="url" value="{{ old('placeholder_image_url', $settings['placeholder_image_url'] ?? '') }}" maxlength="2048" placeholder="https://example.com/software-placeholder.png" class="form-field text-sm">
-                    @if(!empty($settings['placeholder_image_url']))<img src="{{ $settings['placeholder_image_url'] }}" alt="Current placeholder image preview" class="mt-3 h-20 w-20 rounded-lg border border-[#14283f]/10 bg-white object-contain p-2" onerror="this.style.display='none'">@endif
-                    <p class="mt-1.5 text-[10px] leading-5 text-[#68727b]">Shown whenever an individual software item has no logo URL or its image fails to load. Use a public HTTPS image link.</p>
-                </div>
-                <div class="sm:col-span-2"><label for="hero_image_url" class="mb-2 block text-xs font-semibold">Hero image URL <span class="font-normal text-[#68727b]">(optional)</span></label><input id="hero_image_url" name="hero_image_url" type="url" value="{{ old('hero_image_url', $settings['hero_image_url'] ?? '') }}" maxlength="2048" placeholder="https://your-domain.com/hero-image.jpg" class="form-field text-sm"><p class="mt-1.5 text-[10px] text-[#68727b]">If provided, the homepage uses this image instead of the CSS dashboard illustration.</p></div>
-                <div class="sm:col-span-2"><label for="hero_image_alt" class="mb-2 block text-xs font-semibold">Hero image description (alt text)</label><input id="hero_image_alt" name="hero_image_alt" value="{{ old('hero_image_alt', $settings['hero_image_alt'] ?? '') }}" maxlength="240" class="form-field text-sm" placeholder="Describe the image for people using screen readers"></div>
-            </div>
-        </section>
 
-        <section id="contact-footer" class="scroll-mt-24 overflow-hidden rounded-xl border border-[#14283f]/10 bg-[#fffdf8]">
-            <div class="border-b border-[#14283f]/10 px-5 py-5 sm:px-7">
-                <div class="flex items-center gap-3">
-                    <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#e9dfca] text-[#14283f]">
-                        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v14H4z"/><path d="m4 7 8 6 8-6"/></svg>
-                    </span>
-                    <div><h3 class="text-base font-semibold">Contact & footer</h3><p class="mt-1 text-[11px] text-[#68727b]">Manage your public contact address and small site-wide details. Edit page copy in its own section editor.</p></div>
-                </div>
             </div>
             <div class="px-5 pt-5 sm:px-7">
                 <div class="rounded-lg border {{ $mailDeliveryReady ? 'border-emerald-800/20 bg-emerald-50 text-emerald-900' : 'border-amber-800/20 bg-amber-50 text-amber-950' }} p-4">
