@@ -68,6 +68,131 @@ final class AdminController
         ]);
     }
 
+    private function editableSections(): array
+    {
+        return [
+            'home' => 'Home',
+            'about' => 'About',
+            'services' => 'Services',
+            'tax-compliance' => 'Tax Compliance Support',
+            'experience' => 'Professional Experience',
+            'skills' => 'Software & Technical Skills',
+            'how-i-work' => 'How I Work',
+            'packages' => 'Engagement Packages',
+            'why-work-with-me' => 'Why Work With Me',
+        ];
+    }
+
+    public function editContentSection(string $section, ContentRepository $content): View|RedirectResponse
+    {
+        $labels = $this->editableSections();
+        abort_unless(isset($labels[$section]), 404);
+        $settings = $content->settings();
+        $sections = $settings['content_sections'] ?? [];
+        $data = $sections[$section] ?? ['title' => $labels[$section], 'subtitle' => '', 'body' => '', 'items' => [], 'enabled' => true];
+        return view('admin.content-section', ['sectionKey' => $section, 'sectionLabel' => $labels[$section], 'sectionData' => $data]);
+    }
+
+    public function updateContentSection(Request $request, string $section, ContentRepository $content): RedirectResponse
+    {
+        $labels = $this->editableSections();
+        abort_unless(isset($labels[$section]), 404);
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:180'],
+            'subtitle' => ['nullable', 'string', 'max:240'],
+            'body' => ['nullable', 'string', 'max:5000'],
+            'items_text' => ['nullable', 'string', 'max:6000'],
+            'enabled' => ['nullable', 'boolean'],
+        ]);
+        $settings = $content->settings();
+        $sections = $settings['content_sections'] ?? [];
+        $sections[$section] = [
+            'title' => trim($data['title']),
+            'subtitle' => trim($data['subtitle'] ?? ''),
+            'body' => trim($data['body'] ?? ''),
+            'items' => array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $data['items_text'] ?? '') ?: []), fn ($item) => $item !== '')),
+            'enabled' => $request->boolean('enabled'),
+        ];
+        $settings['content_sections'] = $sections;
+        $savedTo = $content->saveSettings($this->settingsPayload($settings));
+        if ($savedTo === false) return back()->withInput()->with('error', 'Section could not be saved. Check the database connection and try again.');
+        return redirect()->route('admin.content.edit', $section)->with('success', 'Section saved.');
+    }
+
+    public function certificates(ContentRepository $content): View
+    {
+        return view('admin.certificates', ['certificates' => $content->settings()['certificates'] ?? []]);
+    }
+
+    public function storeCertificate(Request $request, ContentRepository $content): RedirectResponse
+    {
+        $certificate = $this->validateCertificate($request);
+        $settings = $content->settings();
+        $certificates = $settings['certificates'] ?? [];
+        $certificates[] = $certificate;
+        return $this->saveCertificates($content, $settings, $certificates, 'Certificate added.');
+    }
+
+    public function updateCertificate(Request $request, ContentRepository $content, int $index): RedirectResponse
+    {
+        $certificate = $this->validateCertificate($request);
+        $settings = $content->settings();
+        $certificates = $settings['certificates'] ?? [];
+        if (! array_key_exists($index, $certificates)) return back()->with('error', 'Certificate not found.');
+        $certificates[$index] = $certificate;
+        return $this->saveCertificates($content, $settings, array_values($certificates), 'Certificate updated.');
+    }
+
+    public function destroyCertificate(ContentRepository $content, int $index): RedirectResponse
+    {
+        $settings = $content->settings();
+        $certificates = $settings['certificates'] ?? [];
+        if (! array_key_exists($index, $certificates)) return back()->with('error', 'Certificate not found.');
+        array_splice($certificates, $index, 1);
+        return $this->saveCertificates($content, $settings, $certificates, 'Certificate deleted.');
+    }
+
+    private function validateCertificate(Request $request): array
+    {
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:180'],
+            'description' => ['required', 'string', 'max:1000'],
+            'image_url' => ['required', 'url:https', 'max:2048'],
+            'image_alt' => ['nullable', 'string', 'max:240'],
+            'issuer' => ['nullable', 'string', 'max:180'],
+            'issued_date' => ['nullable', 'string', 'max:80'],
+            'certificate_url' => ['nullable', 'url:https', 'max:2048'],
+            'enabled' => ['nullable', 'boolean'],
+        ]);
+        return [
+            'title' => trim($data['title']),
+            'description' => trim($data['description']),
+            'image_url' => trim($data['image_url']),
+            'image_alt' => trim($data['image_alt'] ?? ''),
+            'issuer' => trim($data['issuer'] ?? ''),
+            'issued_date' => trim($data['issued_date'] ?? ''),
+            'certificate_url' => trim($data['certificate_url'] ?? ''),
+            'enabled' => $request->boolean('enabled'),
+        ];
+    }
+
+    private function saveCertificates(ContentRepository $content, array $settings, array $certificates, string $message): RedirectResponse
+    {
+        $settings['certificates'] = $certificates;
+        $savedTo = $content->saveSettings($this->settingsPayload($settings));
+        if ($savedTo === false) return back()->withInput()->with('error', 'Certificates could not be saved. Check the database connection and try again.');
+        return redirect()->route('admin.certificates')->with('success', $message);
+    }
+
+    private function settingsPayload(array $settings): array
+    {
+        $settings['faqs_json'] = json_encode($settings['faqs'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $settings['projects_json'] = json_encode($settings['projects'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $settings['faqs_customized'] = (bool) ($settings['faqs_customized'] ?? false);
+        $settings['projects_customized'] = (bool) ($settings['projects_customized'] ?? false);
+        return $settings;
+    }
+
     public function faqs(ContentRepository $content): View
     {
         return view('admin.faqs', ['faqs' => $content->settings()['faqs'] ?? []]);
