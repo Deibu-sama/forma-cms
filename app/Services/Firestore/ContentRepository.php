@@ -2,8 +2,6 @@
 
 namespace App\Services\Firestore;
 
-use Google\Cloud\Firestore\FirestoreClient;
-use Google\Cloud\Core\Timestamp;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -16,7 +14,7 @@ use Throwable;
  */
 final class ContentRepository
 {
-    private ?FirestoreClient $client = null;
+    private ?FirestoreRestClient $client = null;
     private bool $connectionAttempted = false;
     private bool $firestoreUnavailable = false;
 
@@ -159,8 +157,8 @@ final class ContentRepository
         if ($client && ! $this->firestoreUnavailable) {
             try {
                 $firestorePayload = $payload;
-                $firestorePayload['updated_at'] = new Timestamp(new \DateTimeImmutable());
-                $client->collection('site_settings')->document('main')->set($firestorePayload, ['merge' => true]);
+                $firestorePayload['updated_at'] = new \DateTimeImmutable();
+                $client->setDocument('site_settings', 'main', $firestorePayload);
 
                 return 'firestore';
             } catch (Throwable $exception) {
@@ -227,11 +225,7 @@ final class ContentRepository
         }
 
         try {
-            $documents = $client->collection('portfolio_projects')
-                ->where('status', '=', 'published')
-                ->orderBy('sort_order')
-                ->limit(12)
-                ->documents();
+            $documents = $client->queryPublishedProjects();
 
             $allowedFields = array_flip([
                 'title', 'slug', 'category', 'summary', 'description',
@@ -245,12 +239,12 @@ final class ContentRepository
             $projects = [];
 
             foreach ($documents as $document) {
-                if (! $document->exists()) {
+                if (! is_array($document)) {
                     continue;
                 }
 
                 // Never expose internal fields from the source document to the browser.
-                $project = array_intersect_key($document->data(), $allowedFields);
+                $project = array_intersect_key($document, $allowedFields);
 
                 foreach ($stringFields as $field) {
                     if (isset($project[$field]) && ! is_string($project[$field])) {
@@ -321,9 +315,9 @@ final class ContentRepository
         }
 
         try {
-            $now = new Timestamp(new \DateTimeImmutable());
+            $now = new \DateTimeImmutable();
 
-            $client->collection('inquiries')->add([
+            $client->createDocument('inquiries', [
                 'full_name' => trim((string) ($data['full_name'] ?? '')),
                 'email' => strtolower(trim((string) ($data['email'] ?? ''))),
                 'business_name' => trim((string) ($data['business_name'] ?? '')),
@@ -389,9 +383,7 @@ final class ContentRepository
         }
 
         try {
-            $document = $client->collection($collection)->document($id)->snapshot();
-
-            return $document->exists() ? $document->data() : null;
+            return $client->getDocument($collection, $id);
         } catch (Throwable $exception) {
             report($exception);
             $this->firestoreUnavailable = true;
@@ -400,7 +392,7 @@ final class ContentRepository
         }
     }
 
-    private function client(): ?FirestoreClient
+    private function client(): ?FirestoreRestClient
     {
         if ($this->connectionAttempted) {
             return $this->client;
@@ -437,13 +429,7 @@ final class ContentRepository
                 throw new \UnexpectedValueException('Decoded Firebase credentials are not a valid service-account JSON document.');
             }
 
-            $this->client = new FirestoreClient([
-                'projectId' => $projectId,
-                'keyFile' => $credentials,
-                // Abasthan's managed PHP runtime does not provide ext-grpc.
-                // REST transport supports the document/query operations, including inquiry creation.
-                'transport' => 'rest',
-            ]);
+            $this->client = new FirestoreRestClient($projectId, $credentials);
         } catch (Throwable $exception) {
             report($exception);
             $this->client = null;
