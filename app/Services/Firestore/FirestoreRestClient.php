@@ -70,12 +70,6 @@ final class FirestoreRestClient
                         'value' => ['stringValue' => 'published'],
                     ],
                 ],
-                'orderBy' => [
-                    [
-                        'field' => ['fieldPath' => 'sort_order'],
-                        'direction' => 'ASCENDING',
-                    ],
-                ],
                 'limit' => 12,
             ],
         ]);
