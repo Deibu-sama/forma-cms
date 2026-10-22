@@ -390,7 +390,7 @@ function App() {
                       {project.image_url ? <img src={project.image_url} alt={project.image_alt || project.title || 'Portfolio example'} loading="lazy" className="absolute inset-0 h-full w-full object-cover" /> : null}
                       <div className="absolute inset-0 opacity-25 section-grid" />
                       <div className="relative flex items-start justify-between gap-4">
-                        <span className="rounded-full border border-current/30 px-3 py-1 text-[9px] font-bold uppercase tracking-[.15em]">{isDemo ? 'Sample workflow' : (project.category || 'Bookkeeping')}</span>
+                        <span className="rounded-full border border-current/30 px-3 py-1 text-[9px] font-bold uppercase tracking-[.15em]">{(isDemo || project.is_demonstration === true) ? 'Sample workflow' : (project.category || 'Bookkeeping')}</span>
                         <Icon name="arrowUp" size={18} />
                       </div>
                       <div className="relative">
@@ -401,7 +401,7 @@ function App() {
                     <div className="p-6">
                       <h3 className="text-lg font-semibold tracking-[-.03em]">{project.title || 'Bookkeeping example'}</h3>
                       <p className="mt-2 text-sm leading-6 text-brand-muted">{project.summary || project.description || 'An example of a thoughtful, well-documented bookkeeping process.'}</p>
-                      <div className="mt-5 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-brand-muted"><Icon name="file" size={14} className="text-brand-accent" /> {isDemo ? 'Concept example · not client work' : (project.category || 'Work sample')}</div>
+                      <div className="mt-5 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-brand-muted"><Icon name="file" size={14} className="text-brand-accent" /> {(isDemo || project.is_demonstration === true) ? 'Concept example · not client work' : (project.category || 'Work sample')}</div>
                     </div>
                   </article>
                 ))}
