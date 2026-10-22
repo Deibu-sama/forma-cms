@@ -1,4 +1,5 @@
-/* Small production-safe fallback used only when Vite assets have not been built yet. */
+/* Production fallback for hosts that cannot run Node/Vite during deployment.
+   Keep this file aligned with the utility classes used by the public Blade views. */
 :root {
   --brand-primary: #14283f;
   --brand-background: #f5f1e8;
@@ -6,16 +7,122 @@
   --brand-surface: #ffffff;
   --brand-text: #14283f;
   --brand-muted: #526174;
+  --brand-radius: 1rem;
 }
-[data-theme="modern-minimal"] { --brand-primary:#23372f; --brand-background:#f7f7f2; --brand-accent:#a3b18a; --brand-surface:#fff; --brand-text:#23372f; --brand-muted:#58675e; }
-[data-theme="premium-dark"] { --brand-primary:#101820; --brand-background:#171f27; --brand-accent:#d6b875; --brand-surface:#222d37; --brand-text:#f8f5ef; --brand-muted:#b5c0ca; }
+[data-theme="modern-minimal"] { --brand-primary:#23372f; --brand-background:#f7f7f2; --brand-accent:#a3b18a; --brand-surface:#fff; --brand-text:#23372f; --brand-muted:#58675e; --brand-radius:.75rem; }
+[data-theme="premium-dark"] { --brand-primary:#101820; --brand-background:#171f27; --brand-accent:#d6b875; --brand-surface:#222d37; --brand-text:#f8f5ef; --brand-muted:#b5c0ca; --brand-radius:.625rem; }
+
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { margin:0; background:var(--brand-background); color:var(--brand-text); font-family:Inter,ui-sans-serif,system-ui,sans-serif; line-height:1.6; }
-a { color:inherit; }
+html { scroll-behavior: smooth; scroll-padding-top: 1.5rem; }
+body { margin:0; background:var(--brand-background); color:var(--brand-text); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; line-height:1.6; }
+a { color:inherit; text-decoration:none; }
+a:hover { text-decoration:underline; }
+img { max-width:100%; display:block; }
+button,select { font:inherit; }
+h1,h2,h3,p { margin-top:0; }
+h1,h2,h3 { line-height:1.15; }
 .site-primary { background-color:var(--brand-primary); }
 .site-surface { background-color:var(--brand-surface); }
 .site-accent { background-color:var(--brand-accent); }
 .site-muted { color:var(--brand-muted); }
 .site-border { border-color:color-mix(in srgb,var(--brand-text) 14%,transparent); }
-main { min-height:60vh; }
+.site-radius { border-radius:var(--brand-radius); }
+.text-white { color:#fff; }
+.text-slate-100 { color:#f1f5f9; }
+.text-slate-200 { color:#e2e8f0; }
+.text-slate-900 { color:#0f172a; }
+.text-\[var\(--brand-primary\)\] { color:var(--brand-primary); }
+.text-\[var\(--brand-accent\)\] { color:var(--brand-accent); }
+.mx-auto { margin-left:auto; margin-right:auto; }
+.max-w-6xl { max-width:72rem; }
+.max-w-4xl { max-width:56rem; }
+.max-w-2xl { max-width:42rem; }
+.max-w-xl { max-width:36rem; }
+.w-full { width:100%; }
+.h-10 { height:2.5rem; }
+.h-44 { height:11rem; }
+.min-h-screen { min-height:100vh; }
+.flex { display:flex; }
+.inline-flex { display:inline-flex; }
+.grid { display:grid; }
+.block { display:block; }
+.hidden { display:none; }
+.flex-wrap { flex-wrap:wrap; }
+.items-center { align-items:center; }
+.items-start { align-items:flex-start; }
+.justify-between { justify-content:space-between; }
+.justify-center { justify-content:center; }
+.overflow-hidden { overflow:hidden; }
+.object-cover { object-fit:cover; }
+.gap-3 { gap:.75rem; }
+.gap-4 { gap:1rem; }
+.gap-5 { gap:1.25rem; }
+.gap-8 { gap:2rem; }
+.border { border:1px solid currentColor; }
+.border-y { border-top:1px solid currentColor; border-bottom:1px solid currentColor; }
+.border-slate-300 { border-color:#cbd5e1; }
+.border-slate-500 { border-color:#64748b; }
+.border-amber-300 { border-color:#fcd34d; }
+.rounded-lg { border-radius:.5rem; }
+.rounded-xl { border-radius:.75rem; }
+.rounded-full { border-radius:9999px; }
+.p-6 { padding:1.5rem; }
+.p-7 { padding:1.75rem; }
+.px-3 { padding-left:.75rem; padding-right:.75rem; }
+.px-5 { padding-left:1.25rem; padding-right:1.25rem; }
+.px-6 { padding-left:1.5rem; padding-right:1.5rem; }
+.py-1 { padding-top:.25rem; padding-bottom:.25rem; }
+.py-2 { padding-top:.5rem; padding-bottom:.5rem; }
+.py-3 { padding-top:.75rem; padding-bottom:.75rem; }
+.py-5 { padding-top:1.25rem; padding-bottom:1.25rem; }
+.py-8 { padding-top:2rem; padding-bottom:2rem; }
+.py-16 { padding-top:4rem; padding-bottom:4rem; }
+.py-20 { padding-top:5rem; padding-bottom:5rem; }
+.mt-2 { margin-top:.5rem; }
+.mt-3 { margin-top:.75rem; }
+.mt-4 { margin-top:1rem; }
+.mt-8 { margin-top:2rem; }
+.mb-4 { margin-bottom:1rem; }
+.mb-5 { margin-bottom:1.25rem; }
+.text-xs { font-size:.75rem; line-height:1rem; }
+.text-sm { font-size:.875rem; line-height:1.4; }
+.text-lg { font-size:1.125rem; line-height:1.75rem; }
+.text-xl { font-size:1.25rem; line-height:1.75rem; }
+.text-3xl { font-size:1.875rem; line-height:2.25rem; }
+.text-4xl { font-size:2.25rem; line-height:2.5rem; }
+.font-semibold { font-weight:600; }
+.font-bold { font-weight:700; }
+.font-black { font-weight:900; }
+.leading-7 { line-height:1.75rem; }
+.leading-8 { line-height:2rem; }
+.leading-tight { line-height:1.15; }
+.tracking-tight { letter-spacing:-.025em; }
+.uppercase { text-transform:uppercase; }
+.text-center { text-align:center; }
+.shadow-sm { box-shadow:0 1px 3px rgb(15 23 42 / .08),0 1px 2px rgb(15 23 42 / .05); }
+.bg-white { background:#fff; }
+.bg-amber-50 { background:#fffbeb; }
+.text-amber-950 { color:#451a03; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+.focus\:not-sr-only:focus { position:fixed; width:auto; height:auto; margin:0; overflow:visible; clip:auto; white-space:normal; }
+.site-primary .text-\[var\(--brand-accent\)\] { color:var(--brand-accent); }
+.site-primary .site-accent { color:var(--brand-primary); }
+#main { min-height:60vh; }
+#features article, #portfolio article { border:1px solid color-mix(in srgb,var(--brand-text) 12%,transparent); }
+#themes select { min-height:3rem; }
+@media (min-width:640px) {
+  .sm\:text-6xl { font-size:3.75rem; line-height:1; }
+}
+@media (min-width:768px) {
+  .md\:py-28 { padding-top:7rem; padding-bottom:7rem; }
+  .md\:py-20 { padding-top:5rem; padding-bottom:5rem; }
+  .md\:grid-cols-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .md\:grid-cols-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .md\:items-center { align-items:center; }
+  .md\:text-4xl { font-size:2.25rem; line-height:2.5rem; }
+  .md\:text-6xl { font-size:3.75rem; line-height:1; }
+}
+@media (max-width:767px) {
+  .px-6 { padding-left:1.25rem; padding-right:1.25rem; }
+  .py-20 { padding-top:4rem; padding-bottom:4rem; }
+}
