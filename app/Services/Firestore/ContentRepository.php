@@ -8,9 +8,8 @@ use Throwable;
 /**
  * Read-only public content adapter.
  *
- * If Firestore is not configured, a generic demo dataset keeps local UI
- * development possible. Production deployments should configure Firestore
- * and decide explicitly whether demo fallback is permitted.
+ * If Firestore is not configured, a generic portfolio demo keeps the public
+ * homepage presentable while the admin CMS is being implemented.
  */
 final class ContentRepository
 {
@@ -29,9 +28,13 @@ final class ContentRepository
         return $document ?: [
             'site_name' => config('app.name', 'FormaCMS'),
             'tagline' => 'Your work. Your story. Your style.',
-            'eyebrow' => 'A flexible website foundation',
-            'headline' => 'Build a portfolio that feels like you.',
-            'description' => 'A customizable portfolio starter for independent professionals and small businesses.',
+            'eyebrow' => 'Independent creative professional',
+            'headline' => 'Thoughtful work. Made with purpose.',
+            'description' => 'I turn ideas into meaningful experiences through considered design, clear strategy, and a little curiosity.',
+            'about_headline' => 'Good work starts with listening, then making something that matters.',
+            'about_text' => 'I partner with people and teams to turn ambitious ideas into clear, considered outcomes. My approach is collaborative, thoughtful, and always focused on the people on the other side of the work.',
+            'contact_headline' => 'Let’s make something meaningful.',
+            'contact_text' => 'Have a project, a question, or an idea you want to explore? I’d love to hear about it.',
             'theme' => 'classic-corporate',
             'contact_email' => '',
         ];
@@ -44,25 +47,28 @@ final class ContentRepository
         if (! $client) {
             return [
                 [
-                    'title' => 'Project showcase',
-                    'summary' => 'Describe the challenge, your approach, and the result.',
-                    'category' => 'Case study',
+                    'title' => 'Brand identity concept',
+                    'summary' => 'A sample case study showing how a clear visual system can bring a brand to life.',
+                    'category' => 'Branding',
+                    'art_label' => 'Brand identity',
                     'image_url' => '',
-                    'image_alt' => 'Abstract project placeholder',
+                    'image_alt' => 'Abstract brand identity concept artwork',
                 ],
                 [
-                    'title' => 'Service overview',
-                    'summary' => 'Explain what you offer and who it helps.',
-                    'category' => 'Service',
+                    'title' => 'Digital experience concept',
+                    'summary' => 'A sample project focused on creating a more intuitive, welcoming digital experience.',
+                    'category' => 'Digital',
+                    'art_label' => 'Digital experience',
                     'image_url' => '',
-                    'image_alt' => 'Abstract service placeholder',
+                    'image_alt' => 'Abstract digital experience concept artwork',
                 ],
                 [
-                    'title' => 'Featured work',
-                    'summary' => 'Present a project with a clear caption and accessible image.',
-                    'category' => 'Portfolio',
+                    'title' => 'Editorial direction concept',
+                    'summary' => 'A sample exploration of typography, layout, and a distinctive editorial voice.',
+                    'category' => 'Art direction',
+                    'art_label' => 'Editorial direction',
                     'image_url' => '',
-                    'image_alt' => 'Abstract portfolio placeholder',
+                    'image_alt' => 'Abstract editorial direction concept artwork',
                 ],
             ];
         }
