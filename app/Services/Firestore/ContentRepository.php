@@ -159,7 +159,7 @@ final class ContentRepository
         if ($client && ! $this->firestoreUnavailable) {
             try {
                 $firestorePayload = $payload;
-                $firestorePayload['updated_at'] = new Timestamp(new \\DateTimeImmutable());
+                $firestorePayload['updated_at'] = new Timestamp(new \DateTimeImmutable());
                 $client->collection('site_settings')->document('main')->set($firestorePayload, ['merge' => true]);
 
                 return 'firestore';
@@ -316,7 +316,7 @@ final class ContentRepository
     {
         $client = $this->client();
 
-        if (! $client) {
+        if (! $client || $this->firestoreUnavailable) {
             return false;
         }
 
@@ -394,6 +394,7 @@ final class ContentRepository
             return $document->exists() ? $document->data() : null;
         } catch (Throwable $exception) {
             report($exception);
+            $this->firestoreUnavailable = true;
 
             return null;
         }
