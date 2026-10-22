@@ -72,6 +72,20 @@
             </div>
         </section>
 
+        <section id="portfolio-content" class="scroll-mt-24 overflow-hidden rounded-xl border border-[#14283f]/10 bg-[#fffdf8]">
+            <div class="border-b border-[#14283f]/10 px-5 py-5 sm:px-7"><h3 class="text-base font-semibold">FAQs and portfolio projects</h3><p class="mt-1 text-[11px] leading-5 text-[#68727b]">Edit the content shown on the public site. Use valid JSON arrays; project image and project links must be public HTTPS URLs.</p></div>
+            <div class="space-y-5 p-5 sm:p-7">
+                <div><label for="faqs_json" class="mb-2 block text-xs font-semibold">Frequently asked questions (JSON)</label>
+                    <textarea id="faqs_json" name="faqs_json" rows="10" class="form-field font-mono text-xs leading-5" spellcheck="false">{{ old('faqs_json', json_encode($settings['faqs'] ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) }}</textarea>
+                    <p class="mt-1 text-[10px] leading-5 text-[#68727b]">Each item: {"q":"Question text","a":"Answer text"}. Leave as [] to use the default FAQs.</p>
+                </div>
+                <div><label for="projects_json" class="mb-2 block text-xs font-semibold">Work samples / projects (JSON)</label>
+                    <textarea id="projects_json" name="projects_json" rows="14" class="form-field font-mono text-xs leading-5" spellcheck="false">{{ old('projects_json', json_encode($settings['projects'] ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) }}</textarea>
+                    <p class="mt-1 text-[10px] leading-5 text-[#68727b]">Each item needs title and summary. Optional fields: category, description, image_url, image_alt, art_label, project_url. Use direct public HTTPS image URLs; use [] to show sample projects.</p>
+                </div>
+            </div>
+        </section>
+
         <section id="theme-presets" class="scroll-mt-24 overflow-hidden rounded-xl border border-[#14283f]/10 bg-[#fffdf8]">
             <div class="border-b border-[#14283f]/10 px-5 py-5 sm:px-7"><h3 class="text-base font-semibold">Choose a visual theme</h3><p class="mt-1 text-[11px] text-[#68727b]">Choose a preset, then fine-tune its colors below.</p></div>
             <div class="p-5 sm:p-7">
