@@ -19,7 +19,7 @@
             <span class="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#b99a61]/25 text-[#14283f]">!</span>
             <div>
                 <p class="text-xs font-bold">Firestore is not connected</p>
-                <p class="mt-1 max-w-3xl text-xs leading-5 text-[#615846]">The public website is showing demonstration content. You can review the settings form, but saving changes needs a valid Firestore project and server credentials with permission to write to <code class="rounded bg-white/70 px-1 py-0.5">site_settings/main</code>.</p>
+                <p class="mt-1 max-w-3xl text-xs leading-5 text-[#615846]">The public website is showing illustrative work samples. Website settings can still be saved to the server SQL fallback; configure a Firestore project and server credentials to store settings remotely and load published projects.</p>
             </div>
         </div>
     @else
