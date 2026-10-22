@@ -125,7 +125,7 @@ final class ContentRepository
         }
 
         try {
-            $now = new \\Google\\Cloud\\Core\\Timestamp(new \\DateTimeImmutable());
+            $now = new Timestamp(new \\DateTimeImmutable());
 
             $client->collection('inquiries')->add([
                 'full_name' => trim((string) ($data['full_name'] ?? '')),
