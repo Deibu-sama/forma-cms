@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Services\Firestore\ContentRepository;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+
+final class InquiryController
+{
+    public function store(Request $request, ContentRepository $content): JsonResponse
+    {
+        $validated = $request->validate([
+            'full_name' => ['required', 'string', 'max:120'],
+            'email' => ['required', 'email:rfc', 'max:254'],
+            'business_name' => ['nullable', 'string', 'max:160'],
+            'service_required' => [
+                'nullable',
+                'string',
+                Rule::in([
+                    'Monthly bookkeeping',
+                    'Reconciliation support',
+                    'Financial reporting prep',
+                    'Catch-up and cleanup',
+                    'Not sure yet',
+                ]),
+            ],
+            'accounting_software' => ['nullable', 'string', 'max:100'],
+            'monthly_transaction_volume' => [
+                'nullable',
+                'string',
+                Rule::in([
+                    'Under 100',
+                    '100–500',
+                    '501–1500',
+                    '1500+',
+                    'Not sure',
+                ]),
+            ],
+            'message' => ['required', 'string', 'max:3000'],
+            'website' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        // Honeypot: respond as if accepted, but do not persist automated spam.
+        if (! empty($validated['website'])) {
+            return response()->json([
+                'message' => 'Thank you. Your enquiry has been received.',
+            ], 202);
+        }
+
+        if (! $content->createInquiry($validated)) {
+            return response()->json([
+                'message' => 'The enquiry form is temporarily unavailable. Please use the email link on this page, if available, or try again later.',
+            ], 503);
+        }
+
+        return response()->json([
+            'message' => 'Thank you. Your enquiry has been received. I’ll review the details and follow up using the email address you provided.',
+        ], 201);
+    }
+}
