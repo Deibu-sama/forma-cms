@@ -214,7 +214,7 @@ const processItems = [
   ['Review & hand over', 'Receive the agreed reports and a clear list of items that may need your attention or adviser input.'],
 ];
 
-const faqs = [
+const defaultFaqs = [
   {
     q: 'What types of businesses can you support?',
     a: 'The right fit depends on the volume, complexity, software, and condition of your records. Share a little about your business and current workflow so the scope can be assessed before work begins.',
@@ -237,10 +237,12 @@ const faqs = [
   },
 ];
 
+const faqs = Array.isArray(settings.faqs) && settings.faqs.length ? settings.faqs : defaultFaqs;
+
 function App() {
   const initialHeadline = settings.headline || 'Clear books.\nConfident decisions.';
   const headlineLines = initialHeadline.split(/\r?\n/);
-  const projectItems = projectsFromServer;
+  const projectItems = Array.isArray(settings.projects) && settings.projects.length ? settings.projects : projectsFromServer;
   const [openFaq, setOpenFaq] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [submission, setSubmission] = useState({ type: 'idle', message: '' });
