@@ -1,10 +1,8 @@
 # Build Composer dependencies and frontend assets, then run Laravel on PHP.
-# Firestore's PHP SDK requires the native gRPC extension.
+# Firestore is accessed through the authenticated HTTPS REST API; gRPC is not required.
 FROM php:8.3-cli-bookworm AS php-base
 RUN apt-get update \
     && apt-get install -y --no-install-recommends $PHPIZE_DEPS libsqlite3-dev libzip-dev libcurl4-openssl-dev unzip \
-    && pecl install grpc \
-    && docker-php-ext-enable grpc \
     && docker-php-ext-install pdo_sqlite pdo_mysql zip curl \
     && apt-get purge -y --auto-remove $PHPIZE_DEPS \
     && rm -rf /var/lib/apt/lists/*
