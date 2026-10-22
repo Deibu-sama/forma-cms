@@ -151,3 +151,14 @@ html::-webkit-scrollbar-corner { background: var(--brand-background); }
 @media (prefers-reduced-motion: reduce) {
   .faq-answer-grid, .faq-answer-inner { transition: none !important; }
 }
+
+
+/* Certificate carousel cross-fade */
+@keyframes certificate-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.certificate-slide { animation: certificate-fade-in .45s ease both; }
+@media (prefers-reduced-motion: reduce) {
+  .certificate-slide { animation: none !important; }
+}
