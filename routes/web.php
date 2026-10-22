@@ -4,7 +4,6 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\SiteController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 Route::get('/', [SiteController::class, 'home'])->name('home');
 Route::post('/contact', [InquiryController::class, 'store'])
@@ -39,19 +38,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
-
-Route::get('/storage/{path}', function (string $path) {
-    abort_unless(
-        preg_match('/^[A-Za-z0-9._\/-]+$/D', $path) === 1 && ! str_contains($path, '..'),
-        404,
-    );
-
-    $disk = Storage::disk('public');
-    abort_unless($disk->exists($path), 404);
-
-    return $disk->response($path, basename($path), [
-        'Cache-Control' => 'public, max-age=86400',
-    ]);
-})->where('path', '.*')->name('storage.public');
 
 Route::get('/health-check', fn () => response()->json(['ok' => true, 'app' => config('app.name')]))->name('health-check');
