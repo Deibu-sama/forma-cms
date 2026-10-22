@@ -56,7 +56,8 @@ function Header() {
     ['Services', '#services'],
     ['Approach', '#approach'],
     ['Portfolio', '#portfolio'],
-    ['FAQs', '#faqs'],\n    ['Invite / Share', '#invite'],
+    ['FAQs', '#faqs'],
+    ['Invite / Share', '#invite'],
   ];
   return (
     <header className="sticky top-0 z-50 border-b border-brand-primary/10 bg-brand-background/95 backdrop-blur-xl">
