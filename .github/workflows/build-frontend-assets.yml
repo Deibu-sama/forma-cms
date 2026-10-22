@@ -7,9 +7,13 @@ on:
     paths:
       - "resources/css/**"
       - "resources/js/**"
+      - "app/**/*.php"
+      - "routes/**/*.php"
+      - "config/**/*.php"
       - "vite.config.js"
       - "package.json"
       - "package-lock.json"
+      - "composer.json"
       - ".github/workflows/build-frontend-assets.yml"
   workflow_dispatch:
 
