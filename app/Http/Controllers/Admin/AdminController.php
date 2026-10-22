@@ -165,6 +165,8 @@ final class AdminController
     {
         $settings['faqs_json'] = json_encode($collection === 'faqs' ? $items : ($settings['faqs'] ?? []), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $settings['projects_json'] = json_encode($collection === 'projects' ? $items : ($settings['projects'] ?? []), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $settings['faqs_customized'] = $collection === 'faqs' ? true : (bool) ($settings['faqs_customized'] ?? false);
+        $settings['projects_customized'] = $collection === 'projects' ? true : (bool) ($settings['projects_customized'] ?? false);
         $savedTo = $content->saveSettings($settings);
         if ($savedTo === false) return back()->withInput()->with('error', 'Could not save this content. Check database access and try again.');
         return redirect()->route('admin.' . $collection)->with('success', $success);
@@ -206,6 +208,8 @@ final class AdminController
         $currentSettings = $content->settings();
         $validated['faqs_json'] = json_encode($currentSettings['faqs'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $validated['projects_json'] = json_encode($currentSettings['projects'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $validated['faqs_customized'] = (bool) ($currentSettings['faqs_customized'] ?? false);
+        $validated['projects_customized'] = (bool) ($currentSettings['projects_customized'] ?? false);
 
         $savedTo = $content->saveSettings($validated);
 
