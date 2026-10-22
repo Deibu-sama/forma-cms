@@ -502,6 +502,10 @@ final class ContentRepository
         }
 
         try {
+            if ($client->getDocument('inquiries', $id) === null) {
+                return false;
+            }
+
             $client->setDocument('inquiries', $id, [
                 'status' => $status,
                 'updated_at' => new \DateTimeImmutable(),
