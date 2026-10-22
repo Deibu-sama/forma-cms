@@ -14,9 +14,8 @@
     @endif
     @if (file_exists(public_path('build/manifest.json')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @else
-        <link rel="stylesheet" href="{{ asset('css/fallback.css') }}?v=20261022-4">
     @endif
+    <link rel="stylesheet" href="{{ asset('css/fallback.css') }}?v=20261022-4">
 </head>
 <body class="forma-body">
     <a href="#main" class="skip-link">Skip to content</a>
