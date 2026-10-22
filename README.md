@@ -55,11 +55,22 @@ Requirements: PHP 8.2+, Composer, Node.js 22 recommended, npm, and a Firestore p
    php artisan migrate
    ```
 
-   Provision your first administrator interactively (choose a unique email; the password is entered as a hidden prompt):
+   To provision the first administrator from your server environment, set all three variables in the private `.env` file or hosting environment settings:
+
+   ```dotenv
+   ADMIN_EMAIL=admin@example.com
+   ADMIN_NAME="Portfolio Administrator"
+   ADMIN_PASSWORD="replace-with-a-strong-unique-password"
+   ```
+
+   Then run the command with no password on the command line:
 
    ```bash
-   php artisan bookkeeper:make-admin admin@example.com
+   php artisan config:clear
+   php artisan bookkeeper:make-admin
    ```
+
+   The command hashes the password into the SQL users table and refuses to overwrite an account with the same email. After creating the account, remove `ADMIN_PASSWORD` from the host environment and run `php artisan config:clear` again. Alternatively, leave all three admin variables blank and run `php artisan bookkeeper:make-admin admin@example.com` to use secure interactive prompts. Never commit real `.env` credentials to GitHub.
 
 2. Install frontend dependencies and start the app:
 
