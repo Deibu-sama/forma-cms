@@ -55,7 +55,7 @@ The public content adapter explicitly selects Firestore's REST transport, which 
 
 If the GitHub Actions workflow fails or cannot push its generated assets, check the workflow logs and repository Actions permissions before redeploying.
 
-Set `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, and `FIRESTORE_PROJECT_ID` in the host environment. Configure Google Application Default Credentials or a securely mounted service-account file if using Firestore. Never commit credentials.
+Set `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, `FIRESTORE_PROJECT_ID`, and `FIREBASE_CREDENTIALS_BASE64` in the host environment. `FIREBASE_CREDENTIALS_BASE64` must contain the Base64 encoding of the entire Google Cloud service-account JSON file; Laravel decodes it in memory and passes the credentials to the Firestore client using REST transport. Do not paste raw JSON into this variable, commit the JSON file, or expose either variable to browser code. Create the Base64 value locally and paste the one-line output into Abasthan's secret/environment variable field. After changing environment variables, redeploy or restart the app and run `php artisan optimize:clear`.
 
 **Database warning:** SQLite in ephemeral hosting can lose data on replacement. For production admin accounts and sessions, configure a managed SQL database and set the database environment variables. The current starter does not yet include the full admin dashboard or CMS write operations.
 
