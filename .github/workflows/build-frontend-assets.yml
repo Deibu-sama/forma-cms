@@ -51,6 +51,9 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist --no-progress --ignore-platform-req=ext-grpc
 
+      - name: Create local test environment file
+        run: cp .env.example .env
+
       - name: Run Laravel feature tests
         env:
           APP_ENV: testing
