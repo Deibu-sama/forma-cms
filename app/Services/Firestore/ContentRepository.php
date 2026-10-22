@@ -27,7 +27,7 @@ final class ContentRepository
     {
         $document = $this->readDocument('site_settings', 'main');
 
-        return $document ?: [
+        $defaults = [
             'site_name' => 'Bookkeeper Pro Portfolio',
             'site_title' => 'Bookkeeper Pro Portfolio | Bookkeeping & Reporting Support',
             'favicon_url' => '',
@@ -51,7 +51,37 @@ final class ContentRepository
                 'muted' => '#68727B',
             ],
             'contact_email' => '',
+            'hero_image_url' => '',
+            'hero_image_alt' => '',
+            'availability' => '',
+            'work_intro' => '',
+            'footer_note' => '',
         ];
+
+        // Only explicitly approved public fields cross the Laravel/React boundary.
+        $settings = array_replace($defaults, array_intersect_key($document ?? [], $defaults));
+        $providedColors = is_array($settings['custom_colors']) ? $settings['custom_colors'] : [];
+        $settings['custom_colors'] = $defaults['custom_colors'];
+
+        foreach ($defaults['custom_colors'] as $key => $fallbackColor) {
+            $candidate = $providedColors[$key] ?? null;
+
+            if (is_string($candidate) && preg_match('/^#[0-9a-fA-F]{6}$/', $candidate)) {
+                $settings['custom_colors'][$key] = strtoupper($candidate);
+            }
+        }
+
+        foreach (['favicon_url', 'hero_image_url'] as $urlKey) {
+            if (! $this->isSafeHttpsUrl($settings[$urlKey])) {
+                $settings[$urlKey] = '';
+            }
+        }
+
+        if (! is_string($settings['contact_email']) || ! filter_var($settings['contact_email'], FILTER_VALIDATE_EMAIL)) {
+            $settings['contact_email'] = '';
+        }
+
+        return $settings;
     }
 
     public function publishedProjects(): array
@@ -89,6 +119,7 @@ final class ContentRepository
                 ],
             ];
         }
+
         try {
             $documents = $client->collection('portfolio_projects')
                 ->where('status', '=', 'published')
@@ -96,11 +127,40 @@ final class ContentRepository
                 ->limit(12)
                 ->documents();
 
+            $allowedFields = array_flip([
+                'title', 'slug', 'category', 'summary', 'description',
+                'image_url', 'image_alt', 'art_label', 'project_url',
+                'is_demonstration',
+            ]);
+            $stringFields = [
+                'title', 'slug', 'category', 'summary', 'description',
+                'image_url', 'image_alt', 'art_label', 'project_url',
+            ];
             $projects = [];
+
             foreach ($documents as $document) {
-                if ($document->exists()) {
-                    $projects[] = $document->data();
+                if (! $document->exists()) {
+                    continue;
                 }
+
+                // Never expose internal fields from the source document to the browser.
+                $project = array_intersect_key($document->data(), $allowedFields);
+
+                foreach ($stringFields as $field) {
+                    if (isset($project[$field]) && ! is_string($project[$field])) {
+                        unset($project[$field]);
+                    }
+                }
+
+                if (! $this->isSafeHttpsUrl($project['image_url'] ?? null)) {
+                    $project['image_url'] = '';
+                }
+
+                if (isset($project['project_url']) && ! $this->isSafeHttpsUrl($project['project_url'])) {
+                    unset($project['project_url']);
+                }
+
+                $projects[] = $project;
             }
 
             return $projects;
@@ -149,6 +209,21 @@ final class ContentRepository
 
             return false;
         }
+    }
+
+    private function isSafeHttpsUrl(mixed $value): bool
+    {
+        if (! is_string($value) || $value === '' || strlen($value) > 2048 || ! filter_var($value, FILTER_VALIDATE_URL)) {
+            return false;
+        }
+
+        $parts = parse_url($value);
+
+        return is_array($parts)
+            && strtolower((string) ($parts['scheme'] ?? '')) === 'https'
+            && ! isset($parts['user'])
+            && ! isset($parts['pass'])
+            && isset($parts['host']);
     }
 
     private function readDocument(string $collection, string $id): ?array
