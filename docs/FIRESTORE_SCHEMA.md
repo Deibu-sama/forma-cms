@@ -32,32 +32,42 @@ Use explicit IDs for singleton records such as `site_settings/main`. Keep collec
 
 ## site_settings/main
 
+Only allowlisted public keys from this document are passed to React. Do not put credentials, private client information, or internal notes in public setting fields.
+
 ```json
 {
-  "site_name": "Your Name or Business",
-  "site_title": "Your Name | Professional Portfolio",
+  "site_name": "Bookkeeper Pro Portfolio",
+  "site_title": "Bookkeeper Pro Portfolio | Bookkeeping & Reporting Support",
   "favicon_url": "https://example.com/favicon.png",
-  "site_tagline": "Your professional tagline",
-  "active_theme_id": "classic-corporate",
+  "brand_name": "Bookkeeper Pro",
+  "tagline": "Bookkeeping support for clearer business decisions.",
+  "eyebrow": "BOOKKEEPING · RECONCILIATION · REPORTING",
+  "headline": "Clear books.\nConfident decisions.",
+  "description": "A short, accurate description of the bookkeeping support offered.",
+  "about_headline": "Careful with your records. Clear about the work.",
+  "about_text": "",
+  "contact_headline": "Ready for a clearer bookkeeping routine?",
+  "contact_text": "",
+  "meta_description": "Bookkeeping, reconciliations, and reporting support for a clearer view of your business.",
+  "theme": "classic-corporate",
   "custom_colors": {
     "primary": "#14283F",
     "background": "#F5F1E8",
     "accent": "#B99A61",
-    "surface": "#FFFFFF",
-    "text": "#14283F",
-    "muted": "#526174"
+    "surface": "#FFFDF8",
+    "text": "#192C41",
+    "muted": "#68727B"
   },
   "contact_email": "",
-  "social_links": [],
-  "booking_url": "",
-  "logo_url": "",
-  "default_meta_title": "",
-  "default_meta_description": "",
-  "updated_at": "Firestore Timestamp"
+  "hero_image_url": "",
+  "hero_image_alt": "",
+  "availability": "",
+  "work_intro": "",
+  "footer_note": ""
 }
 ```
 
-Do not seed real personal information into the shared repository. Empty fields are intentional.
+The Laravel adapter validates custom colors as six-digit hex values and allows HTTPS URLs only for the favicon and public image fields. Missing setting values fall back to the built-in defaults.
 
 ## theme_presets/{themeId}
 
@@ -113,13 +123,15 @@ Fields: `country_code` (optional), `title`, `description`, `features`, `sort_ord
 
 ```json
 {
-  "title": "Example Project",
-  "slug": "example-project",
-  "category": "reporting",
-  "summary": "",
+  "title": "Monthly bookkeeping setup",
+  "slug": "monthly-bookkeeping-setup",
+  "category": "Monthly bookkeeping",
+  "summary": "An illustrative workflow for organizing recurring records.",
   "description": "",
-  "image_url": "https://example.com/image.jpg",
-  "image_alt": "Describe the image",
+  "art_label": "A repeatable monthly routine",
+  "image_url": "",
+  "image_alt": "",
+  "project_url": "",
   "tools": [],
   "is_demonstration": true,
   "sort_order": 1,
@@ -128,7 +140,7 @@ Fields: `country_code` (optional), `title`, `description`, `features`, `sort_ord
 }
 ```
 
-Do not server-fetch arbitrary URLs. Basic URL validation is not enough to make server-side fetching safe. Use external HTTPS URLs only for v1.
+The public reader queries only documents where `status = "published"`, then passes an allowlist of display fields to React. It validates public image/link URLs as HTTPS and excludes internal fields. Do not publish confidential client details, bank statements, account numbers, tax IDs, or unsupported claims about results.
 
 ## packages/{packageId}
 
@@ -144,7 +156,7 @@ Fields: `question`, `answer`, `category`, `sort_order`, `status`.
 {
   "full_name": "Example Person",
   "email": "person@example.com",
-  "business_type": "",
+  "business_name": "",
   "country": "",
   "service_required": "",
   "accounting_software": "",
@@ -157,7 +169,7 @@ Fields: `question`, `answer`, `category`, `sort_order`, `status`.
 }
 ```
 
-Example data is synthetic. Validate all fields, minimize collected personal information, restrict admin access, and define a retention policy. Do not log the message body or expose inquiry documents in public queries.
+Laravel validates the fields, applies a per-IP request throttle and checks a honeypot before persisting. The public endpoint does not expose inquiry reads. Email notifications and an admin inquiry-management screen are not implemented yet. Example data is synthetic. Define purpose, retention period, deletion workflow, and a privacy notice before production.
 
 ## Consistency and indexing
 
