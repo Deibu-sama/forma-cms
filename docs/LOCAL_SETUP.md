@@ -17,9 +17,12 @@
 4. Generate the application key: `php artisan key:generate`.
 5. Create the local SQLite database file if using SQLite: `touch database/database.sqlite`.
 6. Run `php artisan migrate`.
-7. Install frontend dependencies: `npm install`.
-8. Build assets: `npm run build`.
-9. Start the app: `php artisan serve`.
+7. Create the first administrator interactively: `php artisan bookkeeper:make-admin admin@example.com`. Use an email you control; the command prompts for a display name and a hidden password of at least 12 characters, and it refuses to overwrite existing users.
+8. Visit `/admin/login` to sign in, then use `/admin/settings` to edit the public website.
+9. Install frontend dependencies: `npm install`.
+10. Build assets: `npm run build`.
+11. Start the app: `php artisan serve`.
+
 
 If Firestore is not configured, the public homepage uses clearly labelled illustrative bookkeeping content. To connect Firestore, set `FIRESTORE_PROJECT_ID` and `FIREBASE_CREDENTIALS_BASE64` in the server environment. The latter must be the Base64 encoding of the full service-account JSON document. Never commit a service-account key or expose the variable to React.
 
@@ -64,6 +67,8 @@ Generate a real key in a local PHP/Laravel environment using `php artisan key:ge
 
 The container runs migrations on startup. SQLite inside the container is ephemeral unless you mount persistent storage. For production, prefer a managed SQL database for administrator accounts and sessions, and configure the DB environment variables.
 
-## Current implementation boundary
+## Admin and settings
 
-The current project includes the React/Tailwind public portfolio, a Firestore reader for allowlisted settings and published portfolio entries, plus a Laravel contact endpoint with validation, request throttling, a honeypot, and server-side inquiry persistence when Firestore is configured. Email notifications, admin authentication, a full CRUD editor, a privacy notice, retention/deletion workflows, complete feature tests, and production staging verification remain outstanding. Do not treat this as a production CMS until those milestones are implemented and tested.
+The starter includes a protected `/admin/login`, `/admin` dashboard, and `/admin/settings` editor. Create administrator accounts on the server with `php artisan bookkeeper:make-admin admin@example.com`; there is no public registration. Run migrations before first use. Website settings are saved to Firestore when available, otherwise to the SQL `site_settings_fallback` table. A persistent production SQL database is required for accounts, sessions, and fallback settings.
+
+Portfolio/service/FAQ CRUD, the enquiry inbox, email notifications, a privacy notice, retention/deletion workflows, complete feature tests, and production staging verification remain outstanding. Do not treat this as a production CMS until those milestones are implemented and tested.
