@@ -23,7 +23,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/faqs', [AdminController::class, 'storeFaq'])->name('faqs.store');
         Route::put('/faqs/{index}', [AdminController::class, 'updateFaq'])->whereNumber('index')->name('faqs.update');
         Route::delete('/faqs/{index}', [AdminController::class, 'destroyFaq'])->whereNumber('index')->name('faqs.destroy');
-        Route::get('/content/{section}', [AdminController::class, 'editContentSection'])->where('section', 'home|about|services|tax-compliance|experience|skills|how-i-work|packages|why-work-with-me')->name('content.edit');
+        Route::get('/content/{section}', [AdminController::class, 'editContentSection'])->where('section', 'home|about|services|tax-compliance|experience|skills|how-i-work|packages|why-work-with-me|faqs')->name('content.edit');
         Route::put('/content/{section}', [AdminController::class, 'updateContentSection'])->where('section', 'home|about|services|tax-compliance|experience|skills|how-i-work|packages|why-work-with-me')->name('content.update');
         Route::get('/certificates', [AdminController::class, 'certificates'])->name('certificates');
         Route::post('/certificates', [AdminController::class, 'storeCertificate'])->name('certificates.store');
