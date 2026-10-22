@@ -98,7 +98,7 @@ final class FirestoreRestClient
     public function listDocuments(string $collection, int $pageSize = 100): array
     {
         $path = sprintf(
-            'projects/%s/databases/(default)/documents/%s?pageSize=%d',
+            'projects/%s/databases/(default)/documents/%s?pageSize=%d&orderBy=created_at%%20desc',
             rawurlencode($this->projectId),
             rawurlencode($collection),
             max(1, min(100, $pageSize)),
