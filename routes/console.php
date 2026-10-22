@@ -17,13 +17,13 @@ Artisan::command('bookkeeper:make-admin {email}', function () {
     if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $this->error('Please provide a valid email address.');
 
-        return self::FAILURE;
+        return 1;
     }
 
     if (User::query()->where('email', $email)->exists()) {
         $this->error('A user with this email already exists. This command will not promote or overwrite an existing account.');
 
-        return self::FAILURE;
+        return 1;
     }
 
     $name = trim((string) $this->ask('Administrator name'));
@@ -31,7 +31,7 @@ Artisan::command('bookkeeper:make-admin {email}', function () {
     if ($name === '') {
         $this->error('A name is required.');
 
-        return self::FAILURE;
+        return 1;
     }
 
     $password = (string) $this->secret('Choose a password (minimum 12 characters)');
@@ -40,13 +40,13 @@ Artisan::command('bookkeeper:make-admin {email}', function () {
     if (strlen($password) < 12) {
         $this->error('Password must contain at least 12 characters.');
 
-        return self::FAILURE;
+        return 1;
     }
 
     if (! hash_equals($password, $confirmation)) {
         $this->error('Passwords do not match.');
 
-        return self::FAILURE;
+        return 1;
     }
 
     $user = new User();
@@ -60,5 +60,5 @@ Artisan::command('bookkeeper:make-admin {email}', function () {
     $this->info('Administrator created successfully.');
     $this->line('Sign in at /admin/login. Keep the password private.');
 
-    return self::SUCCESS;
+    return 0;
 })->purpose('Create the first Bookkeeper Pro administrator securely from the server terminal');
