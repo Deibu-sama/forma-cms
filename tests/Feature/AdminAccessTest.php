@@ -153,19 +153,22 @@ final class AdminAccessTest extends TestCase
         $this->assertTrue(Hash::check('A-strong-test-password-123!', $user->password));
     }
 
-    public function test_admin_provisioning_rejects_weak_environment_passwords(): void
+    public function test_admin_provisioning_uses_configured_password_without_extra_length_policy(): void
     {
         config([
-            'admin.email' => 'weak-admin@example.com',
+            'admin.email' => 'configured-admin@example.com',
             'admin.name' => 'Environment Administrator',
-            'admin.password' => 'too-short',
+            'admin.password' => 'TeaCup!42',
         ]);
 
         $this->artisan('bookkeeper:make-admin')
-            ->expectsOutput('The administrator password must contain at least 12 characters. Choose a strong, unique password.')
-            ->assertExitCode(1);
+            ->expectsOutput('Administrator created successfully.')
+            ->assertExitCode(0);
 
-        $this->assertDatabaseMissing('users', ['email' => 'weak-admin@example.com']);
+        $user = User::query()->where('email', 'configured-admin@example.com')->first();
+
+        $this->assertNotNull($user);
+        $this->assertTrue(Hash::check('TeaCup!42', $user->password));
     }
 
 }
