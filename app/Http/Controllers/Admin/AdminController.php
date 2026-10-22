@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
-final class AdminController extends Controller
+final class AdminController
 {
     public function loginForm(): View|RedirectResponse
     {
