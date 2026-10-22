@@ -46,7 +46,7 @@ Visit http://127.0.0.1:8080. The prototype lets you switch themes and edit sampl
 The Laravel views use Vite, so the built frontend manifest and assets must exist. For Abasthan's managed PHP runtime, if npm is available, use this build command:
 
 ```bash
-composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc && npm install && npm run build
+mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs && chmod -R u+rwX bootstrap/cache storage && composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc && npm install && npm run build
 ```
 
 The public content adapter explicitly selects Firestore's REST transport, which supports the current read-only document/query operations without the native gRPC extension. Do not remove that REST transport setting while deploying on a runtime without `ext-grpc`. If you later need gRPC-only features, deploy with the repository's Dockerfile on a platform that supports Docker and keep the extension installed there.
