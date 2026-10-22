@@ -237,12 +237,12 @@ const defaultFaqs = [
   },
 ];
 
-const faqs = Array.isArray(settings.faqs) && settings.faqs.length ? settings.faqs : defaultFaqs;
+const faqs = Array.isArray(settings.faqs) ? settings.faqs : defaultFaqs;
 
 function App() {
   const initialHeadline = settings.headline || 'Clear books.\nConfident decisions.';
   const headlineLines = initialHeadline.split(/\r?\n/);
-  const projectItems = Array.isArray(settings.projects) && settings.projects.length ? settings.projects : projectsFromServer;
+  const projectItems = Array.isArray(settings.projects) ? settings.projects : projectsFromServer;
   const [openFaq, setOpenFaq] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [submission, setSubmission] = useState({ type: 'idle', message: '' });
