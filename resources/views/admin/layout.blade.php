@@ -33,6 +33,16 @@
                         <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.4 1.6c-1.2 1.1-2 1.3-2 3M12 17h.01"/></svg>
                         FAQs
                     </a>
+                    <p class="px-3 pb-2 pt-5 text-[9px] font-bold uppercase tracking-[.2em] text-white/35">Portfolio pages</p>
+                    @foreach (['home' => 'Home', 'about' => 'About', 'services' => 'Services', 'tax-compliance' => 'Tax Compliance Support', 'experience' => 'Professional Experience', 'skills' => 'Software & Technical Skills', 'how-i-work' => 'How I Work', 'packages' => 'Engagement Packages', 'why-work-with-me' => 'Why Work With Me'] as $sectionKey => $sectionName)
+                        <a href="{{ route('admin.content.edit', $sectionKey) }}" class="{{ request()->route('section') === $sectionKey ? 'bg-white/10 text-white' : 'text-white/65 hover:bg-white/5 hover:text-white' }} flex items-center gap-3 rounded-lg px-3 py-2.5 text-[11px] font-semibold no-underline transition">
+                            <span class="grid h-6 w-6 shrink-0 place-items-center rounded-md border border-white/10 text-[9px] text-[#b99a61]">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                            <span>{{ $sectionName }}</span>
+                        </a>
+                    @endforeach
+                    <a href="{{ route('admin.certificates') }}" class="{{ request()->routeIs('admin.certificates*') ? 'bg-white/10 text-white' : 'text-white/65 hover:bg-white/5 hover:text-white' }} flex items-center gap-3 rounded-lg px-3 py-3 text-xs font-semibold no-underline transition">
+                        <span class="text-[#b99a61]">✦</span> Certificates carousel
+                    </a>
                     <a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings*') ? 'bg-white/10 text-white' : 'text-white/65 hover:bg-white/5 hover:text-white' }} flex items-center gap-3 rounded-lg px-3 py-3 text-xs font-semibold no-underline transition">
                         <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.6.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.6-.9l-1.7.7-1.4-2.4 1.4-1.1a8 8 0 0 1 0-1.9l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.6-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.6.9l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1 0 1.9Z"/></svg>
                         Website settings
