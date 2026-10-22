@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
 const boot = window.__BOOKKEEPER_DATA__ || {};
@@ -52,33 +52,52 @@ function SectionLabel({ children, light = false }) {
 
 function Header() {
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState('#home');
   const links = [
     ['Services', '#services'],
     ['Approach', '#approach'],
     ['Portfolio', '#portfolio'],
     ['FAQs', '#faqs'],
-    ['Invite / Share', '#invite'],
   ];
+
+  useEffect(() => {
+    const sections = links.map(([, href]) => document.querySelector(href)).filter(Boolean);
+    if (!('IntersectionObserver' in window) || !sections.length) return undefined;
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) setActive('#' + visible.target.id);
+    }, { rootMargin: '-22% 0px -62% 0px', threshold: [0, .15, .35, .6] });
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  const closeMenu = () => setOpen(false);
   return (
-    <header className="sticky top-0 z-50 border-b border-brand-primary/10 bg-brand-background/95 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 sm:px-8 lg:px-10">
-        <a href="#home" aria-label={(settings.brand_name || settings.site_name || "Portfolio") + " home"} className="rounded-md no-underline">
+    <header className="portfolio-header sticky top-0 z-50">
+      <div className="header-shell mx-auto flex max-w-[1440px] items-center justify-between gap-5 px-5 sm:px-8 lg:px-12">
+        <a href="#home" onClick={closeMenu} aria-label={(settings.brand_name || settings.site_name || 'Portfolio') + ' home'} className="brand-link shrink-0 rounded-md no-underline">
           <BrandMark />
         </a>
-        <nav aria-label="Primary navigation" className="hidden items-center gap-7 lg:flex">
-          {links.map(([label, href]) => <a key={label} href={href} className="text-[13px] font-medium text-brand-muted no-underline transition hover:text-brand-primary">{label}</a>)}
-          <a href="#contact" className="button-lift inline-flex items-center gap-2 rounded-md bg-brand-primary px-5 py-3 text-[12px] font-semibold text-white no-underline hover:bg-brand-accent hover:text-brand-primary">
-            Let’s talk <Icon name="arrowUp" size={15} />
+        <nav aria-label="Primary navigation" className="hidden items-center gap-1 lg:flex">
+          {links.map(([label, href]) => (
+            <a key={label} href={href} className={'nav-link ' + (active === href ? 'is-active' : '')}>
+              {label}<span className="nav-underline" />
+            </a>
+          ))}
+          <a href="#invite" className="nav-link nav-invite">Invite / Share</a>
+          <a href="#contact" className="nav-cta group">
+            <span>Let’s talk</span><span className="nav-cta-icon"><Icon name="arrowUp" size={14} /></span>
           </a>
         </nav>
-        <button type="button" onClick={() => setOpen(!open)} className="grid h-11 w-11 place-items-center rounded-lg border border-brand-primary/15 text-brand-primary lg:hidden" aria-label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open}>
-          <Icon name={open ? 'close' : 'menu'} />
+        <button type="button" onClick={() => setOpen(!open)} className="mobile-toggle lg:hidden" aria-label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open}>
+          <Icon name={open ? 'close' : 'menu'} size={19} />
         </button>
       </div>
       {open && (
-        <nav aria-label="Mobile navigation" className="mobile-menu-shadow border-t border-brand-primary/10 bg-brand-background px-5 py-4 lg:hidden">
-          {links.map(([label, href]) => <a key={label} href={href} onClick={() => setOpen(false)} className="block border-b border-brand-primary/10 py-3 text-sm font-medium text-brand-primary no-underline">{label}</a>)}
-          <a href="#contact" onClick={() => setOpen(false)} className="mt-4 flex items-center justify-between rounded-md bg-brand-primary px-4 py-3 text-sm font-semibold text-white no-underline">Start a conversation <Icon name="arrow" size={17} /></a>
+        <nav aria-label="Mobile navigation" className="mobile-navigation lg:hidden">
+          {links.map(([label, href]) => <a key={label} href={href} onClick={closeMenu} className={active === href ? 'mobile-nav-link is-active' : 'mobile-nav-link'}>{label}<Icon name="arrowUp" size={14} /></a>)}
+          <a href="#invite" onClick={closeMenu} className="mobile-nav-link">Invite / Share<Icon name="arrowUp" size={14} /></a>
+          <a href="#contact" onClick={closeMenu} className="mobile-nav-cta">Start a conversation <Icon name="arrow" size={16} /></a>
         </nav>
       )}
     </header>
