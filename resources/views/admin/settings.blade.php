@@ -27,7 +27,7 @@
     @unless($firestoreReady)
         <div class="mb-7 flex gap-3 rounded-xl border border-[#b99a61]/40 bg-[#f2e8d2] p-4 sm:p-5">
             <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#b99a61]/25 text-[#14283f]">!</span>
-            <div><p class="text-xs font-bold text-[#14283f]">Demo mode — changes cannot be persisted yet</p><p class="mt-1 text-xs leading-5 text-[#615846]">This server is falling back to example settings. Configure <code class="rounded bg-white/70 px-1 py-0.5">FIRESTORE_PROJECT_ID</code> and <code class="rounded bg-white/70 px-1 py-0.5">FIREBASE_CREDENTIALS_BASE64</code>, with permission to write <code class="rounded bg-white/70 px-1 py-0.5">site_settings/main</code>, to save changes. The form below is real; it will display a clear error if storage is unavailable.</p></div>
+            <div><p class="text-xs font-bold text-[#14283f]">Firestore is not connected — settings can use the local fallback</p><p class="mt-1 text-xs leading-5 text-[#615846]">The public portfolio is showing illustrative work samples. Website settings can be saved to the configured SQL database for now. To store settings remotely and show published Firestore projects, configure <code class="rounded bg-white/70 px-1 py-0.5">FIRESTORE_PROJECT_ID</code> and <code class="rounded bg-white/70 px-1 py-0.5">FIREBASE_CREDENTIALS_BASE64</code> with suitable write permissions.</p></div>
         </div>
     @endunless
 
