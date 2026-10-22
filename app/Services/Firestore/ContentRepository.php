@@ -158,7 +158,7 @@ final class ContentRepository
         foreach (['faqs_json' => 'faqs', 'projects_json' => 'projects'] as $inputKey => $payloadKey) {
             $raw = $input[$inputKey] ?? '[]';
             if (! is_string($raw)) { return false; }
-            try { $items = json_decode($raw, true, 64, JSON_THROW_ON_ERROR); } catch (\\JsonException) { return false; }
+            try { $items = json_decode($raw, true, 64, JSON_THROW_ON_ERROR); } catch (\JsonException) { return false; }
             if (! is_array($items) || count($items) > 40) { return false; }
             $cleanItems = [];
             foreach ($items as $item) {
