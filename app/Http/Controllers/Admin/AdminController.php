@@ -64,9 +64,17 @@ final class AdminController
 
     public function settings(ContentRepository $content): View
     {
+        $smtp = config('mail.mailers.smtp', []);
+        $mailDeliveryReady = in_array(config('mail.default'), ['smtp', 'failover'], true)
+            && is_string($smtp['host'] ?? null) && trim($smtp['host']) !== '' && trim($smtp['host']) !== '127.0.0.1'
+            && is_string($smtp['username'] ?? null) && trim($smtp['username']) !== ''
+            && is_string($smtp['password'] ?? null) && trim($smtp['password']) !== ''
+            && filter_var(config('mail.from.address'), FILTER_VALIDATE_EMAIL) !== false;
+
         return view('admin.settings', [
             'settings' => $content->settings(),
             'firestoreReady' => ! $content->isDemoMode(),
+            'mailDeliveryReady' => $mailDeliveryReady,
         ]);
     }
 
