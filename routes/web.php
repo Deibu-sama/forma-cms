@@ -19,6 +19,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+        Route::get('/faqs', [AdminController::class, 'faqs'])->name('faqs');
+        Route::post('/faqs', [AdminController::class, 'storeFaq'])->name('faqs.store');
+        Route::put('/faqs/{index}', [AdminController::class, 'updateFaq'])->whereNumber('index')->name('faqs.update');
+        Route::delete('/faqs/{index}', [AdminController::class, 'destroyFaq'])->whereNumber('index')->name('faqs.destroy');
+        Route::get('/projects', [AdminController::class, 'projects'])->name('projects');
+        Route::post('/projects', [AdminController::class, 'storeProject'])->name('projects.store');
+        Route::put('/projects/{index}', [AdminController::class, 'updateProject'])->whereNumber('index')->name('projects.update');
+        Route::delete('/projects/{index}', [AdminController::class, 'destroyProject'])->whereNumber('index')->name('projects.destroy');
         Route::put('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
     });
