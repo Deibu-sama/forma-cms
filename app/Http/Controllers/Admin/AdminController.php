@@ -68,6 +68,108 @@ final class AdminController
         ]);
     }
 
+    public function faqs(ContentRepository $content): View
+    {
+        return view('admin.faqs', ['faqs' => $content->settings()['faqs'] ?? []]);
+    }
+
+    public function projects(ContentRepository $content): View
+    {
+        return view('admin.projects', ['projects' => $content->settings()['projects'] ?? []]);
+    }
+
+    public function storeFaq(Request $request, ContentRepository $content): RedirectResponse
+    {
+        $item = $request->validate(['q' => ['required', 'string', 'max:240'], 'a' => ['required', 'string', 'max:1600']]);
+        $settings = $content->settings();
+        $items = $settings['faqs'] ?? [];
+        $items[] = ['q' => trim($item['q']), 'a' => trim($item['a'])];
+        return $this->saveContentCollection($content, $settings, 'faqs', $items, 'FAQ added.');
+    }
+
+    public function updateFaq(Request $request, ContentRepository $content, int $index): RedirectResponse
+    {
+        $item = $request->validate(['q' => ['required', 'string', 'max:240'], 'a' => ['required', 'string', 'max:1600']]);
+        $settings = $content->settings();
+        $items = $settings['faqs'] ?? [];
+        if (! array_key_exists($index, $items)) return back()->with('error', 'That FAQ could not be found.');
+        $items[$index] = ['q' => trim($item['q']), 'a' => trim($item['a'])];
+        return $this->saveContentCollection($content, $settings, 'faqs', array_values($items), 'FAQ updated.');
+    }
+
+    public function destroyFaq(ContentRepository $content, int $index): RedirectResponse
+    {
+        $settings = $content->settings();
+        $items = $settings['faqs'] ?? [];
+        if (! array_key_exists($index, $items)) return back()->with('error', 'That FAQ could not be found.');
+        array_splice($items, $index, 1);
+        return $this->saveContentCollection($content, $settings, 'faqs', $items, 'FAQ deleted.');
+    }
+
+    public function storeProject(Request $request, ContentRepository $content): RedirectResponse
+    {
+        $item = $this->validateProject($request);
+        $settings = $content->settings();
+        $items = $settings['projects'] ?? [];
+        $items[] = $item;
+        return $this->saveContentCollection($content, $settings, 'projects', $items, 'Project added.');
+    }
+
+    public function updateProject(Request $request, ContentRepository $content, int $index): RedirectResponse
+    {
+        $item = $this->validateProject($request);
+        $settings = $content->settings();
+        $items = $settings['projects'] ?? [];
+        if (! array_key_exists($index, $items)) return back()->with('error', 'That project could not be found.');
+        $items[$index] = $item;
+        return $this->saveContentCollection($content, $settings, 'projects', array_values($items), 'Project updated.');
+    }
+
+    public function destroyProject(ContentRepository $content, int $index): RedirectResponse
+    {
+        $settings = $content->settings();
+        $items = $settings['projects'] ?? [];
+        if (! array_key_exists($index, $items)) return back()->with('error', 'That project could not be found.');
+        array_splice($items, $index, 1);
+        return $this->saveContentCollection($content, $settings, 'projects', $items, 'Project deleted.');
+    }
+
+    private function validateProject(Request $request): array
+    {
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:140'],
+            'category' => ['nullable', 'string', 'max:100'],
+            'summary' => ['required', 'string', 'max:800'],
+            'description' => ['nullable', 'string', 'max:1800'],
+            'image_url' => ['nullable', 'url:https', 'max:2048'],
+            'image_alt' => ['nullable', 'string', 'max:240'],
+            'art_label' => ['nullable', 'string', 'max:140'],
+            'project_url' => ['nullable', 'url:https', 'max:2048'],
+        ]);
+        $title = trim($data['title']);
+        return [
+            'title' => $title,
+            'slug' => strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $title), '-')),
+            'category' => trim($data['category'] ?? ''),
+            'summary' => trim($data['summary']),
+            'description' => trim($data['description'] ?? ''),
+            'image_url' => trim($data['image_url'] ?? ''),
+            'image_alt' => trim($data['image_alt'] ?? ''),
+            'art_label' => trim($data['art_label'] ?? ''),
+            'project_url' => trim($data['project_url'] ?? ''),
+            'is_demonstration' => false,
+        ];
+    }
+
+    private function saveContentCollection(ContentRepository $content, array $settings, string $collection, array $items, string $success): RedirectResponse
+    {
+        $settings['faqs_json'] = json_encode($collection === 'faqs' ? $items : ($settings['faqs'] ?? []), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $settings['projects_json'] = json_encode($collection === 'projects' ? $items : ($settings['projects'] ?? []), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $savedTo = $content->saveSettings($settings);
+        if ($savedTo === false) return back()->withInput()->with('error', 'Could not save this content. Check database access and try again.');
+        return redirect()->route('admin.' . $collection)->with('success', $success);
+    }
+
     public function updateSettings(Request $request, ContentRepository $content): RedirectResponse
     {
         $validated = $request->validate([
@@ -92,8 +194,6 @@ final class AdminController
             'work_intro' => ['nullable', 'string', 'max:500'],
             'footer_note' => ['nullable', 'string', 'max:180'],
             'meta_description' => ['required', 'string', 'max:320'],
-            'faqs_json' => ['nullable', 'string', 'max:12000', 'json'],
-            'projects_json' => ['nullable', 'string', 'max:20000', 'json'],
             'custom_colors.primary' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'custom_colors.background' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'custom_colors.accent' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
