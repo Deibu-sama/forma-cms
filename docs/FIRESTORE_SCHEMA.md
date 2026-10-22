@@ -35,6 +35,8 @@ Use explicit IDs for singleton records such as `site_settings/main`. Keep collec
 ```json
 {
   "site_name": "Your Name or Business",
+  "site_title": "Your Name | Professional Portfolio",
+  "favicon_url": "https://example.com/favicon.png",
   "site_tagline": "Your professional tagline",
   "active_theme_id": "classic-corporate",
   "custom_colors": {
