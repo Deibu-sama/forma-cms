@@ -73,6 +73,8 @@
                 <div class="ml-auto flex items-center gap-3 sm:gap-4">
                     <a href="{{ route('admin.dashboard') }}" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">Dashboard</a>
                     <a href="{{ route('admin.settings') }}" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">Settings</a>
+                    <a href="{{ route('admin.projects') }}" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">Projects</a>
+                    <a href="{{ route('admin.faqs') }}" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">FAQs</a>
                     <a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">View site ↗</a>
                     <form method="POST" action="{{ route('admin.logout') }}" class="lg:hidden">
                         @csrf
