@@ -3,13 +3,15 @@
 namespace App\Services\Firestore;
 
 use Google\Cloud\Firestore\FirestoreClient;
+use JsonException;
 use Throwable;
 
 /**
  * Read-only public content adapter.
  *
- * If Firestore is not configured, a generic portfolio demo keeps the public
- * homepage presentable while the admin CMS is being implemented.
+ * Firestore credentials are provided by the hosting environment as a
+ * base64-encoded service-account JSON document. Never store credentials in
+ * source control or send them to the browser.
  */
 final class ContentRepository
 {
@@ -122,19 +124,43 @@ final class ContentRepository
 
         $this->connectionAttempted = true;
         $projectId = config('services.firestore.project_id');
+        $encodedCredentials = config('services.firestore.credentials_base64');
 
         if (! is_string($projectId) || trim($projectId) === '') {
             return null;
         }
 
+        if (! is_string($encodedCredentials) || trim($encodedCredentials) === '') {
+            report(new \RuntimeException('Firestore is not configured: FIREBASE_CREDENTIALS_BASE64 is missing.'));
+            return null;
+        }
+
         try {
+            $credentialsJson = base64_decode($encodedCredentials, true);
+
+            if ($credentialsJson === false || $credentialsJson === '') {
+                throw new \UnexpectedValueException('FIREBASE_CREDENTIALS_BASE64 is not valid base64.');
+            }
+
+            $credentials = json_decode($credentialsJson, true, 512, JSON_THROW_ON_ERROR);
+
+            if (
+                ! is_array($credentials)
+                || ($credentials['type'] ?? null) !== 'service_account'
+                || ! is_string($credentials['client_email'] ?? null)
+                || ! is_string($credentials['private_key'] ?? null)
+            ) {
+                throw new \UnexpectedValueException('Decoded Firebase credentials are not a valid service-account JSON document.');
+            }
+
             $this->client = new FirestoreClient([
                 'projectId' => $projectId,
+                'keyFile' => $credentials,
                 // Abasthan's managed PHP runtime does not provide ext-grpc.
                 // REST transport supports the read operations used by this adapter.
                 'transport' => 'rest',
             ]);
-        } catch (Throwable $exception) {
+        } catch (JsonException | Throwable $exception) {
             report($exception);
             $this->client = null;
         }
