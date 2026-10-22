@@ -318,6 +318,18 @@ function App() {
           return item;
         }));
       }
+      const navigationTarget = ({
+        about: '#about',
+        services: '#regional-services',
+        experience: '#experience',
+        skills: '#skills',
+        faqs: '#faqs',
+      })[key];
+      if (navigationTarget) {
+        document.querySelectorAll('nav a[href="' + navigationTarget + '"]').forEach((link) => {
+          link.hidden = data.enabled === false;
+        });
+      }
       if (data.subtitle) {
         let sub = element.querySelector('[data-cms-subtitle]');
         if (!sub) {
