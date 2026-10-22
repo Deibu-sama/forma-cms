@@ -58,8 +58,12 @@ php artisan migrate --force
 
 echo
 echo "Deployment files and migrations are updated."
-echo "If no administrator exists yet, create one with:"
+echo "If no administrator exists yet and ADMIN_EMAIL, ADMIN_NAME, and ADMIN_PASSWORD are set:"
+echo "  php artisan config:clear"
+echo "  php artisan bookkeeper:make-admin"
+echo "Otherwise use interactive prompts:"
 echo "  php artisan bookkeeper:make-admin your-admin-email@example.com"
 echo "Then sign in at /admin/login and open /admin/settings."
+echo "For safety, remove ADMIN_PASSWORD from the host environment after account creation, then run php artisan config:clear."
 echo
 echo "This script preserves .env, storage, and your existing database. It refreshes Composer dependencies when Composer is available; otherwise, it verifies the needed REST dependencies are already installed."
