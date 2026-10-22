@@ -107,7 +107,7 @@
                                     </div>
                                 </details>
                                 <p class="px-3 pb-2 pt-4 text-[9px] font-bold uppercase tracking-[.18em] text-[#68727b]">Configuration</p>
-                                <a href="{{ route('admin.settings') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.settings*')])>Site appearance & settings</a>
+                                <a href="{{ route('admin.settings') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.settings*')])>Site settings & theme</a>
                                 <div class="mt-3 border-t border-[#14283f]/10 pt-3"><a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="admin-mobile-link">View live website ↗</a>
                                     <form method="POST" action="{{ route('admin.logout') }}">@csrf<button type="submit" class="admin-mobile-link w-full text-left">Sign out</button></form>
                                 </div>
