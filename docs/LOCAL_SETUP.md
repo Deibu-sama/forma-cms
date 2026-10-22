@@ -17,11 +17,11 @@
 4. Generate the application key: `php artisan key:generate`.
 5. Create the local SQLite database file if using SQLite: `touch database/database.sqlite`.
 6. Run `php artisan migrate`.
-7. Create the first administrator interactively: `php artisan bookkeeper:make-admin admin@example.com`. Use an email you control; the command prompts for a display name and a hidden password of at least 12 characters, and it refuses to overwrite existing users.
-8. Visit `/admin/login` to sign in, then use `/admin/settings` to edit the public website.
-9. Install frontend dependencies: `npm install`.
-10. Build assets: `npm run build`.
-11. Start the app: `php artisan serve`.
+7. Install frontend dependencies: `npm install`.
+8. Build assets: `npm run build`.
+9. Create the first administrator interactively: `php artisan bookkeeper:make-admin admin@example.com`. Use an email you control; the command prompts for a display name and a hidden password of at least 12 characters, and it refuses to overwrite existing users.
+10. Start the app: `php artisan serve`.
+11. Visit `/admin/login` to sign in, then use `/admin/settings` to edit the public website.
 
 
 If Firestore is not configured, the public homepage uses clearly labelled illustrative bookkeeping content. To connect Firestore, set `FIRESTORE_PROJECT_ID` and `FIREBASE_CREDENTIALS_BASE64` in the server environment. The latter must be the Base64 encoding of the full service-account JSON document. Never commit a service-account key or expose the variable to React.
