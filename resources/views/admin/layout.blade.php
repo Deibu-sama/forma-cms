@@ -10,112 +10,124 @@
     @vite('resources/css/app.css')
 </head>
 <body class="min-h-screen bg-[#f4f2ec] text-[#14283f] antialiased">
-    <div class="min-h-screen lg:grid lg:grid-cols-[248px_minmax(0,1fr)]">
-        <aside class="hidden min-h-screen flex-col bg-[#14283f] text-white lg:flex">
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 border-b border-white/10 px-6 py-6 no-underline">
-                <span class="grid h-10 w-10 place-items-center rounded-xl bg-[#b99a61] text-[#14283f]">
-                    <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h4M7 3v18"/></svg>
+    @php
+        $portfolioSections = [
+            'home' => 'Home',
+            'about' => 'About',
+            'services' => 'Services',
+            'tax-compliance' => 'Tax compliance support',
+            'experience' => 'Professional experience',
+            'skills' => 'Software & technical skills',
+            'how-i-work' => 'How I work',
+            'packages' => 'Engagement packages',
+            'why-work-with-me' => 'Why work with me',
+        ];
+        $isPortfolioPage = request()->routeIs('admin.content.*');
+        $isContentOpen = $isPortfolioPage || request()->routeIs('admin.faqs*') || request()->routeIs('admin.projects*') || request()->routeIs('admin.certificates*');
+    @endphp
+    <div class="min-h-screen bg-[#f4f2ec] lg:grid lg:grid-cols-[256px_minmax(0,1fr)]">
+        <aside class="hidden lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:overflow-y-auto bg-[#14283f] text-white">
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 border-b border-white/10 px-5 py-5 no-underline">
+                <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#b99a61] text-[#14283f]">
+                    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h4"/></svg>
                 </span>
-                <span><span class="block text-sm font-bold tracking-tight">Bookkeeper Pro</span><span class="mt-1 block text-[9px] uppercase tracking-[.18em] text-white/45">Administration</span></span>
+                <span><span class="block text-sm font-bold tracking-tight">Portfolio Studio</span><span class="mt-1 block text-[9px] uppercase tracking-[.18em] text-white/45">Admin workspace</span></span>
             </a>
-            <div class="px-4 pt-7">
-                <p class="px-3 pb-3 text-[9px] font-bold uppercase tracking-[.2em] text-white/35">Workspace</p>
-                <nav aria-label="Admin navigation" class="space-y-1">
-                    <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'bg-white/10 text-white' : 'text-white/65 hover:bg-white/5 hover:text-white' }} flex items-center gap-3 rounded-lg px-3 py-3 text-xs font-semibold no-underline transition">
-                        <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-                        Dashboard
-                    </a>
-                    <a href="{{ route('admin.projects') }}" class="{{ request()->routeIs('admin.projects*') ? 'bg-white/10 text-white' : 'text-white/65 hover:bg-white/5 hover:text-white' }} flex items-center gap-3 rounded-lg px-3 py-3 text-xs font-semibold no-underline transition">
-                        <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 20V9M13 13h4M13 16h4"/></svg>
-                        Portfolio projects
-                    </a>
-                    <a href="{{ route('admin.faqs') }}" class="{{ request()->routeIs('admin.faqs*') ? 'bg-white/10 text-white' : 'text-white/65 hover:bg-white/5 hover:text-white' }} flex items-center gap-3 rounded-lg px-3 py-3 text-xs font-semibold no-underline transition">
-                        <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.4 1.6c-1.2 1.1-2 1.3-2 3M12 17h.01"/></svg>
-                        FAQs
-                    </a>
-                    <p class="px-3 pb-2 pt-5 text-[9px] font-bold uppercase tracking-[.2em] text-white/35">Portfolio pages</p>
-                    @foreach (['home' => 'Home', 'about' => 'About', 'services' => 'Services', 'tax-compliance' => 'Tax Compliance Support', 'experience' => 'Professional Experience', 'skills' => 'Software & Technical Skills', 'how-i-work' => 'How I Work', 'packages' => 'Engagement Packages', 'why-work-with-me' => 'Why Work With Me'] as $sectionKey => $sectionName)
-                        <a href="{{ route('admin.content.edit', $sectionKey) }}" class="{{ request()->route('section') === $sectionKey ? 'bg-white/10 text-white' : 'text-white/65 hover:bg-white/5 hover:text-white' }} flex items-center gap-3 rounded-lg px-3 py-2.5 text-[11px] font-semibold no-underline transition">
-                            <span class="grid h-6 w-6 shrink-0 place-items-center rounded-md border border-white/10 text-[9px] text-[#b99a61]">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
-                            <span>{{ $sectionName }}</span>
-                        </a>
-                    @endforeach
-                    <a href="{{ route('admin.certificates') }}" class="{{ request()->routeIs('admin.certificates*') ? 'bg-white/10 text-white' : 'text-white/65 hover:bg-white/5 hover:text-white' }} flex items-center gap-3 rounded-lg px-3 py-3 text-xs font-semibold no-underline transition">
-                        <span class="text-[#b99a61]">✦</span> Certificates carousel
-                    </a>
-                    <a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings*') ? 'bg-white/10 text-white' : 'text-white/65 hover:bg-white/5 hover:text-white' }} flex items-center gap-3 rounded-lg px-3 py-3 text-xs font-semibold no-underline transition">
-                        <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.6.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.6-.9l-1.7.7-1.4-2.4 1.4-1.1a8 8 0 0 1 0-1.9l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.6-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.6.9l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1 0 1.9Z"/></svg>
-                        Website settings
-                    </a>
-                </nav>
-                <p class="px-3 pb-3 pt-8 text-[9px] font-bold uppercase tracking-[.2em] text-white/35">Website</p>
-                <a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 rounded-lg px-3 py-3 text-xs font-semibold text-white/65 no-underline transition hover:bg-white/5 hover:text-white">
-                    <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14 3h7v7M10 14 21 3"/><path d="M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6"/></svg>
-                    View live website <span class="ml-auto text-[#b99a61]">↗</span>
+            <nav aria-label="Admin navigation" class="flex-1 space-y-1 px-3 py-5">
+                <p class="px-3 pb-2 text-[9px] font-bold uppercase tracking-[.18em] text-white/40">Overview</p>
+                <a href="{{ route('admin.dashboard') }}" @class(['admin-nav-link', 'admin-nav-link-active' => request()->routeIs('admin.dashboard')])>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard
                 </a>
-            </div>
-            <div class="mt-auto border-t border-white/10 p-5">
-                <div class="rounded-xl border border-white/10 bg-white/[.035] p-4">
-                    <p class="text-[10px] font-semibold text-white/80">Keep your website current</p>
-                    <p class="mt-2 text-[10px] leading-5 text-white/45">Changes to public brand settings are saved to Firestore.</p>
+                <p class="px-3 pb-2 pt-6 text-[9px] font-bold uppercase tracking-[.18em] text-white/40">Manage content</p>
+                <a href="{{ route('admin.projects') }}" @class(['admin-nav-link', 'admin-nav-link-active' => request()->routeIs('admin.projects*')])>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 20V9"/></svg>Portfolio projects
+                </a>
+                <a href="{{ route('admin.faqs') }}" @class(['admin-nav-link', 'admin-nav-link-active' => request()->routeIs('admin.faqs*')])>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.4 1.6c-1.2 1.1-2 1.3-2 3M12 17h.01"/></svg>Frequently asked questions
+                </a>
+                <a href="{{ route('admin.certificates') }}" @class(['admin-nav-link', 'admin-nav-link-active' => request()->routeIs('admin.certificates*')])>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="5"/><path d="m8 12-1 9 5-3 5 3-1-9"/></svg>Certificates
+                </a>
+                <details class="admin-nav-group mt-2" {{ $isPortfolioPage ? 'open' : '' }}>
+                    <summary class="admin-nav-summary"><span class="flex items-center gap-3"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM8 9h8M8 13h8M8 17h5"/></svg>Portfolio sections</span><svg class="admin-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></summary>
+                    <div class="mt-1 space-y-1 border-l border-white/10 ml-5 pl-3">
+                        @foreach ($portfolioSections as $sectionKey => $sectionName)
+                            <a href="{{ route('admin.content.edit', $sectionKey) }}" @class(['admin-nav-sub-link', 'admin-nav-sub-link-active' => request()->route('section') === $sectionKey])>{{ $sectionName }}</a>
+                        @endforeach
+                    </div>
+                </details>
+                <p class="px-3 pb-2 pt-6 text-[9px] font-bold uppercase tracking-[.18em] text-white/40">Configuration</p>
+                <a href="{{ route('admin.settings') }}" @class(['admin-nav-link', 'admin-nav-link-active' => request()->routeIs('admin.settings*')])>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19 13 2 1-2 3-2-1-2 1v2h-4v-2l-2-1-2 1-2-3 2-1v-2l-2-1 2-3 2 1 2-1V5h4v2l2 1 2-1 2 3-2 1z"/></svg>Website settings
+                </a>
+            </nav>
+            <div class="border-t border-white/10 p-4">
+                <a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="admin-nav-link mb-2">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3"/><path d="M19 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6"/></svg>View live website <span class="ml-auto">↗</span>
+                </a>
+                <div class="flex items-center gap-3 rounded-xl bg-white/[.06] p-3">
+                    <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#b99a61] text-xs font-bold text-[#14283f]">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                    <span class="min-w-0 flex-1"><span class="block truncate text-xs font-semibold">{{ auth()->user()->name }}</span><span class="mt-1 block text-[10px] text-white/45">Administrator</span></span>
+                    <form method="POST" action="{{ route('admin.logout') }}">@csrf<button type="submit" class="rounded-md p-2 text-white/55 transition hover:bg-white/10 hover:text-white" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/></svg></button></form>
                 </div>
-                <form method="POST" action="{{ route('admin.logout') }}" class="mt-4">
-                    @csrf
-                    <button type="submit" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-xs font-semibold text-white/55 transition hover:bg-white/5 hover:text-white">
-                        <svg viewBox="0 0 24 24" class="h-[17px] w-[17px]" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/></svg>
-                        Sign out
-                    </button>
-                </form>
             </div>
         </aside>
+
         <div class="min-w-0">
-            <header class="flex min-h-[76px] items-center justify-between border-b border-[#14283f]/10 bg-[#fffdf8] px-5 sm:px-8 lg:px-10">
-                <div class="flex items-center gap-3 lg:hidden">
-                    <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#14283f] text-[#b99a61]">
-                        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h4M7 3v18"/></svg>
-                    </span>
-                    <span class="text-sm font-bold">Bookkeeper Pro</span>
-                </div>
-                <div class="hidden lg:block">
-                    <p class="text-[9px] font-bold uppercase tracking-[.2em] text-[#68727b]">Administration / @yield('eyebrow', 'Workspace')</p>
-                    <h1 class="mt-1 text-lg font-semibold tracking-tight">@yield('page-title', 'Dashboard')</h1>
-                </div>
-                <div class="ml-auto flex items-center gap-3 sm:gap-4">
-                    <a href="{{ route('admin.dashboard') }}" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">Dashboard</a>
-                    <a href="{{ route('admin.settings') }}" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">Settings</a>
-                    <a href="{{ route('admin.projects') }}" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">Projects</a>
-                    <a href="{{ route('admin.faqs') }}" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">FAQs</a>
-                    <a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="text-[10px] font-semibold text-[#68727b] no-underline hover:text-[#14283f] lg:hidden">View site ↗</a>
-                    <form method="POST" action="{{ route('admin.logout') }}" class="lg:hidden">
-                        @csrf
-                        <button type="submit" class="text-[10px] font-semibold text-[#68727b] hover:text-[#14283f]">Sign out</button>
-                    </form>
-                    <span class="hidden text-right sm:block"><span class="block text-xs font-semibold">{{ auth()->user()->name }}</span><span class="mt-1 block text-[10px] text-[#68727b]">Administrator</span></span>
-                    <span class="grid h-10 w-10 place-items-center rounded-full bg-[#e9dfca] text-xs font-bold text-[#14283f]">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+            <header class="sticky top-0 z-30 border-b border-[#14283f]/10 bg-[#fffdf8]/95 backdrop-blur">
+                <div class="flex min-h-[72px] items-center justify-between gap-4 px-4 sm:px-7 lg:px-9">
+                    <div class="flex min-w-0 items-center gap-3">
+                        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[#14283f] text-[#b99a61] lg:hidden"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h4"/></svg></span>
+                        <div class="min-w-0">
+                            <p class="hidden text-[9px] font-bold uppercase tracking-[.18em] text-[#68727b] sm:block">Portfolio Studio / @yield('eyebrow', 'Workspace')</p>
+                            <h1 class="truncate text-base font-semibold tracking-tight sm:mt-1 sm:text-lg">@yield('page-title', 'Dashboard')</h1>
+                        </div>
+                    </div>
+                    <div class="flex shrink-0 items-center gap-2 sm:gap-3">
+                        <a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="hidden rounded-lg border border-[#14283f]/10 px-3 py-2 text-[11px] font-semibold text-[#14283f] no-underline transition hover:border-[#b99a61] sm:inline-flex">Preview site ↗</a>
+                        <details class="admin-mobile-menu relative lg:hidden">
+                            <summary class="grid h-10 w-10 cursor-pointer list-none place-items-center rounded-lg border border-[#14283f]/15 bg-white text-[#14283f] transition hover:bg-[#f4f2ec]" aria-label="Open admin navigation"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+                            <div class="absolute right-0 top-12 z-50 max-h-[min(75vh,620px)] w-[min(88vw,340px)] overflow-y-auto rounded-2xl border border-[#14283f]/10 bg-[#fffdf8] p-3 shadow-2xl">
+                                <p class="px-3 pb-2 pt-1 text-[9px] font-bold uppercase tracking-[.18em] text-[#68727b]">Overview</p>
+                                <a href="{{ route('admin.dashboard') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.dashboard')])>Dashboard</a>
+                                <p class="px-3 pb-2 pt-4 text-[9px] font-bold uppercase tracking-[.18em] text-[#68727b]">Manage content</p>
+                                <a href="{{ route('admin.projects') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.projects*')])>Portfolio projects</a>
+                                <a href="{{ route('admin.faqs') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.faqs*')])>Frequently asked questions</a>
+                                <a href="{{ route('admin.certificates') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.certificates*')])>Certificates</a>
+                                <details class="mt-1 rounded-lg" {{ $isPortfolioPage ? 'open' : '' }}>
+                                    <summary class="admin-mobile-link cursor-pointer">Portfolio sections <span class="ml-auto text-[#68727b]">⌄</span></summary>
+                                    <div class="ml-3 mt-1 border-l border-[#14283f]/10 pl-2">
+                                        @foreach ($portfolioSections as $sectionKey => $sectionName)
+                                            <a href="{{ route('admin.content.edit', $sectionKey) }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->route('section') === $sectionKey])>{{ $sectionName }}</a>
+                                        @endforeach
+                                    </div>
+                                </details>
+                                <p class="px-3 pb-2 pt-4 text-[9px] font-bold uppercase tracking-[.18em] text-[#68727b]">Configuration</p>
+                                <a href="{{ route('admin.settings') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.settings*')])>Website settings</a>
+                                <div class="mt-3 border-t border-[#14283f]/10 pt-3"><a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="admin-mobile-link">View live website ↗</a>
+                                    <form method="POST" action="{{ route('admin.logout') }}">@csrf<button type="submit" class="admin-mobile-link w-full text-left">Sign out</button></form>
+                                </div>
+                            </div>
+                        </details>
+                        <span class="hidden text-right md:block"><span class="block text-xs font-semibold">{{ auth()->user()->name }}</span><span class="mt-1 block text-[10px] text-[#68727b]">Administrator</span></span>
+                        <span class="hidden h-9 w-9 shrink-0 place-items-center rounded-full bg-[#e9dfca] text-xs font-bold text-[#14283f] md:grid">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                    </div>
                 </div>
             </header>
-            <main class="px-5 py-7 sm:px-8 sm:py-9 lg:px-10 lg:py-10">
+            <main class="mx-auto w-full max-w-[1600px] px-4 py-6 sm:px-7 sm:py-8 lg:px-9 lg:py-9">
                 @if(session('success'))
-                    <div role="status" class="mb-6 flex items-start gap-3 rounded-xl border border-emerald-900/15 bg-emerald-50 px-4 py-3.5 text-sm text-emerald-900">
-                        <span class="font-bold">✓</span><span>{{ session('success') }}</span>
-                    </div>
+                    <div role="status" class="mb-6 flex items-start gap-3 rounded-xl border border-emerald-900/15 bg-emerald-50 px-4 py-3.5 text-sm text-emerald-900"><span class="font-bold">✓</span><span>{{ session('success') }}</span></div>
                 @endif
                 @if(session('error'))
-                    <div role="alert" class="mb-6 flex items-start gap-3 rounded-xl border border-rose-900/15 bg-rose-50 px-4 py-3.5 text-sm text-rose-900">
-                        <span class="font-bold">!</span><span>{{ session('error') }}</span>
-                    </div>
+                    <div role="alert" class="mb-6 flex items-start gap-3 rounded-xl border border-rose-900/15 bg-rose-50 px-4 py-3.5 text-sm text-rose-900"><span class="font-bold">!</span><span>{{ session('error') }}</span></div>
                 @endif
                 @if($errors->any())
-                    <div role="alert" class="mb-6 rounded-xl border border-rose-900/15 bg-rose-50 px-4 py-3.5 text-sm text-rose-900">
-                        <p class="font-semibold">Please review the following fields:</p>
-                        <ul class="mt-2 list-inside list-disc space-y-1">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
-                    </div>
+                    <div role="alert" class="mb-6 rounded-xl border border-rose-900/15 bg-rose-50 px-4 py-3.5 text-sm text-rose-900"><p class="font-semibold">Please review the following fields:</p><ul class="mt-2 list-inside list-disc space-y-1">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
                 @endif
                 @yield('content')
             </main>
-            <footer class="flex flex-wrap items-center justify-between gap-2 border-t border-[#14283f]/10 px-5 py-5 text-[10px] text-[#68727b] sm:px-8 lg:px-10">
-                <span>Bookkeeper Pro Portfolio · Admin workspace</span>
-                <span>Keep credentials and client records private.</span>
+            <footer class="flex flex-wrap items-center justify-between gap-2 border-t border-[#14283f]/10 px-4 py-5 text-[10px] text-[#68727b] sm:px-7 lg:px-9">
+                <span>Portfolio Studio · Admin workspace</span><span>Keep credentials and client records private.</span>
             </footer>
         </div>
     </div>
