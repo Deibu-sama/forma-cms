@@ -335,6 +335,8 @@ final class AdminController
         $validated['projects_json'] = json_encode($currentSettings['projects'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $validated['faqs_customized'] = (bool) ($currentSettings['faqs_customized'] ?? false);
         $validated['projects_customized'] = (bool) ($currentSettings['projects_customized'] ?? false);
+        $validated['content_sections'] = $currentSettings['content_sections'] ?? [];
+        $validated['certificates'] = $currentSettings['certificates'] ?? [];
 
         $savedTo = $content->saveSettings($validated);
 
