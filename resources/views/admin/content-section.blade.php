@@ -21,18 +21,78 @@
                 <div><label for="subtitle" class="mb-2 block text-xs font-semibold">Subtitle / short label</label><input id="subtitle" name="subtitle" maxlength="240" value="{{ old('subtitle', $sectionData['subtitle'] ?? '') }}" class="form-field text-sm" placeholder="Optional subtitle"></div>
                 <div><label for="body" class="mb-2 block text-xs font-semibold">Main description</label><textarea id="body" name="body" rows="6" maxlength="5000" class="form-field resize-y text-sm" placeholder="Write the text visitors will read...">{{ old('body', $sectionData['body'] ?? '') }}</textarea></div>
                 <div>
-                    <label for="items_text" class="mb-2 block text-xs font-semibold">{{ $sectionKey === 'skills' ? 'Software and logo image URLs' : 'List items (optional)' }}</label>
                     @if($sectionKey === 'skills')
                         @php
-                            $softwareTools = $sectionData['software_tools'] ?? array_map(fn ($name) => ['name' => $name, 'logo_url' => ''], $sectionData['items'] ?? []);
-                            $softwareLines = implode("\n", array_map(fn ($tool) => ($tool['name'] ?? '').' | '.($tool['logo_url'] ?? ''), $softwareTools));
+                            $softwareTools = old('software_tools', $sectionData['software_tools'] ?? array_map(fn ($name) => ['name' => $name, 'logo_url' => ''], $sectionData['items'] ?? []));
+                            if (count($softwareTools) === 0) $softwareTools = [['name' => '', 'logo_url' => '']];
                         @endphp
-                        <textarea id="items_text" name="items_text" rows="8" maxlength="6000" class="form-field resize-y text-sm" placeholder="BizBox Financial Management System | https://example.com/bizbox-logo.png&#10;QuickBooks | https://example.com/quickbooks-logo.png&#10;Xero | https://example.com/xero-logo.png&#10;Microsoft Excel | &#10;Power BI | ">{{ old('items_text', $softwareLines) }}</textarea>
-                        <p class="mt-1 text-[10px] leading-5 text-[#68727b]">One software per line, formatted as <strong>Software name | HTTPS logo image URL</strong>. Leave the URL blank to use the default placeholder image configured in Website Settings. You can add or remove software by editing these lines.</p>
+                        <div class="mb-3 flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
+                            <div><label class="block text-xs font-semibold">Software and logo</label><p class="mt-1 text-[11px] leading-5 text-[#68727b]">Set a name and its own HTTPS logo URL for each tool. Logos are optional; missing logos use a simple initials tile.</p></div>
+                            <button type="button" id="add-software-tool" class="inline-flex min-h-9 items-center justify-center rounded-lg border border-[#14283f]/15 bg-white px-3 py-2 text-xs font-semibold text-[#14283f] hover:border-[#b99a61]">+ Add software</button>
+                        </div>
+                        <div id="software-tools-list" class="space-y-3">
+                            @foreach($softwareTools as $index => $tool)
+                                <div class="software-tool-row grid gap-3 rounded-xl border border-[#14283f]/10 bg-[#f8f6f0] p-4 sm:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)_auto] sm:items-end">
+                                    <div><label for="software-name-{{ $index }}" class="mb-2 block text-[11px] font-semibold">Software name</label><input id="software-name-{{ $index }}" name="software_tools[{{ $index }}][name]" value="{{ $tool['name'] ?? '' }}" maxlength="180" class="form-field text-sm" placeholder="e.g. QuickBooks"></div>
+                                    <div><label for="software-logo-{{ $index }}" class="mb-2 block text-[11px] font-semibold">Logo image URL (HTTPS)</label><input id="software-logo-{{ $index }}" name="software_tools[{{ $index }}][logo_url]" value="{{ $tool['logo_url'] ?? '' }}" type="url" maxlength="2048" class="form-field text-sm" placeholder="https://example.com/quickbooks-logo.png"></div>
+                                    <button type="button" class="remove-software-tool inline-flex min-h-10 items-center justify-center rounded-lg px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-50">Remove</button>
+                                </div>
+                            @endforeach
+                        </div>
+                        <template id="software-tool-template">
+                            <div class="software-tool-row grid gap-3 rounded-xl border border-[#14283f]/10 bg-[#f8f6f0] p-4 sm:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)_auto] sm:items-end">
+                                <div><label class="mb-2 block text-[11px] font-semibold">Software name</label><input data-field="name" maxlength="180" class="form-field text-sm" placeholder="e.g. QuickBooks"></div>
+                                <div><label class="mb-2 block text-[11px] font-semibold">Logo image URL (HTTPS)</label><input data-field="logo_url" type="url" maxlength="2048" class="form-field text-sm" placeholder="https://example.com/software-logo.png"></div>
+                                <button type="button" class="remove-software-tool inline-flex min-h-10 items-center justify-center rounded-lg px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-50">Remove</button>
+                            </div>
+                        </template>
+                        <script>
+                            (() => {
+                                const list = document.getElementById('software-tools-list');
+                                const add = document.getElementById('add-software-tool');
+                                const template = document.getElementById('software-tool-template');
+                                if (!list || !add || !template) return;
+                                let nextIndex = list.querySelectorAll('.software-tool-row').length;
+                                const reindex = () => list.querySelectorAll('.software-tool-row').forEach((row, index) => {
+                                    row.querySelectorAll('input').forEach((input) => {
+                                        const field = input.name.includes('[logo_url]') || input.dataset.field === 'logo_url' ? 'logo_url' : 'name';
+                                        input.name = 'software_tools[' + index + '][' + field + ']';
+                                        input.id = 'software-' + field.replace('_', '-') + '-' + index;
+                                        const label = input.parentElement.querySelector('label');
+                                        if (label) label.htmlFor = input.id;
+                                    });
+                                });
+                                add.addEventListener('click', () => {
+                                    const fragment = template.content.cloneNode(true);
+                                    const row = fragment.querySelector('.software-tool-row');
+                                    row.querySelectorAll('input').forEach((input) => {
+                                        const field = input.dataset.field;
+                                        input.name = 'software_tools[' + nextIndex + '][' + field + ']';
+                                        input.id = 'software-' + field.replace('_', '-') + '-' + nextIndex;
+                                        input.parentElement.querySelector('label').htmlFor = input.id;
+                                    });
+                                    nextIndex++;
+                                    list.appendChild(fragment);
+                                });
+                                list.addEventListener('click', (event) => {
+                                    const remove = event.target.closest('.remove-software-tool');
+                                    if (!remove) return;
+                                    const rows = list.querySelectorAll('.software-tool-row');
+                                    if (rows.length === 1) {
+                                        rows[0].querySelectorAll('input').forEach((input) => input.value = '');
+                                        return;
+                                    }
+                                    remove.closest('.software-tool-row').remove();
+                                    reindex();
+                                });
+                            })();
+                        </script>
                     @else
+                        <label for="items_text" class="mb-2 block text-xs font-semibold">List items (optional)</label>
                         <textarea id="items_text" name="items_text" rows="7" maxlength="6000" class="form-field resize-y text-sm" placeholder="Enter one item per line">{{ old('items_text', implode("\n", $sectionData['items'] ?? [])) }}</textarea>
-                        <p class="mt-1 text-[10px] leading-5 text-[#68727b]">Enter one service, skill, value, or step per line.</p>
+                        <p class="mt-1.5 text-[10px] leading-5 text-[#68727b]">Enter one service, skill, value, or step per line.</p>
                     @endif
+                </div>
                 </div>
             </div>
         </section>
