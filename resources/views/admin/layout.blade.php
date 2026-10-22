@@ -39,6 +39,9 @@
                     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard
                 </a>
                 <p class="px-3 pb-2 pt-6 text-[9px] font-bold uppercase tracking-[.18em] text-white/40">Manage content</p>
+                <a href="{{ route('admin.inquiries') }}" @class(['admin-nav-link', 'admin-nav-link-active' => request()->routeIs('admin.inquiries*')])>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>Enquiries
+                </a>
                 <a href="{{ route('admin.projects') }}" @class(['admin-nav-link', 'admin-nav-link-active' => request()->routeIs('admin.projects*')])>
                     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 20V9"/></svg>Portfolio projects
                 </a>
@@ -91,6 +94,7 @@
                                 <p class="px-3 pb-2 pt-1 text-[9px] font-bold uppercase tracking-[.18em] text-[#68727b]">Overview</p>
                                 <a href="{{ route('admin.dashboard') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.dashboard')])>Dashboard</a>
                                 <p class="px-3 pb-2 pt-4 text-[9px] font-bold uppercase tracking-[.18em] text-[#68727b]">Manage content</p>
+                                <a href="{{ route('admin.inquiries') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.inquiries*')])>Enquiries</a>
                                 <a href="{{ route('admin.projects') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.projects*')])>Portfolio projects</a>
                                 <a href="{{ route('admin.faqs') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.faqs*')])>Frequently asked questions</a>
                                 <a href="{{ route('admin.certificates') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.certificates*')])>Certificates</a>
