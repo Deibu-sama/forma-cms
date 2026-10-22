@@ -70,6 +70,12 @@
                     <div><h3 class="text-base font-semibold">Contact & footer</h3><p class="mt-1 text-[11px] text-[#68727b]">Manage your public contact address and small site-wide details. Edit page copy in its own section editor.</p></div>
                 </div>
             </div>
+            <div class="px-5 pt-5 sm:px-7">
+                <div class="rounded-lg border {{ $mailDeliveryReady ? 'border-emerald-800/20 bg-emerald-50 text-emerald-900' : 'border-amber-800/20 bg-amber-50 text-amber-950' }} p-4">
+                    <p class="text-xs font-bold">{{ $mailDeliveryReady ? 'Email transport appears configured' : 'Email delivery still needs SMTP setup' }}</p>
+                    <p class="mt-1 text-xs leading-5">The contact form stores enquiries before sending notifications. For direct email delivery, configure your mail provider's host, port, username, password, and sender address in Render Environment. Never enter mail credentials in this form or commit them to GitHub. Even when configuration appears complete, send a test enquiry to confirm delivery.</p>
+                </div>
+            </div>
             <div class="grid gap-5 p-5 sm:grid-cols-2 sm:p-7">
                 <div><label for="contact_email" class="mb-2 block text-xs font-semibold">Contact email</label><input id="contact_email" name="contact_email" type="email" value="{{ old('contact_email', $settings['contact_email'] ?? '') }}" maxlength="254" class="form-field text-sm" placeholder="hello@yourdomain.com"><p class="mt-1.5 text-[10px] text-[#68727b]">Public contact address and destination for enquiry email notifications. Configure SMTP mail settings in Render for delivery.</p></div>
                 <div><label for="availability" class="mb-2 block text-xs font-semibold">Availability note</label><input id="availability" name="availability" value="{{ old('availability', $settings['availability'] ?? '') }}" maxlength="100" class="form-field text-sm" placeholder="Available for selected projects"></div>
