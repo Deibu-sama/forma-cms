@@ -43,15 +43,17 @@ Visit http://127.0.0.1:8080. The prototype lets you switch themes and edit sampl
 
 **Create a PHP App, not a Node.js Web Service.** Abasthan has a dedicated PHP runtime that supports Laravel and Composer. If the dashboard logs say `Environment: node 22` or `composer: not found`, the app was created with the wrong runtime. Create a new app from **Create App → PHP App**, connect this repository and the `main` branch, then let Abasthan detect Laravel/PHP. Do not use the Node.js runtime with Laravel's Composer build command.
 
-The Laravel views use Vite, so the built frontend manifest and assets must exist. For Abasthan's managed PHP runtime, if npm is available, use this build command:
+The Laravel views use Vite, so `public/build/manifest.json` and its assets must exist. This repository includes a GitHub Actions workflow that builds Vite assets with Node.js and commits `public/build` to `main` for PHP-only hosting. Wait for the **Build frontend assets** workflow to complete and for its asset commit to appear before redeploying Abasthan.
+
+Use this build command on Abasthan's managed PHP runtime (no npm required there):
 
 ```bash
-mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs && chmod -R u+rwX bootstrap/cache storage && composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc && npm install && npm run build
+mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs && chmod -R u+rwX bootstrap/cache storage && composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc
 ```
 
 The public content adapter explicitly selects Firestore's REST transport, which supports the current read-only document/query operations without the native gRPC extension. Do not remove that REST transport setting while deploying on a runtime without `ext-grpc`. If you later need gRPC-only features, deploy with the repository's Dockerfile on a platform that supports Docker and keep the extension installed there.
 
-If Abasthan's PHP runtime does not provide Node/npm, build the Vite assets in a separate CI/build step and deploy the generated `public/build` assets with the PHP app.
+If the GitHub Actions workflow fails or cannot push its generated assets, check the workflow logs and repository Actions permissions before redeploying.
 
 Set `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, and `FIRESTORE_PROJECT_ID` in the host environment. Configure Google Application Default Credentials or a securely mounted service-account file if using Firestore. Never commit credentials.
 
