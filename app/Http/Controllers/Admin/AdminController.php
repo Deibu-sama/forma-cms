@@ -97,12 +97,18 @@ final class AdminController extends Controller
             'custom_colors.muted' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
         ]);
 
-        if (! $content->saveSettings($validated)) {
+        $savedTo = $content->saveSettings($validated);
+
+        if ($savedTo === false) {
             return back()
                 ->withInput()
-                ->with('error', 'Settings could not be saved. Check that Firestore is configured and the server service account has write access.');
+                ->with('error', 'Settings could not be saved. Check that the SQL database is migrated and writable, or configure Firestore with write access.');
         }
 
-        return redirect()->route('admin.settings')->with('success', 'Website settings saved successfully.');
+        if ($savedTo === 'local') {
+            return redirect()->route('admin.settings')->with('success', 'Settings saved to the server database fallback. Connect Firestore to use the remote CMS content store.');
+        }
+
+        return redirect()->route('admin.settings')->with('success', 'Website settings saved to Firestore successfully.');
     }
 }
