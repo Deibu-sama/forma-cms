@@ -289,7 +289,7 @@ function App() {
     const sectionTargets = {
       home: '#home', about: '#about', services: '#regional-services',
       'tax-compliance': '#tax-compliance', experience: '#experience', skills: '#skills',
-      'how-i-work': '#approach', packages: '#packages', 'why-work-with-me': '#why-work-with-me',
+      'how-i-work': '#approach', packages: '#packages', 'why-work-with-me': '#why-work-with-me', faqs: '#faqs',
     };
     Object.entries(sectionTargets).forEach(([key, selector]) => {
       const element = document.querySelector(selector);
@@ -297,10 +297,25 @@ function App() {
       if (!element || !data) return;
       element.hidden = data.enabled === false;
       element.style.display = data.enabled === false ? 'none' : '';
-      const heading = element.querySelector('h1, h2');
+      const heading = element.querySelector('h1, h2, h3');
       if (heading && data.title) heading.textContent = data.title;
       const paragraph = element.querySelector('p');
       if (paragraph && data.body) paragraph.textContent = data.body;
+      if (Array.isArray(data.items) && data.items.length) {
+        let list = element.querySelector('ul');
+        if (!list) {
+          list = document.createElement('ul');
+          list.className = 'mt-5 space-y-3';
+          const anchor = element.querySelector('p');
+          if (anchor) anchor.insertAdjacentElement('afterend', list);
+        }
+        list.replaceChildren(...data.items.map((text) => {
+          const item = document.createElement('li');
+          item.className = 'text-sm leading-6 text-brand-muted';
+          item.textContent = text;
+          return item;
+        }));
+      }
       if (data.subtitle) {
         let sub = element.querySelector('[data-cms-subtitle]');
         if (!sub) {
