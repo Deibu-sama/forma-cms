@@ -240,6 +240,43 @@ const defaultFaqs = [
 
 const faqs = Array.isArray(settings.faqs) ? settings.faqs : defaultFaqs;
 
+function CertificateCarousel({ certificates }) {
+  const visible = Array.isArray(certificates) ? certificates.filter((item) => item && item.enabled && item.title && item.image_url) : [];
+  const [active, setActive] = useState(0);
+  useEffect(() => {
+    if (visible.length < 2) return undefined;
+    const timer = window.setInterval(() => setActive((current) => (current + 1) % visible.length), 4800);
+    return () => window.clearInterval(timer);
+  }, [visible.length]);
+  useEffect(() => { if (active >= visible.length) setActive(0); }, [active, visible.length]);
+  if (!visible.length) return null;
+  const item = visible[active] || visible[0];
+  return (
+    <section id="certificates" className="overflow-hidden border-y border-brand-primary/10 bg-brand-surface px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-8 lg:grid-cols-[.7fr_1.3fr] lg:items-center">
+          <div>
+            <SectionLabel>Professional development</SectionLabel>
+            <h2 className="display-heading text-3xl font-semibold sm:text-4xl">Certificates & <span className="text-brand-accent">credentials.</span></h2>
+            <p className="mt-4 max-w-md text-sm leading-7 text-brand-muted">Training and certificates that support my ongoing professional development.</p>
+            {visible.length > 1 && <div className="mt-6 flex items-center gap-3"><button type="button" aria-label="Previous certificate" onClick={() => setActive((active - 1 + visible.length) % visible.length)} className="grid h-10 w-10 place-items-center rounded-full border border-brand-primary/15 transition hover:border-brand-accent hover:bg-brand-background">←</button><span className="text-xs tabular-nums text-brand-muted">{String(active + 1).padStart(2, '0')} / {String(visible.length).padStart(2, '0')}</span><button type="button" aria-label="Next certificate" onClick={() => setActive((active + 1) % visible.length)} className="grid h-10 w-10 place-items-center rounded-full border border-brand-primary/15 transition hover:border-brand-accent hover:bg-brand-background">→</button></div>}
+            {visible.length > 1 && <div className="mt-4 flex gap-2">{visible.map((certificate, index) => <button key={certificate.title + index} type="button" onClick={() => setActive(index)} aria-label={'Show certificate ' + (index + 1)} className={'h-1.5 rounded-full transition-all duration-300 ' + (active === index ? 'w-8 bg-brand-accent' : 'w-3 bg-brand-primary/20 hover:bg-brand-accent/60')} />)}</div>}
+          </div>
+          <article key={item.title + active} className="grid overflow-hidden rounded-2xl border border-brand-primary/10 bg-brand-background shadow-sm transition-all duration-500 animate-[fadeIn_.5s_ease] md:grid-cols-[.9fr_1.1fr]">
+            <div className="flex min-h-64 items-center justify-center bg-white p-5 sm:p-8"><img src={item.image_url} alt={item.image_alt || item.title} loading="lazy" className="max-h-80 w-full object-contain" /></div>
+            <div className="flex flex-col justify-center p-6 sm:p-9">
+              <p className="text-[10px] font-bold uppercase tracking-[.18em] text-brand-accent">{item.issuer || 'Certificate'}{item.issued_date ? ' · ' + item.issued_date : ''}</p>
+              <h3 className="mt-3 text-2xl font-semibold tracking-[-.04em] sm:text-3xl">{item.title}</h3>
+              <p className="mt-4 text-sm leading-7 text-brand-muted">{item.description}</p>
+              {item.certificate_url && <a href={item.certificate_url} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex w-fit items-center gap-2 text-xs font-bold text-brand-primary no-underline hover:text-brand-accent">View credential <Icon name="arrowUp" size={14}/></a>}
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function App() {
   const initialHeadline = settings.headline || 'Clear books.\nConfident decisions.';
   const headlineLines = initialHeadline.split(/\r?\n/);
@@ -247,6 +284,39 @@ function App() {
   const [openFaq, setOpenFaq] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [submission, setSubmission] = useState({ type: 'idle', message: '' });
+  useEffect(() => {
+    const sections = settings.content_sections || {};
+    const sectionTargets = {
+      home: '#home', about: '#about', services: '#regional-services',
+      'tax-compliance': '#tax-compliance', experience: '#experience', skills: '#skills',
+      'how-i-work': '#approach', packages: '#packages', 'why-work-with-me': '#why-work-with-me',
+    };
+    Object.entries(sectionTargets).forEach(([key, selector]) => {
+      const element = document.querySelector(selector);
+      const data = sections[key];
+      if (!element || !data) return;
+      element.hidden = data.enabled === false;
+      element.style.display = data.enabled === false ? 'none' : '';
+      const heading = element.querySelector('h1, h2');
+      if (heading && data.title) heading.textContent = data.title;
+      const paragraph = element.querySelector('p');
+      if (paragraph && data.body) paragraph.textContent = data.body;
+      if (data.subtitle) {
+        let sub = element.querySelector('[data-cms-subtitle]');
+        if (!sub) {
+          sub = document.createElement('p');
+          sub.dataset.cmsSubtitle = 'true';
+          sub.className = 'mt-3 text-xs font-semibold uppercase tracking-[.14em] text-brand-accent';
+          const headingTarget = element.querySelector('h1, h2');
+          headingTarget?.insertAdjacentElement('afterend', sub);
+        }
+        sub.textContent = data.subtitle;
+      }
+    });
+    const faqSection = document.querySelector('#faqs');
+    if (faqSection && sections.faqs?.enabled === false) faqSection.style.display = 'none';
+  }, []);
+
   useEffect(() => {
     const targets = document.querySelectorAll('main section, main .service-card, main .project-panel');
     if (!targets.length || !('IntersectionObserver' in window)) return undefined;
@@ -466,7 +536,7 @@ function App() {
               <h2 className="display-heading text-4xl font-semibold sm:text-5xl">Accounting operations, grounded in <span className="text-brand-accent">detail.</span></h2>
               <p className="mt-5 text-sm leading-7 text-brand-muted">Accounting Staff · ACE Medical Center, Tuguegarao</p>
               <p className="mt-1 text-xs font-semibold uppercase tracking-[.13em] text-brand-accent">September 2024 – September 2026</p>
-              <div className="mt-8 rounded-xl bg-brand-background p-5">
+              <div id="skills" className="mt-8 rounded-xl bg-brand-background p-5">
                 <h3 className="text-sm font-semibold">Software & technical skills</h3>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {['BizBox Financial Management System','QuickBooks','Xero','Microsoft Excel','Power BI'].map((tool) => <span key={tool} className="rounded-full border border-brand-primary/10 bg-brand-surface px-3 py-2 text-xs font-medium">{tool}</span>)}
@@ -585,7 +655,7 @@ function App() {
           </div>
         </section>
 
-        <section className="bg-[#eae4d7] px-5 py-16 sm:px-8 lg:px-10">
+        <section id="tax-compliance" className="bg-[#eae4d7] px-5 py-16 sm:px-8 lg:px-10">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
             <div>
               <SectionLabel>Built on trust</SectionLabel>
@@ -607,6 +677,8 @@ function App() {
             </div>
           </div>
         </section>
+
+        <CertificateCarousel certificates={settings.certificates || []} />
 
         <section id="faqs" className="bg-brand-surface px-5 py-20 sm:px-8 sm:py-28 lg:px-10">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.76fr_1.24fr] lg:gap-20">
