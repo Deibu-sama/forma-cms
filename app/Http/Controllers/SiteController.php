@@ -15,12 +15,15 @@ final class SiteController
     {
         $settings = $this->content->settings();
         $projects = $this->content->publishedProjects();
+        $isDemo = $this->content->isDemoMode();
 
-        return view('home', [
+        return view('app', [
             'settings' => $settings,
-            'projects' => $projects,
-            'theme' => $settings['theme'] ?? 'classic-corporate',
-            'isDemo' => $this->content->isDemoMode(),
+            'appData' => [
+                'settings' => $settings,
+                'projects' => $projects,
+                'isDemo' => $isDemo,
+            ],
         ]);
     }
 }
