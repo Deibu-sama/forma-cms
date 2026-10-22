@@ -286,7 +286,7 @@ final class ContentRepository
                 'projectId' => $projectId,
                 'keyFile' => $credentials,
                 // Abasthan's managed PHP runtime does not provide ext-grpc.
-                // REST transport supports the read operations used by this adapter.
+                // REST transport supports the document/query operations, including inquiry creation.
                 'transport' => 'rest',
             ]);
         } catch (Throwable $exception) {
