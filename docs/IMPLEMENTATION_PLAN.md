@@ -141,7 +141,7 @@ Use static Tailwind utility classes and CSS custom properties for runtime colors
 
 ## 11. Hosting decision
 
-Select hosting only after verifying PHP version, Firestore client requirements (including gRPC where required), outbound Google API connectivity, persistent sessions, queue workers, scheduled tasks, and secret management. A managed PHP host may be simplest if compatible; a VPS offers more control but requires server maintenance.
+Select hosting only after verifying PHP version, outbound Google API HTTPS connectivity, persistent sessions, queue workers, scheduled tasks, and secret management. This implementation uses the Firestore REST API with server-side OAuth and does not require ext-grpc. A managed PHP host may be simplest if compatible; a VPS offers more control but requires server maintenance.
 
 ## 12. Definition of done
 
