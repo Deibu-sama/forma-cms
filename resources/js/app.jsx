@@ -433,7 +433,8 @@ function App() {
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
             <div>
               <SectionLabel>Built on trust</SectionLabel>
-              <h2 className="display-heading max-w-xl text-3xl font-semibold sm:text-4xl">Careful with your records. Clear about my role.</h2>
+              <h2 className="display-heading max-w-xl text-3xl font-semibold sm:text-4xl">{settings.about_headline || 'Careful with your records. Clear about my role.'}</h2>
+              {settings.about_text && <p className="mt-4 max-w-xl text-sm leading-7 text-brand-muted">{settings.about_text}</p>}
             </div>
             <div className="grid gap-4 sm:grid-cols-3">
               {[
