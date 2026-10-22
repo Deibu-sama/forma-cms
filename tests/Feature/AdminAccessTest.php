@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -139,6 +140,8 @@ final class AdminAccessTest extends TestCase
     public function test_admin_can_upload_a_project_image(): void
     {
         config(['services.firestore.project_id' => null, 'services.firestore.credentials_base64' => null, 'app.url' => 'https://portfolio.test']);
+        URL::forceRootUrl('https://portfolio.test');
+        URL::forceScheme('https');
         Storage::fake('public');
 
         $admin = User::query()->create([
