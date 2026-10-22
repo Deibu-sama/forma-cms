@@ -32,12 +32,28 @@ for directory in app bootstrap config database/migrations resources routes; do
 done
 
 # The REST Firestore adapter uses google/auth and Guzzle rather than the
-# gRPC-bound google/cloud-firestore client.
+# gRPC-bound google/cloud-firestore client. Replace the server's stale lockfile
+# too; it may still pin google/cloud-firestore and require the missing ext-grpc.
 cp "$SOURCE_ROOT/composer.json" "$APP_ROOT/composer.json"
+
+if [[ -f "$SOURCE_ROOT/composer.lock" ]]; then
+  cp "$SOURCE_ROOT/composer.lock" "$APP_ROOT/composer.lock"
+elif command -v composer >/dev/null 2>&1; then
+  echo "No compatible Composer lockfile exists in the repository yet; resolving a fresh lockfile."
+  rm -f "$APP_ROOT/composer.lock"
+else
+  echo "Error: the repository does not contain composer.lock and Composer is unavailable." >&2
+  echo "Use the PHP build environment to generate and deploy the updated dependency lockfile first." >&2
+  exit 1
+fi
 
 if command -v composer >/dev/null 2>&1; then
   echo "Installing the current PHP dependencies..."
-  composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
+  if [[ -f "$SOURCE_ROOT/composer.lock" ]]; then
+    composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
+  else
+    composer update --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
+  fi
 elif php -r 'require "vendor/autoload.php"; exit(class_exists("Google\\Auth\\Credentials\\ServiceAccountCredentials") && class_exists("GuzzleHttp\\Client") ? 0 : 1);'; then
   echo "Composer is unavailable, but the existing vendor directory already includes the Firestore REST dependencies."
 else
