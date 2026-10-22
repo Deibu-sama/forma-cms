@@ -3,6 +3,7 @@
 namespace App\Services\Firestore;
 
 use Google\Cloud\Firestore\FirestoreClient;
+use Google\Cloud\Core\Timestamp;
 use Throwable;
 
 /**
@@ -125,7 +126,7 @@ final class ContentRepository
         }
 
         try {
-            $now = new Timestamp(new \\DateTimeImmutable());
+            $now = new Timestamp(new \DateTimeImmutable());
 
             $client->collection('inquiries')->add([
                 'full_name' => trim((string) ($data['full_name'] ?? '')),
