@@ -35,6 +35,7 @@ final class ContentRepository
             'site_name' => 'Bookkeeper Pro Portfolio',
             'site_title' => 'Bookkeeper Pro Portfolio | Bookkeeping & Reporting Support',
             'favicon_url' => '',
+            'placeholder_image_url' => '',
             'brand_name' => 'Your Name',
             'tagline' => 'Bookkeeping Professional',
             'eyebrow' => 'BOOKKEEPING · RECONCILIATION · REPORTING',
@@ -133,7 +134,7 @@ final class ContentRepository
     public function saveSettings(array $input): string|false
     {
         $stringFields = [
-            'site_name', 'site_title', 'brand_name', 'tagline', 'favicon_url', 'profile_image_url',
+            'site_name', 'site_title', 'brand_name', 'tagline', 'favicon_url', 'placeholder_image_url', 'profile_image_url',
             'hero_image_url', 'hero_image_alt', 'eyebrow', 'headline',
             'description', 'about_headline', 'about_text',
             'contact_headline', 'contact_text', 'contact_email',
@@ -152,7 +153,7 @@ final class ContentRepository
             $payload[$field] = trim($value);
         }
 
-        foreach (['favicon_url', 'hero_image_url', 'profile_image_url'] as $urlField) {
+        foreach (['favicon_url', 'placeholder_image_url', 'hero_image_url', 'profile_image_url'] as $urlField) {
             if ($payload[$urlField] !== '' && ! $this->isSafeHttpsUrl($payload[$urlField])) {
                 return false;
             }
@@ -225,6 +226,17 @@ final class ContentRepository
             foreach ($items as $item) {
                 if (! is_string($item) || mb_strlen($item) > 500) { return false; }
                 $clean['items'][] = trim($item);
+            }
+            if (isset($section['software_tools'])) {
+                if (! is_array($section['software_tools']) || count($section['software_tools']) > 50) { return false; }
+                $clean['software_tools'] = [];
+                foreach ($section['software_tools'] as $tool) {
+                    if (! is_array($tool)) { return false; }
+                    $name = $tool['name'] ?? '';
+                    $logo = $tool['logo_url'] ?? '';
+                    if (! is_string($name) || trim($name) === '' || mb_strlen($name) > 180 || ! is_string($logo) || ($logo !== '' && ! $this->isSafeHttpsUrl($logo))) { return false; }
+                    $clean['software_tools'][] = ['name' => trim($name), 'logo_url' => trim($logo)];
+                }
             }
             $clean['enabled'] = (bool) ($section['enabled'] ?? false);
             $safeSections[$key] = $clean;
