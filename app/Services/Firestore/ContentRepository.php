@@ -108,7 +108,7 @@ final class ContentRepository
             }
         }
 
-        foreach (['favicon_url', 'hero_image_url', 'profile_image_url'] as $urlKey) {
+        foreach (['favicon_url', 'placeholder_image_url', 'hero_image_url', 'profile_image_url'] as $urlKey) {
             if (! $this->isSafeHttpsUrl($settings[$urlKey])) {
                 $settings[$urlKey] = '';
             }
