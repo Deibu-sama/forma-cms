@@ -84,7 +84,7 @@
         </section>
 
         <div class="sticky bottom-4 z-20 flex flex-col items-stretch justify-between gap-3 rounded-xl border border-[#14283f]/10 bg-[#fffdf8]/95 p-3 shadow-xl backdrop-blur sm:flex-row sm:items-center sm:px-5">
-            <p class="px-1 text-[10px] leading-5 text-[#68727b]">Saving updates <code>site_settings/main</code> in Firestore. Public changes appear after the next page load.</p>
+            <p class="px-1 text-[10px] leading-5 text-[#68727b]">@if($firestoreReady) Saving updates <code>site_settings/main</code> in Firestore. @else Saving updates the server SQL fallback until Firestore is available. @endif Public changes appear after the next page load.</p>
             <div class="flex gap-2">
                 <a href="{{ route('admin.dashboard') }}" class="inline-flex min-h-11 items-center justify-center rounded-md border border-[#14283f]/15 px-4 py-2 text-xs font-bold text-[#14283f] no-underline hover:bg-[#f4f0e6]">Cancel</a>
                 <button type="submit" class="button-lift inline-flex min-h-11 items-center justify-center gap-3 rounded-md bg-[#14283f] px-5 py-2 text-xs font-bold text-white hover:bg-[#263e56]">Save website settings <span class="text-[#b99a61]">↗</span></button>
