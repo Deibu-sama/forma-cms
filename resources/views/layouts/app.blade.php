@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{{ $settings['meta_description'] ?? $settings['description'] ?? 'A considered portfolio of selected work, ideas, and collaborations.' }}">
     <meta name="theme-color" content="{{ $settings['custom_colors']['primary'] ?? '#14283F' }}">
+    <meta property="og:title" content="{{ $settings['site_title'] ?? $settings['meta_title'] ?? ($settings['site_name'] ?? config('app.name')) }}">
+    <meta property="og:description" content="{{ $settings['meta_description'] ?? $settings['description'] ?? 'A considered portfolio of selected work, ideas, and collaborations.' }}">
+    <meta property="og:type" content="website">
     <title>{{ $settings['site_title'] ?? $settings['meta_title'] ?? ($settings['site_name'] ?? config('app.name')) }}</title>
     @if(!empty($settings['favicon_url']))
         <link rel="icon" href="{{ $settings['favicon_url'] }}">
@@ -12,7 +15,7 @@
     @if (file_exists(public_path('build/manifest.json')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
-        <link rel="stylesheet" href="{{ asset('css/fallback.css') }}?v=20261022-3">
+        <link rel="stylesheet" href="{{ asset('css/fallback.css') }}?v=20261022-4">
     @endif
 </head>
 <body class="forma-body">
@@ -23,7 +26,7 @@
             <nav aria-label="Main navigation" class="site-nav">
                 <a href="#work">Selected work</a>
                 <a href="#about">About</a>
-                <a href="#contact">Contact</a>
+                <a class="nav-cta" href="#contact">Let’s talk <span aria-hidden="true">↗</span></a>
             </nav>
         </div>
     </header>
