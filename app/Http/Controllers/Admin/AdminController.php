@@ -202,6 +202,10 @@ final class AdminController
             'custom_colors.muted' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
         ]);
 
+        $currentSettings = $content->settings();
+        $validated['faqs_json'] = json_encode($currentSettings['faqs'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $validated['projects_json'] = json_encode($currentSettings['projects'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
         $savedTo = $content->saveSettings($validated);
 
         if ($savedTo === false) {
