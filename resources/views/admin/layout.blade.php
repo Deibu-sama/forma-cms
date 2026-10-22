@@ -58,7 +58,7 @@
                 </details>
                 <p class="px-3 pb-2 pt-6 text-[9px] font-bold uppercase tracking-[.18em] text-white/40">Configuration</p>
                 <a href="{{ route('admin.settings') }}" @class(['admin-nav-link', 'admin-nav-link-active' => request()->routeIs('admin.settings*')])>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19 13 2 1-2 3-2-1-2 1v2h-4v-2l-2-1-2 1-2-3 2-1v-2l-2-1 2-3 2 1 2-1V5h4v2l2 1 2-1 2 3-2 1z"/></svg>Website settings
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="m19 13 2 1-2 3-2-1-2 1v2h-4v-2l-2-1-2 1-2-3 2-1v-2l-2-1 2-3 2 1 2-1V5h4v2l2 1 2-1 2 3-2 1z"/></svg>Site appearance & settings
                 </a>
             </nav>
             <div class="border-t border-white/10 p-4">
@@ -103,7 +103,7 @@
                                     </div>
                                 </details>
                                 <p class="px-3 pb-2 pt-4 text-[9px] font-bold uppercase tracking-[.18em] text-[#68727b]">Configuration</p>
-                                <a href="{{ route('admin.settings') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.settings*')])>Website settings</a>
+                                <a href="{{ route('admin.settings') }}" @class(['admin-mobile-link', 'admin-mobile-link-active' => request()->routeIs('admin.settings*')])>Site appearance & settings</a>
                                 <div class="mt-3 border-t border-[#14283f]/10 pt-3"><a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="admin-mobile-link">View live website ↗</a>
                                     <form method="POST" action="{{ route('admin.logout') }}">@csrf<button type="submit" class="admin-mobile-link w-full text-left">Sign out</button></form>
                                 </div>
