@@ -61,6 +61,8 @@ final class ContentRepository
             'availability' => '',
             'work_intro' => '',
             'footer_note' => '',
+            'faqs_customized' => false,
+            'projects_customized' => false,
             'faqs' => [
                 ['q' => 'What types of businesses can you support?', 'a' => 'The right fit depends on the volume, complexity, software, and condition of your records. Share a little about your business and current workflow so the scope can be assessed before work begins.'],
                 ['q' => 'Do you provide tax, legal, or audit advice?', 'a' => 'This portfolio describes bookkeeping and record-organization support, not regulated tax, legal, audit, or investment advice. I can help organize records and prepare supporting information for you to review with a suitably qualified professional.'],
@@ -73,6 +75,11 @@ final class ContentRepository
 
         // Only explicitly approved public fields cross the Laravel/React boundary.
         $settings = array_replace($defaults, array_intersect_key($document ?? [], $defaults));
+        if (empty($settings['faqs_customized']) && empty($settings['faqs'])) {
+            $settings['faqs'] = $defaults['faqs'];
+        }
+        $settings['faqs_customized'] = (bool) ($settings['faqs_customized'] ?? false);
+        $settings['projects_customized'] = (bool) ($settings['projects_customized'] ?? false);
         foreach (['faqs', 'projects'] as $collectionField) {
             if (! is_array($settings[$collectionField])) { $settings[$collectionField] = []; }
         }
@@ -187,6 +194,9 @@ final class ContentRepository
             }
             $payload[$payloadKey] = $cleanItems;
         }
+
+        $payload['faqs_customized'] = (bool) ($input['faqs_customized'] ?? false);
+        $payload['projects_customized'] = (bool) ($input['projects_customized'] ?? false);
 
         $payload['custom_colors'] = $safeColors;
         $allowedThemes = ['classic-corporate', 'sage-editorial', 'modern-lavender', 'ocean-professional', 'warm-minimal'];
