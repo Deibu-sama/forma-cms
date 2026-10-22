@@ -537,7 +537,7 @@ function App() {
                 </article>
               ))}
             </div>
-            <div className="mt-6 rounded-xl border border-brand-accent/30 bg-brand-surface p-5 sm:p-6">
+            <div id="tax-compliance" className="mt-6 rounded-xl border border-brand-accent/30 bg-brand-surface p-5 sm:p-6">
               <h3 className="font-semibold">Tax compliance support — with clear boundaries</h3>
               <p className="mt-2 max-w-4xl text-sm leading-7 text-brand-muted">I can help organize financial information and supporting documents, reconcile tax-related accounts, prepare schedules, track relevant deadlines, and coordinate records with your authorized tax professional. Tax advice, return preparation, filing, lodgment, or representation is included only where permitted and appropriately authorized.</p>
             </div>
@@ -670,7 +670,7 @@ function App() {
           </div>
         </section>
 
-        <section id="tax-compliance" className="bg-[#eae4d7] px-5 py-16 sm:px-8 lg:px-10">
+        <section className="bg-[#eae4d7] px-5 py-16 sm:px-8 lg:px-10">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
             <div>
               <SectionLabel>Built on trust</SectionLabel>
