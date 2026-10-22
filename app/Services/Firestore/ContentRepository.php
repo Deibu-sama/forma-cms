@@ -477,8 +477,8 @@ final class ContentRepository
             usort($items, static function (array $a, array $b): int {
                 $aTime = $a['created_at'] ?? null;
                 $bTime = $b['created_at'] ?? null;
-                $aStamp = $aTime instanceof \\DateTimeInterface ? $aTime->getTimestamp() : 0;
-                $bStamp = $bTime instanceof \\DateTimeInterface ? $bTime->getTimestamp() : 0;
+                $aStamp = $aTime instanceof \DateTimeInterface ? $aTime->getTimestamp() : 0;
+                $bStamp = $bTime instanceof \DateTimeInterface ? $bTime->getTimestamp() : 0;
                 return $bStamp <=> $aStamp;
             });
 
@@ -504,7 +504,7 @@ final class ContentRepository
         try {
             $client->setDocument('inquiries', $id, [
                 'status' => $status,
-                'updated_at' => new \\DateTimeImmutable(),
+                'updated_at' => new \DateTimeImmutable(),
             ]);
             return true;
         } catch (Throwable $exception) {
