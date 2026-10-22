@@ -3,7 +3,6 @@
 namespace App\Services\Firestore;
 
 use Google\Cloud\Firestore\FirestoreClient;
-use JsonException;
 use Throwable;
 
 /**
@@ -160,7 +159,7 @@ final class ContentRepository
                 // REST transport supports the read operations used by this adapter.
                 'transport' => 'rest',
             ]);
-        } catch (JsonException | Throwable $exception) {
+        } catch (Throwable $exception) {
             report($exception);
             $this->client = null;
         }
