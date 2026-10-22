@@ -6,6 +6,7 @@
 
 @section('content')
     <div class="mb-8"><p class="mb-2 text-[10px] font-bold uppercase tracking-[.2em] text-[#a18755]">Credentials & professional development</p><h2 class="text-3xl font-semibold tracking-[-.055em]">Certificate carousel</h2><p class="mt-3 max-w-2xl text-sm leading-6 text-[#68727b]">Add certificate image links with titles and descriptions. Enabled certificates appear in an automatically rotating public carousel.</p></div>
+<p class="mt-3 rounded-lg border border-[#14283f]/10 bg-[#f4f2ec] p-3 text-[11px] leading-5 text-[#68727b]">Uploaded images use public server storage. On Render, attach a persistent disk mounted at <code>storage/app/public</code> to keep uploaded files across deploys and restarts. Until that is configured, use a stable public HTTPS image URL.</p>
     <section class="mb-8 rounded-xl border border-[#14283f]/10 bg-[#fffdf8] p-5 sm:p-7">
         <h3 class="mb-5 text-base font-semibold">Add a certificate</h3>
         <form method="POST" action="{{ route('admin.certificates.store') }}" enctype="multipart/form-data" class="grid gap-4 sm:grid-cols-2">@csrf
