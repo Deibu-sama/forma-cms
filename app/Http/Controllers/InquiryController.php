@@ -61,7 +61,7 @@ final class InquiryController
         if (is_string($recipient) && filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
             try {
                 $subject = 'New portfolio enquiry from ' . trim($validated['full_name']);
-                $body = implode("\\n", [
+                $body = implode("\n", [
                     'You have received a new enquiry through your portfolio website.',
                     '',
                     'Name: ' . trim($validated['full_name']),
