@@ -266,7 +266,14 @@ function App() {
   }, []);
 
   const formRef = useRef(null);
-  const palette = settings.custom_colors || {};
+  const themePresets = {
+    'classic-corporate': {primary:'#14283F',background:'#F5F1E8',accent:'#B99A61',surface:'#FFFDF8',text:'#192C41',muted:'#68727B'},
+    'sage-editorial': {primary:'#34483B',background:'#F1F2E8',accent:'#A4B494',surface:'#FCFCF6',text:'#27372D',muted:'#687567'},
+    'modern-lavender': {primary:'#342C4F',background:'#F4F0FA',accent:'#B9A8E5',surface:'#FFFDFF',text:'#29233C',muted:'#746D83'},
+    'ocean-professional': {primary:'#123C50',background:'#EDF5F7',accent:'#59B5C7',surface:'#FFFFFF',text:'#183746',muted:'#617983'},
+    'warm-minimal': {primary:'#51382F',background:'#FAF1E9',accent:'#D58B6D',surface:'#FFFCF8',text:'#3D2C27',muted:'#82716B'},
+  };
+  const palette = { ...(themePresets[settings.theme] || themePresets['classic-corporate']), ...(settings.custom_colors || {}) };
   const themeStyle = {
     '--brand-primary': palette.primary || '#14283f',
     '--brand-background': palette.background || '#f5f1e8',
@@ -274,6 +281,7 @@ function App() {
     '--brand-surface': palette.surface || '#fffdf8',
     '--brand-text': palette.text || palette.primary || '#192c41',
     '--brand-muted': palette.muted || '#68727b',
+    '--brand-line': 'color-mix(in srgb, ' + (palette.primary || '#14283f') + ' 14%, transparent)',
   };
 
   async function submitInquiry(event) {
@@ -500,7 +508,11 @@ function App() {
                     <span className="text-sm font-semibold leading-6 sm:text-base">{faq.q}</span>
                     <span className={'grid h-8 w-8 shrink-0 place-items-center rounded-full border border-brand-primary/15 transition ' + (openFaq === index ? 'rotate-180 border-brand-accent bg-brand-accent/15' : '')}><Icon name="chevron" size={17} /></span>
                   </button>
-                  {openFaq === index && <p className="max-w-2xl pb-6 pr-9 text-sm leading-7 text-brand-muted">{faq.a}</p>}
+                  <div className={'faq-answer-grid ' + (openFaq === index ? 'is-open' : '')} aria-hidden={openFaq !== index}>
+                    <div className="faq-answer-inner">
+                      <p className="max-w-2xl pb-6 pr-9 text-sm leading-7 text-brand-muted">{faq.a}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
