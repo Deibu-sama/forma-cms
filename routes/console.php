@@ -1,16 +1,18 @@
 <?php
 
-use App\Models\User;
-use Illuminate\Support\Facades\Artisan;
+use App\\Models\\User;
+use Illuminate\\Support\\Facades\\Artisan;
 
 Artisan::command('formacms:about', function () {
     $this->info('Bookkeeper Pro Portfolio — Laravel, React, Tailwind CSS, and Firestore.');
 })->purpose('Display project information');
 
 /*
- * Provision an administrator from a trusted server terminal only.
- * ADMIN_EMAIL, ADMIN_NAME, and ADMIN_PASSWORD may be supplied by the host
- * environment. There is intentionally no public administrator registration.
+ * Provision an administrator from trusted server environment variables or
+ * secure interactive prompts. There is intentionally no public registration.
+ * When environment credentials are configured, this command is safe to rerun:
+ * it synchronizes the configured account so deploys and credential rotations
+ * keep the admin login aligned with the hosting environment.
  */
 Artisan::command('bookkeeper:make-admin {email?}', function () {
     $envEmail = config('admin.email');
@@ -53,13 +55,15 @@ Artisan::command('bookkeeper:make-admin {email?}', function () {
         return 1;
     }
 
-    if (User::query()->where('email', $email)->exists()) {
-        $this->error('A user with this email already exists. This command will not promote or overwrite an existing account.');
-
-        return 1;
-    }
-
     if (! $usingEnvironment) {
+        $existingUser = User::query()->where('email', $email)->first();
+
+        if ($existingUser) {
+            $this->error('A user with this email already exists. This command will not promote or overwrite an existing account.');
+
+            return 1;
+        }
+
         $name = trim((string) $this->ask('Administrator name'));
 
         if ($name === '') {
@@ -90,16 +94,16 @@ Artisan::command('bookkeeper:make-admin {email?}', function () {
         return 1;
     }
 
-    $user = new User();
+    $user = User::query()->firstOrNew(['email' => $email]);
+    $wasExisting = $user->exists;
     $user->name = $name;
-    $user->email = $email;
     $user->password = $password; // User model's hashed cast handles password hashing.
     $user->is_admin = true;
-    $user->email_verified_at = now();
+    $user->email_verified_at ??= now();
     $user->save();
 
-    $this->info('Administrator created successfully.');
+    $this->info($wasExisting ? 'Administrator credentials synchronized successfully.' : 'Administrator created successfully.');
     $this->line('Sign in at /admin/login. The password was not displayed.');
 
     return 0;
-})->purpose('Create the first administrator from server environment variables or secure interactive prompts');
+})->purpose('Create or synchronize the administrator from server environment variables, or create one with secure prompts');
