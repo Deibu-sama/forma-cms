@@ -10,7 +10,6 @@
         $sections = [
             'site_identity' => 'Site identity',
             'homepage-copy' => 'Homepage content',
-            'portfolio-content' => 'FAQs & projects',
             'brand-colors' => 'Brand colors',
             'seo' => 'Search & sharing',
         ];
@@ -70,20 +69,6 @@
                 <div><label for="work_intro" class="mb-2 block text-xs font-semibold">Portfolio introduction</label><textarea id="work_intro" name="work_intro" rows="2" maxlength="500" class="form-field resize-y text-sm">{{ old('work_intro', $settings['work_intro'] ?? '') }}</textarea></div>
                 <div><label for="contact_email" class="mb-2 block text-xs font-semibold">Contact email</label><input id="contact_email" name="contact_email" type="email" value="{{ old('contact_email', $settings['contact_email'] ?? '') }}" maxlength="254" class="form-field text-sm" placeholder="hello@yourdomain.com"><p class="mt-1.5 text-[10px] text-[#68727b]">Public contact address and destination for new enquiry email notifications. Configure SMTP mail settings in Render for delivery.</p></div>
                 <div><label for="footer_note" class="mb-2 block text-xs font-semibold">Footer note</label><input id="footer_note" name="footer_note" value="{{ old('footer_note', $settings['footer_note'] ?? '') }}" maxlength="180" class="form-field text-sm" placeholder="Designed with care."></div>
-            </div>
-        </section>
-
-        <section id="portfolio-content" class="scroll-mt-24 overflow-hidden rounded-xl border border-[#14283f]/10 bg-[#fffdf8]">
-            <div class="border-b border-[#14283f]/10 px-5 py-5 sm:px-7"><h3 class="text-base font-semibold">FAQs and portfolio projects</h3><p class="mt-1 text-[11px] leading-5 text-[#68727b]">Edit the content shown on the public site. Use valid JSON arrays; project image and project links must be public HTTPS URLs.</p></div>
-            <div class="space-y-5 p-5 sm:p-7">
-                <div><label for="faqs_json" class="mb-2 block text-xs font-semibold">Frequently asked questions (JSON)</label>
-                    <textarea id="faqs_json" name="faqs_json" rows="10" class="form-field font-mono text-xs leading-5" spellcheck="false">{{ old('faqs_json', json_encode($settings['faqs'] ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) }}</textarea>
-                    <p class="mt-1 text-[10px] leading-5 text-[#68727b]">Each item: {"q":"Question text","a":"Answer text"}. Leave as [] to use the default FAQs.</p>
-                </div>
-                <div><label for="projects_json" class="mb-2 block text-xs font-semibold">Work samples / projects (JSON)</label>
-                    <textarea id="projects_json" name="projects_json" rows="14" class="form-field font-mono text-xs leading-5" spellcheck="false">{{ old('projects_json', json_encode($settings['projects'] ?? [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) }}</textarea>
-                    <p class="mt-1 text-[10px] leading-5 text-[#68727b]">Each item needs title and summary. Optional fields: category, description, image_url, image_alt, art_label, project_url. Use direct public HTTPS image URLs; use [] to show sample projects.</p>
-                </div>
             </div>
         </section>
 
