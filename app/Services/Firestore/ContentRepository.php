@@ -81,6 +81,7 @@ final class ContentRepository
                 'how-i-work' => ['title' => 'How I Work', 'subtitle' => '', 'body' => 'A clear process with agreed responsibilities and deliverables.', 'items' => ['Initial Consultation', 'Scope and Onboarding', 'Recordkeeping and Reconciliation', 'Review and Reporting', 'Ongoing Support'], 'enabled' => true],
                 'packages' => ['title' => 'Engagement Packages', 'subtitle' => '', 'body' => 'Pricing and deliverables are agreed after discussing your needs.', 'items' => ['Essential Bookkeeping', 'Complete Bookkeeping', 'Bookkeeping & Reporting Support'], 'enabled' => true],
                 'why-work-with-me' => ['title' => 'Why Work With Me', 'subtitle' => '', 'body' => 'Detail-oriented, organized, confidential, and client-focused support.', 'items' => ['Accuracy', 'Organization', 'Software familiarity', 'Confidentiality and professionalism', 'Continuous learning'], 'enabled' => true],
+                'faqs' => ['title' => 'Frequently Asked Questions', 'subtitle' => '', 'body' => 'Answers to common questions before we begin.', 'items' => [], 'enabled' => true],
             ],
             'certificates' => [],
         ];
