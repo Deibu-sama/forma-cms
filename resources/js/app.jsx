@@ -304,9 +304,21 @@ function App() {
               <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 border-t border-white/15 pt-6 text-[11px] text-white/60">
                 <span className="inline-flex items-center gap-2"><Icon name="checkCircle" size={15} className="text-brand-accent" /> Clear scope and communication</span>
                 <span className="inline-flex items-center gap-2"><Icon name="shield" size={15} className="text-brand-accent" /> Respectful data handling</span>
+                {settings.availability && <span className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-brand-accent" /> {settings.availability}</span>}
               </div>
             </div>
-            <DashboardPreview />
+            {settings.hero_image_url ? (
+              <div className="relative mx-auto w-full max-w-[540px]">
+                <div className="absolute -right-5 -top-5 h-28 w-28 rounded-full border border-brand-accent/30 sm:-right-8 sm:-top-8 sm:h-36 sm:w-36" />
+                <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl">
+                  <img src={settings.hero_image_url} alt={settings.hero_image_alt || 'Bookkeeping workspace illustration'} loading="eager" fetchPriority="high" className="aspect-[4/5] max-h-[620px] w-full object-cover" />
+                </div>
+                <div className="absolute -bottom-4 -left-3 flex items-center gap-3 rounded-xl border border-brand-primary/10 bg-brand-surface px-4 py-3 text-brand-primary shadow-xl sm:-left-5">
+                  <span className="grid h-9 w-9 place-items-center rounded-lg bg-[#e6ecdf] text-[#48644a]"><Icon name="checkCircle" size={19} /></span>
+                  <span><span className="block text-[11px] font-bold">A process you can follow</span><span className="mt-1 block text-[9px] text-brand-muted">Built around clear checkpoints</span></span>
+                </div>
+              </div>
+            ) : <DashboardPreview />}
           </div>
           <div className="relative border-t border-white/10">
             <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-4 text-[10px] uppercase tracking-[.14em] text-white/45 sm:px-8 lg:px-10">
@@ -379,7 +391,7 @@ function App() {
                 <h2 className="display-heading max-w-2xl text-4xl font-semibold sm:text-5xl lg:text-[3.55rem]">A look at the work <span className="text-brand-accent">behind the books.</span></h2>
               </div>
               <p className="max-w-md text-sm leading-7 text-brand-muted">
-                Examples can show how a process is organized without exposing private client records or overstating outcomes.
+                {settings.work_intro || 'Examples can show how a process is organized without exposing private client records or overstating outcomes.'}
               </p>
             </div>
             {projectItems.length > 0 ? (
@@ -540,7 +552,7 @@ function App() {
       <footer className="bg-brand-background px-5 py-7 sm:px-8 lg:px-10">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 border-t border-brand-primary/15 pt-6 sm:flex-row sm:items-center sm:justify-between">
           <a href="#home" className="inline-flex w-fit items-center gap-3 no-underline"><BrandMark /></a>
-          <p className="max-w-xl text-[10px] leading-5 text-brand-muted">© {new Date().getFullYear()} {settings.site_name || 'Bookkeeper Pro Portfolio'}. Bookkeeping and record-organization support only; not tax, legal, audit, or investment advice.</p>
+          <p className="max-w-xl text-[10px] leading-5 text-brand-muted">© {new Date().getFullYear()} {settings.site_name || 'Bookkeeper Pro Portfolio'}. {settings.footer_note ? settings.footer_note + ' · ' : ''}Bookkeeping and record-organization support only; not tax, legal, audit, or investment advice.</p>
           <a href="#contact" className="inline-flex items-center gap-2 text-xs font-semibold text-brand-primary no-underline hover:text-brand-accent">Get in touch <Icon name="arrowUp" size={14} /></a>
         </div>
       </footer>
