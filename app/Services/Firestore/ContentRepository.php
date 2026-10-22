@@ -61,10 +61,15 @@ final class ContentRepository
             'availability' => '',
             'work_intro' => '',
             'footer_note' => '',
+            'faqs' => [],
+            'projects' => [],
         ];
 
         // Only explicitly approved public fields cross the Laravel/React boundary.
         $settings = array_replace($defaults, array_intersect_key($document ?? [], $defaults));
+        foreach (['faqs', 'projects'] as $collectionField) {
+            if (! is_array($settings[$collectionField])) { $settings[$collectionField] = []; }
+        }
         $providedColors = is_array($settings['custom_colors']) ? $settings['custom_colors'] : [];
         $settings['custom_colors'] = $defaults['custom_colors'];
 
@@ -148,6 +153,33 @@ final class ContentRepository
             }
 
             $safeColors[$field] = strtoupper($value);
+        }
+
+        foreach (['faqs_json' => 'faqs', 'projects_json' => 'projects'] as $inputKey => $payloadKey) {
+            $raw = $input[$inputKey] ?? '[]';
+            if (! is_string($raw)) { return false; }
+            try { $items = json_decode($raw, true, 64, JSON_THROW_ON_ERROR); } catch (\\JsonException) { return false; }
+            if (! is_array($items) || count($items) > 40) { return false; }
+            $cleanItems = [];
+            foreach ($items as $item) {
+                if (! is_array($item)) { return false; }
+                if ($payloadKey === 'faqs') {
+                    $q = trim((string) ($item['q'] ?? '')); $a = trim((string) ($item['a'] ?? ''));
+                    if ($q === '' || $a === '' || mb_strlen($q) > 240 || mb_strlen($a) > 1600) { return false; }
+                    $cleanItems[] = ['q' => $q, 'a' => $a]; continue;
+                }
+                $project = [];
+                foreach (['title' => 140, 'category' => 100, 'summary' => 800, 'description' => 1800, 'image_alt' => 240, 'art_label' => 140] as $key => $max) {
+                    $value = trim((string) ($item[$key] ?? '')); if (mb_strlen($value) > $max) { return false; } $project[$key] = $value;
+                }
+                foreach (['image_url', 'project_url'] as $urlKey) {
+                    $value = trim((string) ($item[$urlKey] ?? '')); if ($value !== '' && ! $this->isSafeHttpsUrl($value)) { return false; } $project[$urlKey] = $value;
+                }
+                if ($project['title'] === '' || $project['summary'] === '') { return false; }
+                $project['slug'] = strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $project['title']), '-'));
+                $project['is_demonstration'] = false; $cleanItems[] = $project;
+            }
+            $payload[$payloadKey] = $cleanItems;
         }
 
         $payload['custom_colors'] = $safeColors;
