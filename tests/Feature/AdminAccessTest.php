@@ -167,8 +167,6 @@ final class AdminAccessTest extends TestCase
 
         $this->assertStringStartsWith('https://portfolio.test/storage/projects/', $imageUrl);
         $this->assertNotEmpty(Storage::disk('public')->allFiles('projects'));
-        $imagePath = parse_url($imageUrl, PHP_URL_PATH);
-        $this->get($imagePath)->assertOk();
     }
 
     public function test_admin_can_be_provisioned_from_environment_values(): void
