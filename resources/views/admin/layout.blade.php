@@ -25,6 +25,14 @@
                         <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
                         Dashboard
                     </a>
+                    <a href="{{ route('admin.projects') }}" class="{{ request()->routeIs('admin.projects*') ? 'bg-white/10 text-white' : 'text-white/65 hover:bg-white/5 hover:text-white' }} flex items-center gap-3 rounded-lg px-3 py-3 text-xs font-semibold no-underline transition">
+                        <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 20V9M13 13h4M13 16h4"/></svg>
+                        Portfolio projects
+                    </a>
+                    <a href="{{ route('admin.faqs') }}" class="{{ request()->routeIs('admin.faqs*') ? 'bg-white/10 text-white' : 'text-white/65 hover:bg-white/5 hover:text-white' }} flex items-center gap-3 rounded-lg px-3 py-3 text-xs font-semibold no-underline transition">
+                        <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.4 1.6c-1.2 1.1-2 1.3-2 3M12 17h.01"/></svg>
+                        FAQs
+                    </a>
                     <a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings*') ? 'bg-white/10 text-white' : 'text-white/65 hover:bg-white/5 hover:text-white' }} flex items-center gap-3 rounded-lg px-3 py-3 text-xs font-semibold no-underline transition">
                         <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.6.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.6-.9l-1.7.7-1.4-2.4 1.4-1.1a8 8 0 0 1 0-1.9l-1.4-1.1 1.4-2.4 1.7.7a8 8 0 0 1 1.6-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.6.9l1.7-.7 1.4 2.4-1.4 1.1a8 8 0 0 1 0 1.9Z"/></svg>
                         Website settings
