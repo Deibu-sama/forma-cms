@@ -12,6 +12,8 @@
     <title>{{ $settings['site_title'] ?? $settings['meta_title'] ?? ($settings['site_name'] ?? 'Bookkeeper Pro Portfolio') }}</title>
     @if(!empty($settings['favicon_url']))
         <link rel="icon" href="{{ $settings['favicon_url'] }}">
+    @else
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     @endif
     @viteReactRefresh
     @vite(['resources/css/app.css', 'resources/js/app.jsx'])
