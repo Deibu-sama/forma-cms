@@ -11,7 +11,7 @@ Bookkeeper Pro Portfolio is a responsive professional website for presenting boo
 - **Tailwind CSS v4** — design system, responsive layouts, spacing, type scale, color tokens, and component styling.
 - **Vite** — frontend development server and production asset bundling.
 - **Google Cloud Firestore** — public site settings and published portfolio entries; private enquiry records are written server-side.
-- **SQL / Laravel sessions** — reserved for future authenticated administration. A complete admin CMS is not implemented yet.
+- **SQL / Laravel sessions** — administrator accounts, sessions, and a local settings fallback when Firestore is unavailable.
 
 Laravel remains the backend. React runs in the browser and never receives Firestore service-account credentials. Tailwind is used for UI styling, not server-side business logic.
 
@@ -23,13 +23,17 @@ Laravel remains the backend. React runs in the browser and never receives Firest
 - Public settings and published projects are read by the Laravel Firestore adapter.
 - The contact endpoint validates input, has a honeypot and request rate limit, and attempts to save enquiries to Firestore.
 - SEO title/description, favicon URL support, social sharing metadata, reduced-motion support, keyboard focus styling, and mobile navigation.
+- Protected `/admin/login`, `/admin`, and `/admin/settings` screens with administrator role checks. The first admin is provisioned through a server-only Artisan command; no public registration exists.
+- Website settings can be saved to Firestore, or to a SQL fallback while Firestore is unavailable.
 - A GitHub Actions workflow builds the Vite production assets for PHP-only hosting.
 
-The project uses clearly labelled illustrative bookkeeping workflows in fallback mode. It does not invent client testimonials, credentials, revenue outcomes, or years of experience.
+Open `/admin/login` to sign in, `/admin` for the dashboard, and `/admin/settings` to edit the public brand name, browser title, favicon URL, homepage text, SEO description, contact email, and color palette. Admin accounts must be created on the server; do not create users directly from a public route. Migrations must be run before the admin login or settings fallback is used.
+
+When Firestore is available, settings are saved to `site_settings/main`. If Firestore is unavailable, settings can be saved to the SQL `site_settings_fallback` table so the settings form still works in preview mode. Keep that SQL database persistent in production. Published portfolio projects and enquiries still use Firestore. The project uses clearly labelled illustrative bookkeeping workflows in fallback mode. It does not invent client testimonials, credentials, revenue outcomes, or years of experience.
 
 ## Current limitations
 
-This is a public portfolio starter, **not yet a full content management system**. Admin login, settings editor, project CRUD, service/FAQ editors, inquiry review screens, automated email notifications, privacy notice, and retention/deletion workflows are not implemented. Enquiries can be saved only when Firestore is configured and the server account has write permission to the `inquiries` collection. Email notifications are not sent by the current endpoint.
+This is a public portfolio with a starter administration area, **not yet a full content management system**. Portfolio project CRUD, service/FAQ editors, inquiry review screens, automated email notifications, a published privacy notice, and retention/deletion workflows are not implemented. Enquiries can be saved only when Firestore is configured and the server account has write permission to the `inquiries` collection. Email notifications are not sent by the current endpoint.
 
 The portfolio describes bookkeeping, record organization, reconciliation support, and reporting preparation. It does not promise regulated tax, legal, audit, or investment advice. Define the actual permitted service scope for the operator’s jurisdiction before publishing.
 
@@ -49,6 +53,12 @@ Requirements: PHP 8.2+, Composer, Node.js 22 recommended, npm, and a Firestore p
 
    ```bash
    php artisan migrate
+   ```
+
+   Provision your first administrator interactively (choose a unique email; the password is entered as a hidden prompt):
+
+   ```bash
+   php artisan bookkeeper:make-admin admin@example.com
    ```
 
 2. Install frontend dependencies and start the app:
@@ -81,7 +91,7 @@ Set the following values in the Laravel environment, not in React or other brows
 
 The credentials variable contains a Base64-encoded service-account JSON document. Generate the Base64 value locally and store it in your hosting provider’s secret/environment settings. Never commit the service-account JSON, `.env`, API credentials, or private financial records.
 
-The adapter uses the Firestore REST transport for environments such as managed PHP hosting that do not provide the native gRPC extension.
+The adapter uses the Firestore REST transport for environments such as managed PHP hosting that do not provide the native gRPC extension. Server-side settings writes require write permission to `site_settings/main`.
 
 ### Public content
 
@@ -107,7 +117,7 @@ composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc
 
 Set production environment values including `APP_NAME="Bookkeeper Pro Portfolio"`, `APP_ENV=production`, `APP_DEBUG=false`, `APP_KEY`, `APP_URL`, Firestore settings, and database/session settings appropriate to your host. After changing environment variables, restart or redeploy and run `php artisan optimize:clear`.
 
-**Database warning:** Do not rely on ephemeral SQLite storage for production admin accounts or durable sessions. Configure a managed SQL database before introducing the authenticated admin CMS.
+**Database warning:** Do not rely on ephemeral SQLite storage for production admin accounts, sessions, or fallback settings. Configure a managed SQL database and run `php artisan migrate --force` before creating an administrator.
 
 ## Project documentation
 
