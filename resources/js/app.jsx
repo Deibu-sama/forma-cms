@@ -287,16 +287,18 @@ function App() {
   useEffect(() => {
     const sections = settings.content_sections || {};
     const sectionTargets = {
-      home: '#home', about: '#about', services: '#regional-services',
+      home: '#home', about: '#about', services: ['#services', '#regional-services'],
       'tax-compliance': '#tax-compliance', experience: '#experience', skills: '#skills',
       'how-i-work': '#approach', packages: '#packages', 'why-work-with-me': '#why-work-with-me', faqs: '#faqs',
     };
     Object.entries(sectionTargets).forEach(([key, selector]) => {
-      const element = document.querySelector(selector);
+      const elements = (Array.isArray(selector) ? selector : [selector]).map((item) => document.querySelector(item)).filter(Boolean);
       const data = sections[key];
-      if (!element || !data) return;
+      if (!elements.length || !data) return;
+      elements.forEach((element, elementIndex) => {
       element.hidden = data.enabled === false;
       element.style.display = data.enabled === false ? 'none' : '';
+      if (elementIndex > 0) return;
       const heading = element.querySelector('h1, h2, h3');
       if (heading && data.title) heading.textContent = data.title;
       const paragraph = element.querySelector('p');
@@ -327,6 +329,7 @@ function App() {
         }
         sub.textContent = data.subtitle;
       }
+      });
     });
     const faqSection = document.querySelector('#faqs');
     if (faqSection && sections.faqs?.enabled === false) faqSection.style.display = 'none';
@@ -670,7 +673,7 @@ function App() {
           </div>
         </section>
 
-        <section className="bg-[#eae4d7] px-5 py-16 sm:px-8 lg:px-10">
+        <section id="why-work-with-me" className="bg-[#eae4d7] px-5 py-16 sm:px-8 lg:px-10">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
             <div>
               <SectionLabel>Built on trust</SectionLabel>
