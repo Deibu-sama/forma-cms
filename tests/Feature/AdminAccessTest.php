@@ -63,7 +63,8 @@ final class AdminAccessTest extends TestCase
             ->get('/admin/settings')
             ->assertOk()
             ->assertSee('Make it yours.')
-            ->assertSee('Favicon image URL');
+            ->assertSee('Favicon image URL')
+            ->assertDontSee('Default placeholder image URL for software logos');
     }
 
     public function test_admin_can_sign_in_with_valid_credentials(): void
