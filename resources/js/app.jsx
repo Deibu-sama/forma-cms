@@ -54,9 +54,10 @@ function Header() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState('#home');
   const links = [
-    ['Services', '#services'],
-    ['Approach', '#approach'],
-    ['Portfolio', '#portfolio'],
+    ['About', '#about'],
+    ['Services', '#regional-services'],
+    ['Experience', '#experience'],
+    ['Work samples', '#portfolio'],
     ['FAQs', '#faqs'],
   ];
 
@@ -400,6 +401,117 @@ function App() {
             <p className="mt-6 max-w-4xl text-[11px] leading-5 text-brand-muted">
               Services are examples of bookkeeping support and must be agreed in writing before work begins. Tax preparation, tax opinions, legal advice, audit opinions, and investment advice are outside this portfolio’s stated scope.
             </p>
+          </div>
+        </section>
+
+        <section id="about" className="border-y border-brand-primary/10 bg-brand-surface px-5 py-20 sm:px-8 sm:py-28 lg:px-10">
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:gap-20">
+            <div>
+              <SectionLabel>About me</SectionLabel>
+              <h2 className="display-heading max-w-xl text-4xl font-semibold sm:text-5xl">Accuracy. Clarity. <span className="text-brand-accent">Confidence.</span></h2>
+              <p className="mt-6 max-w-lg text-sm leading-7 text-brand-muted sm:text-base sm:leading-8">I am a Management Accounting graduate with experience in accounting operations and accounts receivable monitoring in the healthcare industry. I value accuracy, consistency, confidentiality, and complete, organized financial records.</p>
+              <p className="mt-4 max-w-lg text-sm leading-7 text-brand-muted">My goal is to help businesses in the Philippines, Australia, and the United States understand their records and build a stronger foundation for informed decisions.</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                ['Accuracy', 'Careful recording and review of financial information.'],
+                ['Confidentiality', 'Responsible handling of sensitive business records.'],
+                ['Organization', 'Structured documentation and consistent workflows.'],
+                ['Continuous learning', 'Ongoing development of accounting and software knowledge.'],
+              ].map(([title, text], index) => (
+                <article key={title} className="rounded-xl border border-brand-primary/10 bg-brand-background p-6 transition duration-300 hover:-translate-y-1 hover:border-brand-accent/60 hover:shadow-lg">
+                  <span className="text-xs font-bold tracking-[.15em] text-brand-accent">0{index + 1}</span>
+                  <h3 className="mt-4 text-lg font-semibold">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-brand-muted">{text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="regional-services" className="bg-brand-background px-5 py-20 sm:px-8 sm:py-28 lg:px-10">
+          <div className="mx-auto max-w-7xl">
+            <div className="max-w-3xl">
+              <SectionLabel>Services by region</SectionLabel>
+              <h2 className="display-heading text-4xl font-semibold sm:text-5xl">Practical support for <span className="text-brand-accent">your books.</span></h2>
+              <p className="mt-5 text-sm leading-7 text-brand-muted sm:text-base sm:leading-8">The exact service scope depends on your business, jurisdiction, records, and agreed responsibilities.</p>
+            </div>
+            <div className="mt-10 grid gap-5 lg:grid-cols-3">
+              {[
+                {code:'PH', title:'Philippine bookkeeping', intro:'For Philippine-based businesses, entrepreneurs, and service providers.', items:['Sales, purchases, income, and expense tracking','Accounts receivable and payable monitoring','Bank and cash reconciliation','Trial balances and financial reports','Payroll-related accounting support','BIR compliance recordkeeping and deadline tracking','Support for VAT, percentage tax, and withholding-tax documentation where applicable']},
+                {code:'AU', title:'Australian bookkeeping', intro:'For Australian small businesses, sole traders, and service providers.', items:['Transaction recording and categorization','Bank reconciliation and expense tracking','Invoicing and supplier bill recording','GST tracking and reconciliation','BAS preparation support and supporting schedules','Payroll and PAYG withholding recordkeeping support where applicable','Profit and loss, balance sheet, and year-end schedules']},
+                {code:'US', title:'US bookkeeping', intro:'For US small businesses, consultants, and service-based companies.', items:['Business transaction and credit card reconciliation','Accounts payable, receivable, and invoicing','General ledger maintenance and account review','Monthly profit and loss and balance sheet reports','Payroll-related recordkeeping support','Sales tax transaction tracking where applicable','Year-end schedules for tax return preparation']},
+              ].map((region) => (
+                <article key={region.code} className="service-card flex flex-col rounded-xl border border-brand-primary/10 bg-brand-surface p-6 transition duration-300 hover:-translate-y-1 hover:border-brand-accent/60 hover:shadow-xl sm:p-7">
+                  <div className="flex items-center justify-between gap-3"><span className="grid h-11 w-11 place-items-center rounded-lg bg-brand-primary text-sm font-bold text-brand-accent">{region.code}</span><Icon name="globe" size={19} className="text-brand-accent" /></div>
+                  <h3 className="mt-6 text-xl font-semibold tracking-[-.035em]">{region.title}</h3>
+                  <p className="mt-2 text-xs leading-6 text-brand-muted">{region.intro}</p>
+                  <ul className="mt-5 space-y-3 border-t border-brand-primary/10 pt-5">
+                    {region.items.map((item) => <li key={item} className="flex items-start gap-2 text-xs leading-5 text-brand-text"><Icon name="check" size={14} className="mt-0.5 shrink-0 text-brand-accent" />{item}</li>)}
+                  </ul>
+                </article>
+              ))}
+            </div>
+            <div className="mt-6 rounded-xl border border-brand-accent/30 bg-brand-surface p-5 sm:p-6">
+              <h3 className="font-semibold">Tax compliance support — with clear boundaries</h3>
+              <p className="mt-2 max-w-4xl text-sm leading-7 text-brand-muted">I can help organize financial information and supporting documents, reconcile tax-related accounts, prepare schedules, track relevant deadlines, and coordinate records with your authorized tax professional. Tax advice, return preparation, filing, lodgment, or representation is included only where permitted and appropriately authorized.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="experience" className="section-grid border-y border-brand-primary/10 bg-brand-surface px-5 py-20 sm:px-8 sm:py-28 lg:px-10">
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[.8fr_1.2fr] lg:gap-20">
+            <div>
+              <SectionLabel>Professional experience</SectionLabel>
+              <h2 className="display-heading text-4xl font-semibold sm:text-5xl">Accounting operations, grounded in <span className="text-brand-accent">detail.</span></h2>
+              <p className="mt-5 text-sm leading-7 text-brand-muted">Accounting Staff · ACE Medical Center, Tuguegarao</p>
+              <p className="mt-1 text-xs font-semibold uppercase tracking-[.13em] text-brand-accent">September 2024 – September 2026</p>
+              <div className="mt-8 rounded-xl bg-brand-background p-5">
+                <h3 className="text-sm font-semibold">Software & technical skills</h3>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {['BizBox Financial Management System','QuickBooks','Xero','Microsoft Excel','Power BI'].map((tool) => <span key={tool} className="rounded-full border border-brand-primary/10 bg-brand-surface px-3 py-2 text-xs font-medium">{tool}</span>)}
+                </div>
+                <p className="mt-4 text-[11px] leading-5 text-brand-muted">Software familiarity and proficiency should be discussed honestly according to the specific workflow and engagement.</p>
+              </div>
+            </div>
+            <div>
+              <div className="space-y-0 divide-y divide-brand-primary/10 border-y border-brand-primary/10">
+                {[
+                  'Posted official receipts and recorded cash collections in the BizBox Financial Management System.',
+                  'Monitored accounts receivable aging and outstanding balances.',
+                  'Tracked collections involving HMOs, PhilHealth, guaranteed letters, and promissory notes.',
+                  'Supported cash collection audits and maintained collection records.',
+                  'Monitored and issued official receipt booklets.',
+                  'Coordinated with departments on collections, payments, and financial documentation.',
+                  'Assisted with supplier payment processing, payroll-related tasks, and other accounting operations.',
+                ].map((item, index) => <div key={item} className="flex gap-4 py-5"><span className="mt-0.5 text-xs font-bold text-brand-accent">0{index + 1}</span><p className="text-sm leading-6 text-brand-muted">{item}</p></div>)}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="packages" className="bg-brand-background px-5 py-20 sm:px-8 sm:py-28 lg:px-10">
+          <div className="mx-auto max-w-7xl">
+            <div className="max-w-2xl">
+              <SectionLabel>Engagement packages</SectionLabel>
+              <h2 className="display-heading text-4xl font-semibold sm:text-5xl">Support that fits <span className="text-brand-accent">the work.</span></h2>
+              <p className="mt-5 text-sm leading-7 text-brand-muted">Packages below describe possible scopes. Pricing and final deliverables are agreed after discussing your records and requirements.</p>
+            </div>
+            <div className="mt-10 grid gap-5 lg:grid-cols-3">
+              {[
+                {name:'Essential Bookkeeping', audience:'For freelancers and smaller businesses.', items:['Transaction recording and categorization','Bank reconciliation','Income and expense tracking','Basic financial summary']},
+                {name:'Complete Bookkeeping', audience:'For businesses requiring regular bookkeeping and reporting.', items:['Essential bookkeeping services','Accounts receivable and payable monitoring','Reconciliation of agreed accounts','Monthly financial reports','Supporting schedules for tax compliance']},
+                {name:'Bookkeeping & Reporting Support', audience:'For businesses seeking additional reporting and analysis.', items:['Complete bookkeeping services','Customized Excel schedules','Financial performance summaries','Dashboard support where suitable','Coordination with the client’s tax professional']},
+              ].map((pack, index) => (
+                <article key={pack.name} className={'service-card flex flex-col rounded-xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-7 ' + (index === 1 ? 'border-brand-accent/70 bg-brand-surface shadow-md' : 'border-brand-primary/10 bg-brand-surface')}>
+                  <span className="text-[10px] font-bold uppercase tracking-[.18em] text-brand-accent">Package 0{index + 1}</span>
+                  <h3 className="mt-4 text-xl font-semibold tracking-[-.04em]">{pack.name}</h3>
+                  <p className="mt-2 text-sm leading-6 text-brand-muted">{pack.audience}</p>
+                  <ul className="mt-6 flex-1 space-y-3 border-t border-brand-primary/10 pt-5">{pack.items.map((item) => <li key={item} className="flex items-start gap-2 text-xs leading-5"><Icon name="check" size={14} className="mt-0.5 shrink-0 text-brand-accent" />{item}</li>)}</ul>
+                  <a href="#contact" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-brand-primary no-underline hover:text-brand-accent">Discuss this package <Icon name="arrow" size={15}/></a>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
