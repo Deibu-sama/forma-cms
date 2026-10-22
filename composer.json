@@ -2,7 +2,7 @@
   "$schema": "https://getcomposer.org/schema.json",
   "name": "formacms/formacms",
   "type": "project",
-  "description": "A theme-driven, customizable portfolio CMS starter.",
+  "description": "Bookkeeping portfolio website built with Laravel, React, Tailwind CSS, and Firestore.",
   "keywords": ["laravel", "cms", "portfolio", "tailwind", "firestore"],
   "license": "MIT",
   "require": {
