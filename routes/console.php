@@ -1,7 +1,7 @@
 <?php
 
-use App\\Models\\User;
-use Illuminate\\Support\\Facades\\Artisan;
+use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 
 Artisan::command('formacms:about', function () {
     $this->info('Bookkeeper Pro Portfolio — Laravel, React, Tailwind CSS, and Firestore.');
@@ -10,9 +10,8 @@ Artisan::command('formacms:about', function () {
 /*
  * Provision an administrator from trusted server environment variables or
  * secure interactive prompts. There is intentionally no public registration.
- * When environment credentials are configured, this command is safe to rerun:
- * it synchronizes the configured account so deploys and credential rotations
- * keep the admin login aligned with the hosting environment.
+ * When environment credentials are configured, this command can be rerun to
+ * synchronize the configured account with the hosting environment.
  */
 Artisan::command('bookkeeper:make-admin {email?}', function () {
     $envEmail = config('admin.email');
@@ -72,7 +71,7 @@ Artisan::command('bookkeeper:make-admin {email?}', function () {
             return 1;
         }
 
-        $password = (string) $this->secret('Choose a password (minimum 12 characters)');
+        $password = (string) $this->secret('Choose a password');
         $confirmation = (string) $this->secret('Confirm password');
 
         if (! hash_equals($password, $confirmation)) {
@@ -88,8 +87,8 @@ Artisan::command('bookkeeper:make-admin {email?}', function () {
         return 1;
     }
 
-    if (strlen($password) < 12) {
-        $this->error('The administrator password must contain at least 12 characters. Choose a strong, unique password.');
+    if ($password === '') {
+        $this->error('The administrator password cannot be empty.');
 
         return 1;
     }
@@ -97,7 +96,7 @@ Artisan::command('bookkeeper:make-admin {email?}', function () {
     $user = User::query()->firstOrNew(['email' => $email]);
     $wasExisting = $user->exists;
     $user->name = $name;
-    $user->password = $password; // User model's hashed cast handles password hashing.
+    $user->password = $password; // User model's hashed cast hashes the password.
     $user->is_admin = true;
     $user->email_verified_at ??= now();
     $user->save();
