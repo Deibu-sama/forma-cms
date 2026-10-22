@@ -107,13 +107,31 @@ final class AdminController
         ]);
         $settings = $content->settings();
         $sections = $settings['content_sections'] ?? [];
+        $softwareTools = [];
+        $items = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $data['items_text'] ?? '') ?: []), fn ($item) => $item !== ''));
+        if ($section === 'skills') {
+            $items = [];
+            foreach (preg_split('/\r\n|\r|\n/', $data['items_text'] ?? '') ?: [] as $line) {
+                $line = trim($line);
+                if ($line === '') continue;
+                $parts = array_map('trim', explode('|', $line, 2));
+                $name = $parts[0] ?? '';
+                $logoUrl = $parts[1] ?? '';
+                if ($name === '' || mb_strlen($name) > 180 || ($logoUrl !== '' && (filter_var($logoUrl, FILTER_VALIDATE_URL) === false || ! str_starts_with(strtolower($logoUrl), 'https://')))) {
+                    return back()->withInput()->with('error', 'For software skills, use one item per line in the format: Software name | HTTPS logo image URL. The image URL can be left blank.');
+                }
+                $items[] = $name;
+                $softwareTools[] = ['name' => $name, 'logo_url' => $logoUrl];
+            }
+        }
         $sections[$section] = [
             'title' => trim($data['title']),
             'subtitle' => trim($data['subtitle'] ?? ''),
             'body' => trim($data['body'] ?? ''),
-            'items' => array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $data['items_text'] ?? '') ?: []), fn ($item) => $item !== '')),
+            'items' => $items,
             'enabled' => $request->boolean('enabled'),
         ];
+        if ($section === 'skills') $sections[$section]['software_tools'] = $softwareTools;
         $settings['content_sections'] = $sections;
         $savedTo = $content->saveSettings($this->settingsPayload($settings));
         if ($savedTo === false) return back()->withInput()->with('error', 'Section could not be saved. Check the database connection and try again.');
@@ -307,6 +325,7 @@ final class AdminController
             'tagline' => ['nullable', 'string', 'max:160'],
             'theme' => ['nullable', 'in:classic-corporate,sage-editorial,modern-lavender,ocean-professional,warm-minimal'],
             'favicon_url' => ['nullable', 'url:https', 'max:2048'],
+            'placeholder_image_url' => ['nullable', 'url:https', 'max:2048'],
             'profile_image_url' => ['nullable', 'url:https', 'max:2048'],
             'hero_image_url' => ['nullable', 'url:https', 'max:2048'],
             'hero_image_alt' => ['nullable', 'string', 'max:240'],
