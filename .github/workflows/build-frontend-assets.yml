@@ -43,7 +43,7 @@ jobs:
           coverage: none
 
       - name: Lint Laravel PHP source
-        run: find app routes config -type f -name "*.php" -print0 | xargs -0 -n1 php -l
+        run: find app routes config bootstrap database/migrations -type f -name "*.php" -print0 | xargs -0 -n1 php -l
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
