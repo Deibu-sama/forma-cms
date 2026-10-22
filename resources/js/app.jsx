@@ -331,12 +331,12 @@ function App() {
           <div className="pointer-events-none absolute -right-10 top-28 h-64 w-64 rounded-full border border-brand-accent/20 sm:right-[8%] sm:top-24 sm:h-[22rem] sm:w-[22rem]" />
           <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-5 py-16 sm:px-8 sm:py-24 lg:grid-cols-[1.03fr_.97fr] lg:gap-14 lg:px-10 lg:py-28">
             <div className="relative z-10">
-              <SectionLabel light>{settings.eyebrow || 'BOOKKEEPING · RECONCILIATION · REPORTING'}</SectionLabel>
+              <SectionLabel light>{settings.eyebrow || 'ACCURACY · CLARITY · CONFIDENCE'}</SectionLabel>
               <h1 className="display-heading max-w-2xl text-5xl font-semibold sm:text-6xl lg:text-[4.55rem] xl:text-[5rem]">
                 {headlineLines.map((line, index) => <span key={index} className={'block ' + (index === headlineLines.length - 1 && headlineLines.length > 1 ? 'mt-2 text-brand-accent' : '')}>{line}</span>)}
               </h1>
               <p className="mt-7 max-w-xl text-base leading-8 text-white/70 sm:text-lg">
-                {settings.description || 'Reliable bookkeeping support that helps you keep records organized, understand what needs attention, and feel more prepared for your next business decision.'}
+                {settings.description || 'Professional bookkeeping support for businesses in the Philippines, Australia, and the United States. I help maintain accurate financial records, monitor transactions, reconcile accounts, and prepare clear financial reports.'}
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <a href="#contact" className="button-lift inline-flex min-h-13 items-center justify-center gap-3 rounded-md bg-brand-accent px-6 py-3.5 text-sm font-bold text-brand-primary no-underline hover:bg-[#d1b579]">
