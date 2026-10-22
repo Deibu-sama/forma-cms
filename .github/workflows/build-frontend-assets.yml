@@ -49,7 +49,7 @@ jobs:
         run: find app routes config bootstrap database/migrations tests -type f -name "*.php" -print0 | xargs -0 -n1 php -l
 
       - name: Install PHP dependencies
-        run: composer install --no-interaction --prefer-dist --no-progress --ignore-platform-req=ext-grpc
+        run: composer install --no-interaction --prefer-dist --no-progress
 
       - name: Create local test environment file
         run: cp .env.example .env
