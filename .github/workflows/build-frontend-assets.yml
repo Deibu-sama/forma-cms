@@ -13,6 +13,8 @@ on:
       - "config/**/*.php"
       - "bootstrap/**/*.php"
       - "database/migrations/**"
+      - "tests/**"
+      - "phpunit.xml"
       - "vite.config.js"
       - "package.json"
       - "package-lock.json"
@@ -40,10 +42,27 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.3"
+          extensions: mbstring, pdo_sqlite, sqlite3
           coverage: none
 
       - name: Lint Laravel PHP source
-        run: find app routes config bootstrap database/migrations -type f -name "*.php" -print0 | xargs -0 -n1 php -l
+        run: find app routes config bootstrap database/migrations tests -type f -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress --ignore-platform-req=ext-grpc
+
+      - name: Run Laravel feature tests
+        env:
+          APP_ENV: testing
+          APP_DEBUG: "true"
+          APP_KEY: "base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
+          CACHE_STORE: array
+          SESSION_DRIVER: array
+          QUEUE_CONNECTION: sync
+          MAIL_MAILER: array
+        run: php artisan test
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
