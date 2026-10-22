@@ -25,7 +25,11 @@ php artisan storage:link --force
 # Provision/synchronize the admin from private host environment variables.
 # The command validates all three values and enforces a 12-character minimum.
 if [ -n "${ADMIN_EMAIL:-}" ] || [ -n "${ADMIN_NAME:-}" ] || [ -n "${ADMIN_PASSWORD:-}" ]; then
-  php artisan bookkeeper:make-admin
+  # A provisioning error must not prevent the web server from binding to PORT.
+  # Keep the validation strict, but report the problem and let the app start.
+  if ! php artisan bookkeeper:make-admin; then
+    echo "WARNING: Administrator provisioning was skipped. The web app will still start. Set ADMIN_EMAIL, ADMIN_NAME, and ADMIN_PASSWORD (at least 12 characters) in Render to enable admin login." >&2
+  fi
 fi
 
 PORT="${PORT:-8080}"
