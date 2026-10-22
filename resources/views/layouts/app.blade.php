@@ -4,8 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="{{ $settings['meta_description'] ?? $settings['description'] ?? 'A considered portfolio of selected work, ideas, and collaborations.' }}">
-    <meta name="theme-color" content="#172d43">
-    <title>{{ $settings['meta_title'] ?? ($settings['site_name'] ?? config('app.name')) }}</title>
+    <meta name="theme-color" content="{{ $settings['custom_colors']['primary'] ?? '#14283F' }}">
+    <title>{{ $settings['site_title'] ?? $settings['meta_title'] ?? ($settings['site_name'] ?? config('app.name')) }}</title>
+    @if(!empty($settings['favicon_url']))
+        <link rel="icon" href="{{ $settings['favicon_url'] }}">
+    @endif
     @if (file_exists(public_path('build/manifest.json')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
