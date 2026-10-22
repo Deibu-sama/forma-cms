@@ -91,7 +91,7 @@ Set the following values in the Laravel environment, not in React or other brows
 
 The credentials variable contains a Base64-encoded service-account JSON document. Generate the Base64 value locally and store it in your hosting provider’s secret/environment settings. Never commit the service-account JSON, `.env`, API credentials, or private financial records.
 
-The adapter uses the Firestore REST transport for environments such as managed PHP hosting that do not provide the native gRPC extension. Server-side settings writes require write permission to `site_settings/main`.
+The application uses Google's authenticated Firestore HTTPS REST API directly, with server-side service-account OAuth. It does not construct the `google/cloud-firestore` client and does not require the PHP gRPC extension. Server-side settings writes require write permission to `site_settings/main`.
 
 ### Public content
 
@@ -112,7 +112,7 @@ Example managed-PHP build command:
 ```bash
 mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs
 chmod -R u+rwX bootstrap/cache storage
-composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc
+composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
 ```
 
 Set production environment values including `APP_NAME="Bookkeeper Pro Portfolio"`, `APP_ENV=production`, `APP_DEBUG=false`, `APP_KEY`, `APP_URL`, Firestore settings, and database/session settings appropriate to your host. After changing environment variables, restart or redeploy and run `php artisan optimize:clear`.
