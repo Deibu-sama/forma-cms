@@ -93,12 +93,6 @@ Artisan::command('bookkeeper:make-admin {email?}', function () {
         return 1;
     }
 
-    if (strlen($password) < 12) {
-        $this->error('The administrator password must contain at least 12 characters. Choose a strong, unique password.');
-
-        return 1;
-    }
-
     $user = User::query()->firstOrNew(['email' => $email]);
     $wasExisting = $user->exists;
     $user->name = $name;
