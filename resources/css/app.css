@@ -34,8 +34,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .display-heading { letter-spacing: -.065em; line-height: .98; }
 .eyebrow { letter-spacing: .18em; }
 .hero-pattern {
-  background-color: #14283f;
-  background-image: radial-gradient(circle at 78% 24%, rgba(185,154,97,.16), transparent 24rem), linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-color: var(--brand-primary);
+  background-image: radial-gradient(circle at 78% 24%, color-mix(in srgb, var(--brand-accent) 17%, transparent), transparent 24rem), linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
   background-size: auto, 56px 56px, 56px 56px;
 }
 .dashboard-card { box-shadow: 0 32px 80px rgba(2, 12, 23, .24), 0 0 0 1px rgba(255,255,255,.09); }
