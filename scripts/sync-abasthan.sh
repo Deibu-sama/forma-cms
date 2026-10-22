@@ -66,6 +66,9 @@ mkdir -p "$APP_ROOT/public/build"
 cp -a "$SOURCE_ROOT/public/build/." "$APP_ROOT/public/build/"
 cp "$SOURCE_ROOT/public/favicon.svg" "$APP_ROOT/public/favicon.svg"
 
+echo "Ensuring public upload storage is linked..."
+php artisan storage:link || true
+
 echo "Clearing Laravel caches..."
 php artisan optimize:clear
 
