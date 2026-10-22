@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
@@ -134,6 +136,36 @@ final class AdminAccessTest extends TestCase
             ->assertOk()
             ->assertSee('My Bookkeeping Studio | Bookkeeping Support');
     }
+    public function test_admin_can_upload_a_project_image(): void
+    {
+        config(['services.firestore.project_id' => null, 'services.firestore.credentials_base64' => null, 'app.url' => 'https://portfolio.test']);
+        Storage::fake('public');
+
+        $admin = User::query()->create([
+            'name' => 'Portfolio Admin',
+            'email' => 'admin@example.com',
+            'password' => 'A-secure-test-password',
+            'is_admin' => true,
+        ]);
+
+        $this->actingAs($admin)
+            ->post('/admin/projects', [
+                'title' => 'Sample project',
+                'category' => 'Bookkeeping',
+                'summary' => 'A sample work item.',
+                'image_file' => UploadedFile::fake()->image('sample-project.jpg'),
+            ])
+            ->assertRedirect(route('admin.projects'))
+            ->assertSessionHas('success');
+
+        $encoded = DB::table('site_settings_fallback')->where('id', 1)->value('settings');
+        $saved = json_decode((string) $encoded, true, 512, JSON_THROW_ON_ERROR);
+        $imageUrl = $saved['projects'][0]['image_url'] ?? '';
+
+        $this->assertStringStartsWith('https://portfolio.test/storage/projects/', $imageUrl);
+        $this->assertNotEmpty(Storage::disk('public')->allFiles('projects'));
+    }
+
     public function test_admin_can_be_provisioned_from_environment_values(): void
     {
         config([
