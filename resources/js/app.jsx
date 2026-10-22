@@ -607,11 +607,20 @@ function App() {
           </div>
         </div>
       </section>
-      <footer className="bg-brand-background px-5 py-7 sm:px-8 lg:px-10">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 border-t border-brand-primary/15 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <a href="#home" className="inline-flex w-fit items-center gap-3 no-underline"><BrandMark /></a>
-          <p className="max-w-xl text-[10px] leading-5 text-brand-muted">© {new Date().getFullYear()} {settings.site_name || settings.brand_name || 'Professional Portfolio'}. {settings.footer_note ? settings.footer_note + ' · ' : ''}Bookkeeping and record-organization support only; not tax, legal, audit, or investment advice.</p>
-          <a href="#contact" className="inline-flex items-center gap-2 text-xs font-semibold text-brand-primary no-underline hover:text-brand-accent">Get in touch <Icon name="arrowUp" size={14} /></a>
+      <footer className="portfolio-footer bg-brand-background px-5 py-9 sm:px-8 lg:px-10">
+        <div className="mx-auto max-w-7xl border-t border-brand-primary/15 pt-8">
+          <div className="grid gap-7 md:grid-cols-[1fr_1.5fr_auto] md:items-center md:gap-10">
+            <a href="#home" className="inline-flex w-fit items-center gap-3 no-underline"><BrandMark /></a>
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold leading-6 text-brand-text">Independent bookkeeping support, with care and clarity.</p>
+              <p className="mt-2 text-[11px] leading-6 text-brand-muted">© {new Date().getFullYear()} {settings.site_name || settings.brand_name || 'Professional Portfolio'}. {settings.footer_note ? settings.footer_note + ' ' : ''}Bookkeeping and record-organization support only; not tax, legal, audit, or investment advice.</p>
+            </div>
+            <a href="#contact" className="footer-contact-link inline-flex w-fit items-center gap-3 rounded-full border border-brand-primary/15 px-5 py-3 text-xs font-semibold text-brand-primary no-underline transition hover:border-brand-accent hover:bg-brand-surface">Get in touch <Icon name="arrowUp" size={14} /></a>
+          </div>
+          <div className="mt-7 flex flex-col gap-2 border-t border-brand-primary/10 pt-4 text-[10px] text-brand-muted sm:flex-row sm:items-center sm:justify-between">
+            <span>Thoughtful work. Clear communication.</span>
+            <a href="#home" className="w-fit text-brand-muted no-underline transition hover:text-brand-primary">Back to top ↑</a>
+          </div>
         </div>
       </footer>
     </div>
