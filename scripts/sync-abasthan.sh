@@ -31,6 +31,21 @@ for directory in app bootstrap config database/migrations resources routes; do
   cp -a "$SOURCE_ROOT/$directory/." "$APP_ROOT/$directory/"
 done
 
+# The REST Firestore adapter uses google/auth and Guzzle rather than the
+# gRPC-bound google/cloud-firestore client.
+cp "$SOURCE_ROOT/composer.json" "$APP_ROOT/composer.json"
+
+if command -v composer >/dev/null 2>&1; then
+  echo "Installing the current PHP dependencies..."
+  composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
+elif php -r 'require "vendor/autoload.php"; exit(class_exists("Google\\Auth\\Credentials\\ServiceAccountCredentials") && class_exists("GuzzleHttp\\Client") ? 0 : 1);'; then
+  echo "Composer is unavailable, but the existing vendor directory already includes the Firestore REST dependencies."
+else
+  echo "Error: Composer is unavailable and the existing vendor directory lacks google/auth or Guzzle." >&2
+  echo "Install Composer dependencies in the PHP build environment, then rerun this script." >&2
+  exit 1
+fi
+
 mkdir -p "$APP_ROOT/public/build"
 cp -a "$SOURCE_ROOT/public/build/." "$APP_ROOT/public/build/"
 cp "$SOURCE_ROOT/public/favicon.svg" "$APP_ROOT/public/favicon.svg"
@@ -47,4 +62,4 @@ echo "If no administrator exists yet, create one with:"
 echo "  php artisan bookkeeper:make-admin your-admin-email@example.com"
 echo "Then sign in at /admin/login and open /admin/settings."
 echo
-echo "This script deliberately did not overwrite .env, vendor, storage, or your existing database."
+echo "This script preserves .env, storage, and your existing database. It refreshes Composer dependencies when Composer is available; otherwise, it verifies the needed REST dependencies are already installed."
