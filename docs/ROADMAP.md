@@ -37,13 +37,16 @@ Acceptance: published project content can render from Firestore and draft record
 Acceptance: the homepage builds for production and is responsive. Live-host verification and automated accessibility testing are still required.
 
 ## Milestone 4 — Admin CMS
-- [ ] Implement Laravel authentication and no-public-registration policy.
-- [ ] Add authorization policies/Gates for management routes.
-- [ ] Build section editor with allowlisted section types.
-- [ ] Add ordering, visibility, draft/publish, and preview.
-- [ ] Build CRUD for projects, services, packages, FAQs, and settings.
+- [x] Add Laravel session login with no public registration.
+- [x] Require an administrator role on protected admin routes.
+- [x] Add an admin dashboard.
+- [x] Add a Website Settings form for site title, favicon URL, brand colors, main copy, contact details, and SEO description.
+- [x] Provide a server-only Artisan command to create the first administrator.
+- [x] Persist settings to Firestore, with a SQL fallback for preview mode.
+- [ ] Build CRUD for projects, services, packages, FAQs, and page sections.
+- [ ] Add draft previews, ordering, and visibility controls.
 
-Acceptance: an authorized admin can update content without editing source code; unauthorized users cannot access admin data.
+Acceptance: an authorized admin can change website settings without editing source code; unauthorized users cannot access admin data. Content collection editors remain planned work.
 
 ## Milestone 5 — Theme editor
 - [ ] Add classic, minimal, and premium theme presets.
