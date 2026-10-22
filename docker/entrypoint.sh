@@ -20,6 +20,7 @@ fi
 
 php artisan config:clear
 php artisan migrate --force
+php artisan storage:link --force
 
 # Provision/synchronize the admin from private host environment variables.
 # The command validates all three values and enforces a 12-character minimum.
