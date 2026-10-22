@@ -217,7 +217,10 @@ final class AdminController
     {
         if ($request->hasFile('image_file')) {
             $path = $request->file('image_file')->storePublicly($directory, 'public');
-            return $path ? asset('storage/' . $path) : '';
+            if (! is_string($path) || $path === '') {
+                throw ValidationException::withMessages(['image_file' => 'The image could not be saved. Please try again or use a public HTTPS image URL.']);
+            }
+            return asset('storage/' . $path);
         }
 
         $providedUrl = trim((string) ($data['image_url'] ?? ''));
