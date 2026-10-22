@@ -80,6 +80,7 @@ final class AdminController
             'how-i-work' => 'How I Work',
             'packages' => 'Engagement Packages',
             'why-work-with-me' => 'Why Work With Me',
+            'faqs' => 'Frequently Asked Questions',
         ];
     }
 
