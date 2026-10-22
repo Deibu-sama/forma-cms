@@ -575,7 +575,7 @@ function App() {
                   ).map((tool, index) => (
                     <div key={tool.name + index} className="flex min-w-0 items-center gap-3 rounded-xl border border-brand-primary/10 bg-brand-surface p-3">
                       <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-brand-primary/10 bg-white p-1.5">
-                        {tool.logo_url ? <img src={tool.logo_url} alt={tool.name + ' logo'} loading="lazy" className="h-full w-full object-contain" onError={(event) => { event.currentTarget.style.display = 'none'; }} /> : <span className="text-sm font-bold text-brand-muted">{tool.name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()}</span>}
+                        {tool.logo_url ? <><img src={tool.logo_url} alt={tool.name + ' logo'} loading="lazy" className="h-full w-full object-contain" onError={(event) => { event.currentTarget.style.display = 'none'; const fallback = event.currentTarget.parentElement?.querySelector('[data-logo-fallback]'); if (fallback) fallback.style.display = 'grid'; }} /><span data-logo-fallback style={{ display: 'none' }} className="text-sm font-bold text-brand-muted">{tool.name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()}</span></> : <span className="text-sm font-bold text-brand-muted">{tool.name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()}</span>}
                       </div>
                       <span className="text-xs font-medium leading-5">{tool.name}</span>
                     </div>
