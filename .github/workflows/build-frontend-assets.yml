@@ -7,9 +7,12 @@ on:
     paths:
       - "resources/css/**"
       - "resources/js/**"
+      - "resources/views/**"
       - "app/**/*.php"
       - "routes/**/*.php"
       - "config/**/*.php"
+      - "bootstrap/**/*.php"
+      - "database/migrations/**"
       - "vite.config.js"
       - "package.json"
       - "package-lock.json"
