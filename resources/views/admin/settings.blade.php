@@ -31,7 +31,7 @@
         </div>
     @endunless
 
-    <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="space-y-6">
+    <form method="POST" action="{{ route('admin.settings.update') }}" class="space-y-6">
         @csrf
         @method('PUT')
 
@@ -44,10 +44,10 @@
                 <div><label for="brand_name" class="mb-2 block text-xs font-semibold">Your name <span class="text-rose-700">*</span></label><input id="brand_name" name="brand_name" value="{{ old('brand_name', $settings['brand_name'] ?? 'Your Name') }}" required maxlength="100" class="form-field text-sm"><p class="mt-1.5 text-[10px] text-[#68727b]">Displayed as text only. This portfolio does not use a company logo.</p></div>
                 <div class="sm:col-span-2"><label for="site_title" class="mb-2 block text-xs font-semibold">Browser page title <span class="text-rose-700">*</span></label><input id="site_title" name="site_title" value="{{ old('site_title', $settings['site_title'] ?? 'Bookkeeper Pro Portfolio | Bookkeeping & Reporting Support') }}" required maxlength="180" class="form-field text-sm"><p class="mt-1.5 text-[10px] text-[#68727b]">Appears in the browser tab and most search result titles.</p></div>
                 <div class="sm:col-span-2"><label for="tagline" class="mb-2 block text-xs font-semibold">Professional title / tagline</label><input id="tagline" name="tagline" value="{{ old('tagline', $settings['tagline'] ?? 'Bookkeeping Professional') }}" maxlength="160" class="form-field text-sm" placeholder="Bookkeeping Professional"></div>
-                <div class="sm:col-span-2"><label for="profile_image" class="mb-2 block text-xs font-semibold">Upload your professional photo</label>
-                    @if(!empty($settings['profile_image_url']))<img src="{{ $settings['profile_image_url'] }}" alt="Current profile photo" class="mb-3 h-36 w-32 rounded-xl border border-[#14283f]/10 object-cover">@endif
-                    <input id="profile_image" name="profile_image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="form-field text-sm">
-                    <p class="mt-1.5 text-[10px] leading-5 text-[#68727b]">Upload a clear headshot (JPG, PNG, or WebP, up to 4 MB). Render needs persistent storage for uploaded files to survive redeploys.</p>
+                <div class="sm:col-span-2"><label for="profile_image_url" class="mb-2 block text-xs font-semibold">Your professional photo URL</label>
+                    @if(!empty($settings['profile_image_url']))<img src="{{ $settings['profile_image_url'] }}" alt="Current profile photo preview" class="mb-3 h-36 w-32 rounded-xl border border-[#14283f]/10 object-cover" onerror="this.style.display='none'">@endif
+                    <input id="profile_image_url" name="profile_image_url" type="url" value="{{ old('profile_image_url', $settings['profile_image_url'] ?? '') }}" maxlength="2048" inputmode="url" placeholder="https://example.com/your-professional-photo.jpg" class="form-field text-sm">
+                    <p class="mt-1.5 text-[10px] leading-5 text-[#68727b]">Paste a direct HTTPS link to your portrait image. The link must be publicly accessible; use a direct image URL, not a private Google Drive page or an album page.</p>
                 </div>
                 <div class="sm:col-span-2"><label for="favicon_url" class="mb-2 block text-xs font-semibold">Optional browser icon URL</label><input id="favicon_url" name="favicon_url" type="url" value="{{ old('favicon_url', $settings['favicon_url'] ?? '') }}" maxlength="2048" inputmode="url" placeholder="https://example.com/favicon.png" class="form-field text-sm"><p class="mt-1.5 text-[10px] leading-5 text-[#68727b]">Optional only; the portfolio header itself uses no logo.</p></div>
                 <div class="sm:col-span-2"><label for="hero_image_url" class="mb-2 block text-xs font-semibold">Hero image URL <span class="font-normal text-[#68727b]">(optional)</span></label><input id="hero_image_url" name="hero_image_url" type="url" value="{{ old('hero_image_url', $settings['hero_image_url'] ?? '') }}" maxlength="2048" placeholder="https://your-domain.com/hero-image.jpg" class="form-field text-sm"><p class="mt-1.5 text-[10px] text-[#68727b]">If provided, the homepage uses this image instead of the CSS dashboard illustration.</p></div>
