@@ -1,8 +1,8 @@
-# FormaCMS — Implementation Plan
+# Bookkeeper Pro Portfolio — Implementation Plan
 
 ## 1. Product definition
 
-FormaCMS is a reusable, theme-driven CMS starter for portfolio and service-business websites. It must not assume a particular owner, business, country, service category, or contact address. Branding and content are installation-level configuration.
+This repository began as a reusable FormaCMS foundation and currently ships a Bookkeeper Pro Portfolio instance. The public design uses bookkeeping-focused sample copy, while site name, heading, description, colors, contact email, favicon, and published portfolio entries can be configured through allowlisted Firestore content. Avoid invented owner identities, credentials, client results, or regulated-service claims.
 
 ### Primary users
 - Freelancers and consultants
@@ -24,7 +24,7 @@ FormaCMS is a reusable, theme-driven CMS starter for portfolio and service-busin
 - Firestore stores site settings, pages/sections, services, projects, packages, FAQs, and inquiries.
 - Laravel authentication uses a SQL-backed users/session store.
 - Laravel is the only layer that accesses Firestore using server credentials.
-- Laravel Mail and a queue deliver inquiry notifications.
+- Queue-backed Laravel Mail notifications are planned but not implemented.
 - External image URLs are stored as metadata; uploaded files are out of scope for v1.
 
 ## 3. Public pages
