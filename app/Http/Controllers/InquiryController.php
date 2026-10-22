@@ -55,6 +55,31 @@ final class InquiryController
             ], 503);
         }
 
+        $recipient = $content->settings()['contact_email'] ?? '';
+        if (is_string($recipient) && filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+            try {
+                $subject = 'New portfolio enquiry from ' . trim($validated['full_name']);
+                $body = implode("\\n", [
+                    'You have received a new enquiry through your portfolio website.',
+                    '',
+                    'Name: ' . trim($validated['full_name']),
+                    'Email: ' . trim($validated['email']),
+                    'Business: ' . trim((string) ($validated['business_name'] ?? 'Not provided')),
+                    'Service requested: ' . trim((string) ($validated['service_required'] ?? 'Not specified')),
+                    'Accounting software: ' . trim((string) ($validated['accounting_software'] ?? 'Not specified')),
+                    '',
+                    'Message:',
+                    trim($validated['message']),
+                ]);
+                Mail::raw($body, function ($mail) use ($recipient, $subject, $validated): void {
+                    $mail->to($recipient)->replyTo($validated['email'], $validated['full_name'])->subject($subject);
+                });
+            } catch (Throwable $exception) {
+                report($exception);
+                // The inquiry is already persisted; never lose it just because email delivery failed.
+            }
+        }
+
         return response()->json([
             'message' => 'Thank you. Your enquiry has been received.',
         ], 201);
