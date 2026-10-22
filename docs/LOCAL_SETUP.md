@@ -35,7 +35,7 @@ The Laravel Blade shell loads the React app through Vite's `@vite` helper, so co
 mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs && chmod -R u+rwX bootstrap/cache storage && composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc && npm install && npm run build
 ```
 
-This is intentionally paired with the application's explicit Firestore REST transport in `ContentRepository`. The current public content adapter only performs document reads and a filtered query, which the REST transport supports. Do not remove the explicit `'transport' => 'rest'` setting while deploying without ext-grpc. This is different from blindly ignoring the platform requirement while leaving the client on its default gRPC transport.
+This is intentionally paired with the application's explicit Firestore REST transport in `ContentRepository`. The current content layer reads site settings, queries published projects, and writes validated enquiries; use a Firestore client/transport configuration that supports those document and query operations. Do not remove the explicit `'transport' => 'rest'` setting while deploying without ext-grpc. This is different from blindly ignoring the platform requirement while leaving the client on its default gRPC transport.
 
 If Node/npm is unavailable in the PHP build environment, build the frontend assets in CI and deploy the resulting `public/build` directory with the PHP application. Do not switch back to a Node runtime for the Laravel app. If you need gRPC-only Firestore operations later (for example streaming listeners), use a runtime with ext-grpc installed.
 
