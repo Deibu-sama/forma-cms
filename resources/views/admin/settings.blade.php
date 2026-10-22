@@ -10,6 +10,7 @@
         $sections = [
             'site_identity' => 'Site identity',
             'homepage-copy' => 'Homepage content',
+            'portfolio-content' => 'FAQs & projects',
             'brand-colors' => 'Brand colors',
             'seo' => 'Search & sharing',
         ];
@@ -67,7 +68,7 @@
                 <div><label for="contact_text" class="mb-2 block text-xs font-semibold">Contact section text <span class="text-rose-700">*</span></label><textarea id="contact_text" name="contact_text" rows="3" required maxlength="700" class="form-field resize-y text-sm">{{ old('contact_text', $settings['contact_text'] ?? '') }}</textarea></div>
                 <div><label for="availability" class="mb-2 block text-xs font-semibold">Availability note</label><input id="availability" name="availability" value="{{ old('availability', $settings['availability'] ?? '') }}" maxlength="100" class="form-field text-sm" placeholder="Available for selected projects"></div>
                 <div><label for="work_intro" class="mb-2 block text-xs font-semibold">Portfolio introduction</label><textarea id="work_intro" name="work_intro" rows="2" maxlength="500" class="form-field resize-y text-sm">{{ old('work_intro', $settings['work_intro'] ?? '') }}</textarea></div>
-                <div><label for="contact_email" class="mb-2 block text-xs font-semibold">Contact email</label><input id="contact_email" name="contact_email" type="email" value="{{ old('contact_email', $settings['contact_email'] ?? '') }}" maxlength="254" class="form-field text-sm" placeholder="hello@yourdomain.com"><p class="mt-1.5 text-[10px] text-[#68727b]">Shown as a direct contact option when provided.</p></div>
+                <div><label for="contact_email" class="mb-2 block text-xs font-semibold">Contact email</label><input id="contact_email" name="contact_email" type="email" value="{{ old('contact_email', $settings['contact_email'] ?? '') }}" maxlength="254" class="form-field text-sm" placeholder="hello@yourdomain.com"><p class="mt-1.5 text-[10px] text-[#68727b]">Public contact address and destination for new enquiry email notifications. Configure SMTP mail settings in Render for delivery.</p></div>
                 <div><label for="footer_note" class="mb-2 block text-xs font-semibold">Footer note</label><input id="footer_note" name="footer_note" value="{{ old('footer_note', $settings['footer_note'] ?? '') }}" maxlength="180" class="form-field text-sm" placeholder="Designed with care."></div>
             </div>
         </section>
