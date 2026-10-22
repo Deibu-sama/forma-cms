@@ -9,6 +9,7 @@
         <div><p class="mb-2 text-[10px] font-bold uppercase tracking-[.2em] text-[#a18755]">Your professional work</p><h2 class="text-3xl font-semibold tracking-[-.055em]">Portfolio & work samples</h2><p class="mt-3 max-w-2xl text-sm leading-6 text-[#68727b]">Add each project using a title, summary, and optional public image URL. You can edit the details or remove a project at any time.</p></div>
         <a href="{{ route('home') }}#portfolio" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-10 items-center justify-center rounded-md border border-[#14283f]/15 bg-[#fffdf8] px-4 py-2 text-xs font-bold text-[#14283f] no-underline">Preview portfolio ↗</a>
     </div>
+<p class="mt-3 rounded-lg border border-[#14283f]/10 bg-[#f4f2ec] p-3 text-[11px] leading-5 text-[#68727b]">Uploaded images use public server storage. On Render, attach a persistent disk mounted at <code>storage/app/public</code> to keep uploaded files across deploys and restarts. Until that is configured, use a stable public HTTPS image URL.</p>
     <section class="mb-8 rounded-xl border border-[#14283f]/10 bg-[#fffdf8] p-5 sm:p-7">
         <h3 class="text-base font-semibold">Add a project</h3><p class="mt-1 mb-5 text-xs leading-5 text-[#68727b]">For the image, paste a direct HTTPS image URL. Do not use a private or sign-in-only link.</p>
         <form method="POST" action="{{ route('admin.projects.store') }}" enctype="multipart/form-data" class="grid gap-4 sm:grid-cols-2">@csrf
