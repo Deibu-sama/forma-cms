@@ -134,4 +134,38 @@ final class AdminAccessTest extends TestCase
             ->assertOk()
             ->assertSee('My Bookkeeping Studio | Bookkeeping Support');
     }
+    public function test_admin_can_be_provisioned_from_environment_values(): void
+    {
+        config([
+            'admin.email' => 'env-admin@example.com',
+            'admin.name' => 'Environment Administrator',
+            'admin.password' => 'A-strong-test-password-123!',
+        ]);
+
+        $this->artisan('bookkeeper:make-admin')
+            ->expectsOutput('Administrator created successfully.')
+            ->assertExitCode(0);
+
+        $user = User::query()->where('email', 'env-admin@example.com')->first();
+
+        $this->assertNotNull($user);
+        $this->assertTrue($user->is_admin);
+        $this->assertTrue(Hash::check('A-strong-test-password-123!', $user->password));
+    }
+
+    public function test_admin_provisioning_rejects_weak_environment_passwords(): void
+    {
+        config([
+            'admin.email' => 'weak-admin@example.com',
+            'admin.name' => 'Environment Administrator',
+            'admin.password' => 'too-short',
+        ]);
+
+        $this->artisan('bookkeeper:make-admin')
+            ->expectsOutput('The administrator password must contain at least 12 characters. Choose a strong, unique password.')
+            ->assertExitCode(1);
+
+        $this->assertDatabaseMissing('users', ['email' => 'weak-admin@example.com']);
+    }
+
 }
