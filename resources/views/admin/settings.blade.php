@@ -31,19 +31,25 @@
         </div>
     @endunless
 
-    <form method="POST" action="{{ route('admin.settings.update') }}" class="space-y-6">
+    <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="space-y-6">
         @csrf
         @method('PUT')
 
         <section id="site_identity" class="scroll-mt-24 overflow-hidden rounded-xl border border-[#14283f]/10 bg-[#fffdf8]">
             <div class="border-b border-[#14283f]/10 px-5 py-5 sm:px-7">
-                <div class="flex items-center gap-3"><span class="grid h-9 w-9 place-items-center rounded-lg bg-[#14283f] text-[#b99a61]"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16M4 10h16M4 15h10M4 20h7"/></svg></span><div><h3 class="text-base font-semibold">Site identity</h3><p class="mt-1 text-[11px] text-[#68727b]">The name and small icon visitors see in the browser.</p></div></div>
+                <div class="flex items-center gap-3"><span class="grid h-9 w-9 place-items-center rounded-lg bg-[#14283f] text-[#b99a61]"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16M4 10h16M4 15h10M4 20h7"/></svg></span><div><h3 class="text-base font-semibold">Site identity</h3><p class="mt-1 text-[11px] text-[#68727b]">Your name and professional title visitors see in the portfolio header.</p></div></div>
             </div>
             <div class="grid gap-5 p-5 sm:grid-cols-2 sm:p-7">
                 <div><label for="site_name" class="mb-2 block text-xs font-semibold">Website name <span class="text-rose-700">*</span></label><input id="site_name" name="site_name" value="{{ old('site_name', $settings['site_name'] ?? 'Bookkeeper Pro Portfolio') }}" required maxlength="100" class="form-field text-sm"><p class="mt-1.5 text-[10px] text-[#68727b]">Displayed in the site header and footer.</p></div>
-                <div><label for="brand_name" class="mb-2 block text-xs font-semibold">Short brand name <span class="text-rose-700">*</span></label><input id="brand_name" name="brand_name" value="{{ old('brand_name', $settings['brand_name'] ?? 'Bookkeeper Pro') }}" required maxlength="100" class="form-field text-sm"><p class="mt-1.5 text-[10px] text-[#68727b]">Displayed beside the brand mark.</p></div>
+                <div><label for="brand_name" class="mb-2 block text-xs font-semibold">Your name <span class="text-rose-700">*</span></label><input id="brand_name" name="brand_name" value="{{ old('brand_name', $settings['brand_name'] ?? 'Your Name') }}" required maxlength="100" class="form-field text-sm"><p class="mt-1.5 text-[10px] text-[#68727b]">Displayed as text only. This portfolio does not use a company logo.</p></div>
                 <div class="sm:col-span-2"><label for="site_title" class="mb-2 block text-xs font-semibold">Browser page title <span class="text-rose-700">*</span></label><input id="site_title" name="site_title" value="{{ old('site_title', $settings['site_title'] ?? 'Bookkeeper Pro Portfolio | Bookkeeping & Reporting Support') }}" required maxlength="180" class="form-field text-sm"><p class="mt-1.5 text-[10px] text-[#68727b]">Appears in the browser tab and most search result titles.</p></div>
-                <div class="sm:col-span-2"><label for="favicon_url" class="mb-2 block text-xs font-semibold">Favicon image URL</label><input id="favicon_url" name="favicon_url" type="url" value="{{ old('favicon_url', $settings['favicon_url'] ?? '') }}" maxlength="2048" inputmode="url" placeholder="https://your-domain.com/favicon.png" class="form-field text-sm"><p class="mt-1.5 text-[10px] leading-5 text-[#68727b]">Paste an HTTPS image link (SVG, PNG, or ICO). Leave blank to use the built-in Bookkeeper Pro icon. The image is linked, not uploaded to the server.</p></div>
+                <div class="sm:col-span-2"><label for="tagline" class="mb-2 block text-xs font-semibold">Professional title / tagline</label><input id="tagline" name="tagline" value="{{ old('tagline', $settings['tagline'] ?? 'Bookkeeping Professional') }}" maxlength="160" class="form-field text-sm" placeholder="Bookkeeping Professional"></div>
+                <div class="sm:col-span-2"><label for="profile_image" class="mb-2 block text-xs font-semibold">Upload your professional photo</label>
+                    @if(!empty($settings['profile_image_url']))<img src="{{ $settings['profile_image_url'] }}" alt="Current profile photo" class="mb-3 h-36 w-32 rounded-xl border border-[#14283f]/10 object-cover">@endif
+                    <input id="profile_image" name="profile_image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="form-field text-sm">
+                    <p class="mt-1.5 text-[10px] leading-5 text-[#68727b]">Upload a clear headshot (JPG, PNG, or WebP, up to 4 MB). Render needs persistent storage for uploaded files to survive redeploys.</p>
+                </div>
+                <div class="sm:col-span-2"><label for="favicon_url" class="mb-2 block text-xs font-semibold">Optional browser icon URL</label><input id="favicon_url" name="favicon_url" type="url" value="{{ old('favicon_url', $settings['favicon_url'] ?? '') }}" maxlength="2048" inputmode="url" placeholder="https://example.com/favicon.png" class="form-field text-sm"><p class="mt-1.5 text-[10px] leading-5 text-[#68727b]">Optional only; the portfolio header itself uses no logo.</p></div>
                 <div class="sm:col-span-2"><label for="hero_image_url" class="mb-2 block text-xs font-semibold">Hero image URL <span class="font-normal text-[#68727b]">(optional)</span></label><input id="hero_image_url" name="hero_image_url" type="url" value="{{ old('hero_image_url', $settings['hero_image_url'] ?? '') }}" maxlength="2048" placeholder="https://your-domain.com/hero-image.jpg" class="form-field text-sm"><p class="mt-1.5 text-[10px] text-[#68727b]">If provided, the homepage uses this image instead of the CSS dashboard illustration.</p></div>
                 <div class="sm:col-span-2"><label for="hero_image_alt" class="mb-2 block text-xs font-semibold">Hero image description (alt text)</label><input id="hero_image_alt" name="hero_image_alt" value="{{ old('hero_image_alt', $settings['hero_image_alt'] ?? '') }}" maxlength="240" class="form-field text-sm" placeholder="Describe the image for people using screen readers"></div>
             </div>
@@ -63,6 +69,19 @@
                 <div><label for="work_intro" class="mb-2 block text-xs font-semibold">Portfolio introduction</label><textarea id="work_intro" name="work_intro" rows="2" maxlength="500" class="form-field resize-y text-sm">{{ old('work_intro', $settings['work_intro'] ?? '') }}</textarea></div>
                 <div><label for="contact_email" class="mb-2 block text-xs font-semibold">Contact email</label><input id="contact_email" name="contact_email" type="email" value="{{ old('contact_email', $settings['contact_email'] ?? '') }}" maxlength="254" class="form-field text-sm" placeholder="hello@yourdomain.com"><p class="mt-1.5 text-[10px] text-[#68727b]">Shown as a direct contact option when provided.</p></div>
                 <div><label for="footer_note" class="mb-2 block text-xs font-semibold">Footer note</label><input id="footer_note" name="footer_note" value="{{ old('footer_note', $settings['footer_note'] ?? '') }}" maxlength="180" class="form-field text-sm" placeholder="Designed with care."></div>
+            </div>
+        </section>
+
+        <section id="theme-presets" class="scroll-mt-24 overflow-hidden rounded-xl border border-[#14283f]/10 bg-[#fffdf8]">
+            <div class="border-b border-[#14283f]/10 px-5 py-5 sm:px-7"><h3 class="text-base font-semibold">Choose a visual theme</h3><p class="mt-1 text-[11px] text-[#68727b]">Choose a preset, then fine-tune its colors below.</p></div>
+            <div class="p-5 sm:p-7">
+                <label for="theme" class="mb-2 block text-xs font-semibold">Theme preset</label>
+                <select id="theme" name="theme" class="form-field text-sm">
+                    @foreach(['classic-corporate' => 'Classic navy & ivory', 'sage-editorial' => 'Sage & cream editorial', 'modern-lavender' => 'Modern lavender', 'ocean-professional' => 'Ocean blue', 'warm-minimal' => 'Warm terracotta minimal'] as $value => $label)
+                        <option value="{{ $value }}" @selected(old('theme', $settings['theme'] ?? 'classic-corporate') === $value)>{{ $label }}</option>
+                    @endforeach
+                </select>
+                <p class="mt-2 text-[10px] leading-5 text-[#68727b]">Selecting a preset updates the six color controls below automatically.</p>
             </div>
         </section>
 
@@ -91,4 +110,29 @@
             </div>
         </div>
     </form>
+    <script>
+        (() => {
+            const presets = {
+                'classic-corporate': {primary:'#14283F',background:'#F5F1E8',accent:'#B99A61',surface:'#FFFDF8',text:'#192C41',muted:'#68727B'},
+                'sage-editorial': {primary:'#34483B',background:'#F1F2E8',accent:'#A4B494',surface:'#FCFCF6',text:'#27372D',muted:'#687567'},
+                'modern-lavender': {primary:'#342C4F',background:'#F4F0FA',accent:'#B9A8E5',surface:'#FFFDFF',text:'#29233C',muted:'#746D83'},
+                'ocean-professional': {primary:'#123C50',background:'#EDF5F7',accent:'#59B5C7',surface:'#FFFFFF',text:'#183746',muted:'#617983'},
+                'warm-minimal': {primary:'#51382F',background:'#FAF1E9',accent:'#D58B6D',surface:'#FFFCF8',text:'#3D2C27',muted:'#82716B'}
+            };
+            const select = document.getElementById('theme');
+            if (!select) return;
+            select.addEventListener('change', () => {
+                const colors = presets[select.value];
+                if (!colors) return;
+                Object.entries(colors).forEach(([key, value]) => {
+                    const input = document.querySelector('[name="custom_colors[' + key + ']"]');
+                    if (input) {
+                        input.value = value;
+                        const colorText = input.closest('label')?.querySelector('span span');
+                        if (colorText) colorText.textContent = value;
+                    }
+                });
+            });
+        })();
+    </script>
 @endsection
