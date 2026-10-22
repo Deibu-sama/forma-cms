@@ -303,7 +303,7 @@ function App() {
       if (heading && data.title) heading.textContent = data.title;
       const paragraph = element.querySelector('p');
       if (paragraph && data.body) paragraph.textContent = data.body;
-      if (Array.isArray(data.items) && data.items.length) {
+      if (key !== 'skills' && Array.isArray(data.items) && data.items.length) {
         let list = element.querySelector('ul');
         if (!list) {
           list = document.createElement('ul');
@@ -556,8 +556,22 @@ function App() {
               <p className="mt-1 text-xs font-semibold uppercase tracking-[.13em] text-brand-accent">September 2024 – September 2026</p>
               <div id="skills" className="mt-8 rounded-xl bg-brand-background p-5">
                 <h3 className="text-sm font-semibold">Software & technical skills</h3>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {['BizBox Financial Management System','QuickBooks','Xero','Microsoft Excel','Power BI'].map((tool) => <span key={tool} className="rounded-full border border-brand-primary/10 bg-brand-surface px-3 py-2 text-xs font-medium">{tool}</span>)}
+                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {(settings.content_sections?.skills?.software_tools?.length
+                    ? settings.content_sections.skills.software_tools
+                    : (settings.content_sections?.skills?.items || ['BizBox Financial Management System','QuickBooks','Xero','Microsoft Excel','Power BI']).map((name) => ({ name, logo_url: '' }))
+                  ).map((tool, index) => (
+                    <div key={tool.name + index} className="flex min-w-0 items-center gap-3 rounded-xl border border-brand-primary/10 bg-brand-surface p-3">
+                      <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-brand-primary/10 bg-white p-1.5">
+                        {(tool.logo_url || settings.placeholder_image_url) ? <img src={tool.logo_url || settings.placeholder_image_url} alt={tool.name + ' logo'} loading="lazy" className="h-full w-full object-contain" onError={(event) => {
+                          const fallback = settings.placeholder_image_url;
+                          if (fallback && event.currentTarget.src !== fallback) { event.currentTarget.src = fallback; }
+                          else { event.currentTarget.style.display = 'none'; }
+                        }} /> : <span className="text-sm font-bold text-brand-muted">{tool.name.split(/\\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()}</span>}
+                      </div>
+                      <span className="text-xs font-medium leading-5">{tool.name}</span>
+                    </div>
+                  ))}
                 </div>
                 <p className="mt-4 text-[11px] leading-5 text-brand-muted">Software familiarity and proficiency should be discussed honestly according to the specific workflow and engagement.</p>
               </div>
