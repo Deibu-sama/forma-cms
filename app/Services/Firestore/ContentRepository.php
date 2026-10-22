@@ -61,7 +61,13 @@ final class ContentRepository
             'availability' => '',
             'work_intro' => '',
             'footer_note' => '',
-            'faqs' => [],
+            'faqs' => [
+                ['q' => 'What types of businesses can you support?', 'a' => 'The right fit depends on the volume, complexity, software, and condition of your records. Share a little about your business and current workflow so the scope can be assessed before work begins.'],
+                ['q' => 'Do you provide tax, legal, or audit advice?', 'a' => 'This portfolio describes bookkeeping and record-organization support, not regulated tax, legal, audit, or investment advice. I can help organize records and prepare supporting information for you to review with a suitably qualified professional.'],
+                ['q' => 'Can you work with my accounting software?', 'a' => 'Tell me which bookkeeping or accounting tools you already use. The available workflow and access requirements can be discussed before agreeing on a scope.'],
+                ['q' => 'What do you need to get started?', 'a' => 'Usually the first step is a conversation about your business, reporting needs, current records, and any deadlines. Access to financial records should only be shared through an agreed, secure process after the scope is confirmed.'],
+                ['q' => 'How is pricing determined?', 'a' => 'Pricing depends on the agreed scope, transaction volume, record condition, reporting needs, and working frequency. A proposal should be prepared after the initial discussion rather than assuming one price fits every business.'],
+            ],
             'projects' => [],
         ];
 
