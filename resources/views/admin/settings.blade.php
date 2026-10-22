@@ -9,7 +9,7 @@
         $colors = $settings['custom_colors'] ?? [];
         $sections = [
             'site_identity' => 'Site identity',
-            'homepage-copy' => 'Homepage content',
+            'contact-footer' => 'Contact & footer',
             'brand-colors' => 'Brand colors',
             'seo' => 'Search & sharing',
         ];
@@ -19,7 +19,7 @@
         <div>
             <p class="mb-2 text-[10px] font-bold uppercase tracking-[.2em] text-[#a18755]">Configuration</p>
             <h2 class="text-3xl font-semibold tracking-[-.055em] sm:text-4xl">Make it yours.</h2>
-            <p class="mt-3 max-w-2xl text-sm leading-6 text-[#68727b]">Update your browser title, favicon, homepage messaging, contact details, and brand palette. The public React site reads these values through Laravel.</p>
+            <p class="mt-3 max-w-2xl text-sm leading-6 text-[#68727b]">Update your identity, professional photo, contact details, placeholder image, theme, and brand colors. Edit page-specific text in the dedicated portfolio section editors.</p>
         </div>
         <a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-10 items-center justify-center gap-2 self-start rounded-md border border-[#14283f]/15 bg-[#fffdf8] px-4 py-2 text-xs font-bold text-[#14283f] no-underline transition hover:border-[#b99a61] xl:self-auto">Preview public website <span class="text-[#b99a61]">↗</span></a>
     </div>
@@ -61,20 +61,20 @@
             </div>
         </section>
 
-        <section id="homepage-copy" class="scroll-mt-24 overflow-hidden rounded-xl border border-[#14283f]/10 bg-[#fffdf8]">
-            <div class="border-b border-[#14283f]/10 px-5 py-5 sm:px-7"><div class="flex items-center gap-3"><span class="grid h-9 w-9 place-items-center rounded-lg bg-[#e9dfca] text-[#14283f]"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16M4 10h10M4 15h16M4 20h7"/></svg></span><div><h3 class="text-base font-semibold">Homepage content</h3><p class="mt-1 text-[11px] text-[#68727b]">Change the text visitors read. Use a new line in the headline to split the hero over two lines.</p></div></div></div>
+        <section id="contact-footer" class="scroll-mt-24 overflow-hidden rounded-xl border border-[#14283f]/10 bg-[#fffdf8]">
+            <div class="border-b border-[#14283f]/10 px-5 py-5 sm:px-7">
+                <div class="flex items-center gap-3">
+                    <span class="grid h-9 w-9 place-items-center rounded-lg bg-[#e9dfca] text-[#14283f]">
+                        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h16v14H4z"/><path d="m4 7 8 6 8-6"/></svg>
+                    </span>
+                    <div><h3 class="text-base font-semibold">Contact & footer</h3><p class="mt-1 text-[11px] text-[#68727b]">Manage your public contact address and small site-wide details. Edit page copy in its own section editor.</p></div>
+                </div>
+            </div>
             <div class="grid gap-5 p-5 sm:grid-cols-2 sm:p-7">
-                <div class="sm:col-span-2"><label for="eyebrow" class="mb-2 block text-xs font-semibold">Hero eyebrow <span class="text-rose-700">*</span></label><input id="eyebrow" name="eyebrow" value="{{ old('eyebrow', $settings['eyebrow'] ?? 'BOOKKEEPING · RECONCILIATION · REPORTING') }}" required maxlength="180" class="form-field text-sm"></div>
-                <div class="sm:col-span-2"><label for="headline" class="mb-2 block text-xs font-semibold">Main headline <span class="text-rose-700">*</span></label><textarea id="headline" name="headline" rows="2" required maxlength="180" class="form-field resize-y text-sm">{{ old('headline', $settings['headline'] ?? "Clear books.\nConfident decisions.") }}</textarea><p class="mt-1.5 text-[10px] text-[#68727b]">Use a line break to split this heading; the last line gets the accent color.</p></div>
-                <div class="sm:col-span-2"><label for="description" class="mb-2 block text-xs font-semibold">Hero description <span class="text-rose-700">*</span></label><textarea id="description" name="description" rows="3" required maxlength="700" class="form-field resize-y text-sm">{{ old('description', $settings['description'] ?? '') }}</textarea></div>
-                <div><label for="about_headline" class="mb-2 block text-xs font-semibold">About section headline <span class="text-rose-700">*</span></label><textarea id="about_headline" name="about_headline" rows="3" required maxlength="220" class="form-field resize-y text-sm">{{ old('about_headline', $settings['about_headline'] ?? '') }}</textarea></div>
-                <div><label for="about_text" class="mb-2 block text-xs font-semibold">About section text <span class="text-rose-700">*</span></label><textarea id="about_text" name="about_text" rows="3" required maxlength="1200" class="form-field resize-y text-sm">{{ old('about_text', $settings['about_text'] ?? '') }}</textarea></div>
-                <div><label for="contact_headline" class="mb-2 block text-xs font-semibold">Contact headline <span class="text-rose-700">*</span></label><textarea id="contact_headline" name="contact_headline" rows="2" required maxlength="220" class="form-field resize-y text-sm">{{ old('contact_headline', $settings['contact_headline'] ?? '') }}</textarea></div>
-                <div><label for="contact_text" class="mb-2 block text-xs font-semibold">Contact section text <span class="text-rose-700">*</span></label><textarea id="contact_text" name="contact_text" rows="3" required maxlength="700" class="form-field resize-y text-sm">{{ old('contact_text', $settings['contact_text'] ?? '') }}</textarea></div>
+                <div><label for="contact_email" class="mb-2 block text-xs font-semibold">Contact email</label><input id="contact_email" name="contact_email" type="email" value="{{ old('contact_email', $settings['contact_email'] ?? '') }}" maxlength="254" class="form-field text-sm" placeholder="hello@yourdomain.com"><p class="mt-1.5 text-[10px] text-[#68727b]">Public contact address and destination for enquiry email notifications. Configure SMTP mail settings in Render for delivery.</p></div>
                 <div><label for="availability" class="mb-2 block text-xs font-semibold">Availability note</label><input id="availability" name="availability" value="{{ old('availability', $settings['availability'] ?? '') }}" maxlength="100" class="form-field text-sm" placeholder="Available for selected projects"></div>
-                <div><label for="work_intro" class="mb-2 block text-xs font-semibold">Portfolio introduction</label><textarea id="work_intro" name="work_intro" rows="2" maxlength="500" class="form-field resize-y text-sm">{{ old('work_intro', $settings['work_intro'] ?? '') }}</textarea></div>
-                <div><label for="contact_email" class="mb-2 block text-xs font-semibold">Contact email</label><input id="contact_email" name="contact_email" type="email" value="{{ old('contact_email', $settings['contact_email'] ?? '') }}" maxlength="254" class="form-field text-sm" placeholder="hello@yourdomain.com"><p class="mt-1.5 text-[10px] text-[#68727b]">Public contact address and destination for new enquiry email notifications. Configure SMTP mail settings in Render for delivery.</p></div>
-                <div><label for="footer_note" class="mb-2 block text-xs font-semibold">Footer note</label><input id="footer_note" name="footer_note" value="{{ old('footer_note', $settings['footer_note'] ?? '') }}" maxlength="180" class="form-field text-sm" placeholder="Designed with care."></div>
+                <div><label for="work_intro" class="mb-2 block text-xs font-semibold">Portfolio introduction</label><textarea id="work_intro" name="work_intro" rows="3" maxlength="500" class="form-field resize-y text-sm">{{ old('work_intro', $settings['work_intro'] ?? '') }}</textarea><p class="mt-1.5 text-[10px] text-[#68727b]">Short introduction shown around your work samples.</p></div>
+                <div><label for="footer_note" class="mb-2 block text-xs font-semibold">Footer note</label><input id="footer_note" name="footer_note" value="{{ old('footer_note', $settings['footer_note'] ?? '') }}" maxlength="180" class="form-field text-sm"></div>
             </div>
         </section>
 
