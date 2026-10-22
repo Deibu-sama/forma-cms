@@ -20,7 +20,20 @@
                 <div><label for="title" class="mb-2 block text-xs font-semibold">Section title / headline</label><input id="title" name="title" required maxlength="180" value="{{ old('title', $sectionData['title'] ?? '') }}" class="form-field text-sm"></div>
                 <div><label for="subtitle" class="mb-2 block text-xs font-semibold">Subtitle / short label</label><input id="subtitle" name="subtitle" maxlength="240" value="{{ old('subtitle', $sectionData['subtitle'] ?? '') }}" class="form-field text-sm" placeholder="Optional subtitle"></div>
                 <div><label for="body" class="mb-2 block text-xs font-semibold">Main description</label><textarea id="body" name="body" rows="6" maxlength="5000" class="form-field resize-y text-sm" placeholder="Write the text visitors will read...">{{ old('body', $sectionData['body'] ?? '') }}</textarea></div>
-                <div><label for="items_text" class="mb-2 block text-xs font-semibold">List items (optional)</label><textarea id="items_text" name="items_text" rows="7" maxlength="6000" class="form-field resize-y text-sm" placeholder="Enter one item per line">{{ old('items_text', implode("\n", $sectionData['items'] ?? [])) }}</textarea><p class="mt-1 text-[10px] leading-5 text-[#68727b]">Enter one service, skill, value, or step per line.</p></div>
+                <div>
+                    <label for="items_text" class="mb-2 block text-xs font-semibold">{{ $sectionKey === 'skills' ? 'Software and logo image URLs' : 'List items (optional)' }}</label>
+                    @if($sectionKey === 'skills')
+                        @php
+                            $softwareTools = $sectionData['software_tools'] ?? array_map(fn ($name) => ['name' => $name, 'logo_url' => ''], $sectionData['items'] ?? []);
+                            $softwareLines = implode("\n", array_map(fn ($tool) => ($tool['name'] ?? '').' | '.($tool['logo_url'] ?? ''), $softwareTools));
+                        @endphp
+                        <textarea id="items_text" name="items_text" rows="8" maxlength="6000" class="form-field resize-y text-sm" placeholder="BizBox Financial Management System | https://example.com/bizbox-logo.png&#10;QuickBooks | https://example.com/quickbooks-logo.png&#10;Xero | https://example.com/xero-logo.png&#10;Microsoft Excel | &#10;Power BI | ">{{ old('items_text', $softwareLines) }}</textarea>
+                        <p class="mt-1 text-[10px] leading-5 text-[#68727b]">One software per line, formatted as <strong>Software name | HTTPS logo image URL</strong>. Leave the URL blank to use the default placeholder image configured in Website Settings. You can add or remove software by editing these lines.</p>
+                    @else
+                        <textarea id="items_text" name="items_text" rows="7" maxlength="6000" class="form-field resize-y text-sm" placeholder="Enter one item per line">{{ old('items_text', implode("\n", $sectionData['items'] ?? [])) }}</textarea>
+                        <p class="mt-1 text-[10px] leading-5 text-[#68727b]">Enter one service, skill, value, or step per line.</p>
+                    @endif
+                </div>
             </div>
         </section>
         <div class="flex flex-wrap items-center gap-3"><button type="submit" class="inline-flex min-h-11 items-center gap-2 rounded-md bg-[#14283f] px-5 py-3 text-xs font-bold text-white transition hover:bg-[#263e56]">Save {{ $sectionLabel }} <span class="text-[#b99a61]">↗</span></button><a href="{{ route('admin.dashboard') }}" class="rounded-md border border-[#14283f]/15 px-5 py-3 text-xs font-semibold text-[#14283f] no-underline">Back to dashboard</a></div>
