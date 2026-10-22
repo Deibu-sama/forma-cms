@@ -329,13 +329,6 @@ final class AdminController
             'profile_image_url' => ['nullable', 'url:https', 'max:2048'],
             'hero_image_url' => ['nullable', 'url:https', 'max:2048'],
             'hero_image_alt' => ['nullable', 'string', 'max:240'],
-            'eyebrow' => ['required', 'string', 'max:180'],
-            'headline' => ['required', 'string', 'max:180'],
-            'description' => ['required', 'string', 'max:700'],
-            'about_headline' => ['required', 'string', 'max:220'],
-            'about_text' => ['required', 'string', 'max:1200'],
-            'contact_headline' => ['required', 'string', 'max:220'],
-            'contact_text' => ['required', 'string', 'max:700'],
             'contact_email' => ['nullable', 'email:rfc', 'max:254'],
             'availability' => ['nullable', 'string', 'max:100'],
             'work_intro' => ['nullable', 'string', 'max:500'],
@@ -351,6 +344,11 @@ final class AdminController
 
         $validated['theme'] = $validated['theme'] ?? 'classic-corporate';
         $currentSettings = $content->settings();
+        // These page-copy fields are edited in the dedicated section editors, not Website Settings.
+        // Preserve existing values when the global settings form is submitted.
+        foreach (['eyebrow', 'headline', 'description', 'about_headline', 'about_text', 'contact_headline', 'contact_text'] as $pageCopyField) {
+            $validated[$pageCopyField] = $currentSettings[$pageCopyField] ?? '';
+        }
         $validated['faqs_json'] = json_encode($currentSettings['faqs'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $validated['projects_json'] = json_encode($currentSettings['projects'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $validated['faqs_customized'] = (bool) ($currentSettings['faqs_customized'] ?? false);
