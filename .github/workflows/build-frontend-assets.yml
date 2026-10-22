@@ -95,11 +95,12 @@ jobs:
             if [[ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]]; then
               echo "main moved while the frontend was building; rebuilding from the latest main."
               git reset --hard origin/main
+              composer install --no-interaction --prefer-dist --no-progress
               npm install --no-audit --no-fund
               npm run build
             fi
 
-            git add -f public/build
+            git add -f composer.lock public/build
             if git diff --cached --quiet; then
               echo "Frontend assets are already up to date."
               exit 0
@@ -113,6 +114,7 @@ jobs:
             echo "Push raced with another main update; retrying attempt $attempt of 3."
             git fetch origin main
             git reset --hard origin/main
+            composer install --no-interaction --prefer-dist --no-progress
             npm install --no-audit --no-fund
             npm run build
           done
