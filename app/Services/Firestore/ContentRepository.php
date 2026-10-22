@@ -4,6 +4,7 @@ namespace App\Services\Firestore;
 
 use Google\Cloud\Firestore\FirestoreClient;
 use Google\Cloud\Core\Timestamp;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 /**
@@ -17,15 +18,20 @@ final class ContentRepository
 {
     private ?FirestoreClient $client = null;
     private bool $connectionAttempted = false;
+    private bool $firestoreUnavailable = false;
 
     public function isDemoMode(): bool
     {
-        return ! $this->client();
+        return $this->firestoreUnavailable || ! $this->client();
     }
 
     public function settings(): array
     {
         $document = $this->readDocument('site_settings', 'main');
+
+        if (! $document) {
+            $document = $this->readFallbackSettings();
+        }
 
         $defaults = [
             'site_name' => 'Bookkeeper Pro Portfolio',
@@ -88,14 +94,14 @@ final class ContentRepository
      * Persist website settings from the authenticated administration area.
      * The caller validates request fields; this service applies its own allowlist.
      */
-    public function saveSettings(array $input): bool
+    /**
+     * Persist validated website settings to Firestore, falling back to SQL if
+     * Firestore is unavailable. Never accepts arbitrary document fields.
+     *
+     * @return 'firestore'|'local'|false
+     */
+    public function saveSettings(array $input): string|false
     {
-        $client = $this->client();
-
-        if (! $client) {
-            return false;
-        }
-
         $stringFields = [
             'site_name', 'site_title', 'brand_name', 'favicon_url',
             'hero_image_url', 'hero_image_alt', 'eyebrow', 'headline',
@@ -147,12 +153,36 @@ final class ContentRepository
 
         $payload['custom_colors'] = $safeColors;
         $payload['theme'] = 'classic-corporate';
-        $payload['updated_at'] = new Timestamp(new \DateTimeImmutable());
 
+        $client = $this->client();
+
+        if ($client && ! $this->firestoreUnavailable) {
+            try {
+                $firestorePayload = $payload;
+                $firestorePayload['updated_at'] = new Timestamp(new \\DateTimeImmutable());
+                $client->collection('site_settings')->document('main')->set($firestorePayload, ['merge' => true]);
+
+                return 'firestore';
+            } catch (Throwable $exception) {
+                report($exception);
+                $this->firestoreUnavailable = true;
+            }
+        }
+
+        // Keep the settings form useful in preview mode. Configure Firestore
+        // before production if you want content stored in the remote CMS database.
         try {
-            $client->collection('site_settings')->document('main')->set($payload, ['merge' => true]);
+            $now = now();
+            DB::table('site_settings_fallback')->updateOrInsert(
+                ['id' => 1],
+                [
+                    'settings' => json_encode($payload, JSON_THROW_ON_ERROR),
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ],
+            );
 
-            return true;
+            return 'local';
         } catch (Throwable $exception) {
             report($exception);
 
@@ -164,7 +194,7 @@ final class ContentRepository
     {
         $client = $this->client();
 
-        if (! $client) {
+        if (! $client || $this->firestoreUnavailable) {
             return [
                 [
                     'title' => 'Monthly bookkeeping setup',
@@ -242,8 +272,37 @@ final class ContentRepository
             return $projects;
         } catch (Throwable $exception) {
             report($exception);
+            $this->firestoreUnavailable = true;
 
-            return [];
+            return [
+                [
+                    'title' => 'Monthly bookkeeping setup',
+                    'summary' => 'Illustrative workflow for organizing recurring records and defining month-end review checkpoints.',
+                    'category' => 'Monthly bookkeeping',
+                    'art_label' => 'A repeatable monthly routine',
+                    'image_url' => '',
+                    'image_alt' => 'Illustrative monthly bookkeeping workflow artwork',
+                    'is_demonstration' => true,
+                ],
+                [
+                    'title' => 'Account reconciliation review',
+                    'summary' => 'Example checklist for comparing statements, documenting differences, and tracking open questions for review.',
+                    'category' => 'Reconciliation',
+                    'art_label' => 'Compare. Review. Resolve.',
+                    'image_url' => '',
+                    'image_alt' => 'Illustrative reconciliation checklist artwork',
+                    'is_demonstration' => true,
+                ],
+                [
+                    'title' => 'Reporting pack organization',
+                    'summary' => 'Sample approach to arranging supporting schedules and reports for a clear business review.',
+                    'category' => 'Reporting',
+                    'art_label' => 'Information, organized',
+                    'image_url' => '',
+                    'image_alt' => 'Illustrative reporting pack artwork',
+                    'is_demonstration' => true,
+                ],
+            ];
         }
     }
 
@@ -282,8 +341,27 @@ final class ContentRepository
             return true;
         } catch (Throwable $exception) {
             report($exception);
+            $this->firestoreUnavailable = true;
 
             return false;
+        }
+    }
+
+    private function readFallbackSettings(): ?array
+    {
+        try {
+            $encoded = DB::table('site_settings_fallback')->where('id', 1)->value('settings');
+
+            if (! is_string($encoded) || $encoded === '') {
+                return null;
+            }
+
+            $settings = json_decode($encoded, true, 512, JSON_THROW_ON_ERROR);
+
+            return is_array($settings) ? $settings : null;
+        } catch (Throwable) {
+            // An unmigrated database is equivalent to the defaults-only preview.
+            return null;
         }
     }
 
