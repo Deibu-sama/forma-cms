@@ -8,29 +8,27 @@
     @if (file_exists(public_path('build/manifest.json')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
-        <link rel="stylesheet" href="{{ asset('css/fallback.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/fallback.css') }}?v=20261022-2">
     @endif
 </head>
-<body>
-    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-white focus:p-3">Skip to content</a>
-    <header class="site-primary text-white">
-        <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-5">
-            <a class="text-xl font-black tracking-tight" href="{{ route('home') }}">{{ $settings['site_name'] ?? config('app.name') }}</a>
-            <nav aria-label="Main navigation" class="flex flex-wrap gap-5 text-sm text-slate-100">
-                <a href="#features" class="hover:underline">Features</a>
-                <a href="#portfolio" class="hover:underline">Portfolio</a>
-                <a href="#themes" class="hover:underline">Themes</a>
+<body class="forma-body">
+    <a href="#main" class="skip-link">Skip to content</a>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand-name" href="{{ route('home') }}">{{ $settings['site_name'] ?? config('app.name') }}</a>
+            <nav aria-label="Main navigation" class="site-nav">
+                <a href="#features">Features</a>
+                <a href="#portfolio">Portfolio</a>
+                <a href="#themes">Themes</a>
             </nav>
         </div>
     </header>
     @if($isDemo ?? false)
-        <div class="border-b border-amber-300 bg-amber-50 px-6 py-2 text-center text-sm text-amber-950">
-            Demo content is active. Configure Firestore to load your own site settings and projects.
-        </div>
+        <div class="demo-notice">Demo content is active. Configure Firestore to load your own site settings and projects.</div>
     @endif
     @yield('content')
-    <footer class="border-t site-border py-8">
-        <div class="mx-auto flex max-w-6xl flex-wrap justify-between gap-3 px-6 text-sm site-muted">
+    <footer class="site-footer">
+        <div class="container footer-inner">
             <span>© {{ date('Y') }} {{ $settings['site_name'] ?? config('app.name') }}</span>
             <span>Powered by FormaCMS</span>
         </div>
