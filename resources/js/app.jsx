@@ -561,5 +561,41 @@ function App() {
   );
 }
 
+class AppErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error) {
+    console.error('Bookkeeper Pro Portfolio render error:', error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <main className="min-h-screen bg-[#f5f1e8] px-6 py-20 text-[#14283f]">
+          <div className="mx-auto max-w-2xl rounded-2xl border border-[#14283f]/10 bg-white p-8 shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-[.2em] text-[#9c865d]">Bookkeeper Pro Portfolio</p>
+            <h1 className="mt-4 text-2xl font-semibold">The page could not be displayed.</h1>
+            <p className="mt-3 text-sm leading-6 text-[#68727b]">The website encountered a display error. Please refresh the page. If the problem continues, contact the site administrator.</p>
+            <button type="button" onClick={() => window.location.reload()} className="mt-6 rounded-md bg-[#14283f] px-5 py-3 text-sm font-semibold text-white">Refresh page</button>
+          </div>
+        </main>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 const root = document.getElementById('app');
-if (root) createRoot(root).render(<App />);
+if (root) createRoot(root).render(
+  <AppErrorBoundary>
+    <App />
+  </AppErrorBoundary>
+);
