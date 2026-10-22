@@ -21,5 +21,11 @@ fi
 php artisan config:clear
 php artisan migrate --force
 
+# Provision/synchronize the admin from private host environment variables.
+# The command validates all three values and enforces a 12-character minimum.
+if [ -n "${ADMIN_EMAIL:-}" ] || [ -n "${ADMIN_NAME:-}" ] || [ -n "${ADMIN_PASSWORD:-}" ]; then
+  php artisan bookkeeper:make-admin
+fi
+
 PORT="${PORT:-8080}"
 exec php artisan serve --host 0.0.0.0 --port "$PORT"
