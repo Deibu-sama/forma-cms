@@ -63,9 +63,9 @@ Server Firestore SDKs bypass Firestore Security Rules and are authorized through
 
 - Validate and bound every field.
 - Add rate limiting and honeypot/CAPTCHA protection as appropriate.
-- Persist an inquiry before dispatching an email.
+- The current Laravel endpoint stores validated enquiries in Firestore when configured. Email notification dispatch is not implemented; if added, persist first.
 - Keep inquiry reads private and paginated.
-- Define purpose, retention period, deletion workflow, and privacy notice.
+- Define purpose, retention period, deletion workflow, and privacy notice before production.
 - Avoid collecting tax IDs, bank credentials, or client financial files through a public contact form.
 
 ## Release checklist
