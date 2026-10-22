@@ -71,6 +71,18 @@ final class ContentRepository
                 ['q' => 'How is pricing determined?', 'a' => 'Pricing depends on the agreed scope, transaction volume, record condition, reporting needs, and working frequency. A proposal should be prepared after the initial discussion rather than assuming one price fits every business.'],
             ],
             'projects' => [],
+            'content_sections' => [
+                'home' => ['title' => 'Your Finances, Organized. Your Business, Empowered.', 'subtitle' => 'Accuracy. Clarity. Confidence.', 'body' => 'Professional bookkeeping support for businesses in the Philippines, Australia, and the United States.', 'items' => [], 'enabled' => true],
+                'about' => ['title' => 'About Me', 'subtitle' => '', 'body' => 'Management Accounting graduate with experience in accounting operations.', 'items' => [], 'enabled' => true],
+                'services' => ['title' => 'Bookkeeping Services', 'subtitle' => '', 'body' => 'Bookkeeping support tailored to the agreed scope and jurisdiction.', 'items' => [], 'enabled' => true],
+                'tax-compliance' => ['title' => 'Tax Compliance Support', 'subtitle' => '', 'body' => 'Organize records and supporting documents for coordination with an authorized tax professional.', 'items' => [], 'enabled' => true],
+                'experience' => ['title' => 'Professional Experience', 'subtitle' => 'Accounting Staff · ACE Medical Center – Tuguegarao', 'body' => 'September 2024 – September 2026', 'items' => [], 'enabled' => true],
+                'skills' => ['title' => 'Software & Technical Skills', 'subtitle' => '', 'body' => 'Tools and workflows I have used or studied.', 'items' => ['BizBox', 'QuickBooks', 'Xero', 'Microsoft Excel', 'Power BI'], 'enabled' => true],
+                'how-i-work' => ['title' => 'How I Work', 'subtitle' => '', 'body' => 'A clear process with agreed responsibilities and deliverables.', 'items' => ['Initial Consultation', 'Scope and Onboarding', 'Recordkeeping and Reconciliation', 'Review and Reporting', 'Ongoing Support'], 'enabled' => true],
+                'packages' => ['title' => 'Engagement Packages', 'subtitle' => '', 'body' => 'Pricing and deliverables are agreed after discussing your needs.', 'items' => ['Essential Bookkeeping', 'Complete Bookkeeping', 'Bookkeeping & Reporting Support'], 'enabled' => true],
+                'why-work-with-me' => ['title' => 'Why Work With Me', 'subtitle' => '', 'body' => 'Detail-oriented, organized, confidential, and client-focused support.', 'items' => ['Accuracy', 'Organization', 'Software familiarity', 'Confidentiality and professionalism', 'Continuous learning'], 'enabled' => true],
+            ],
+            'certificates' => [],
         ];
 
         // Only explicitly approved public fields cross the Laravel/React boundary.
@@ -194,6 +206,51 @@ final class ContentRepository
             }
             $payload[$payloadKey] = $cleanItems;
         }
+
+        $sections = $input['content_sections'] ?? [];
+        if (! is_array($sections) || count($sections) > 20) { return false; }
+        $safeSections = [];
+        foreach ($sections as $key => $section) {
+            if (! is_string($key) || ! preg_match('/^[a-z0-9-]{1,60}$/', $key) || ! is_array($section)) { return false; }
+            $clean = [];
+            foreach (['title' => 180, 'subtitle' => 240, 'body' => 5000] as $field => $max) {
+                $value = $section[$field] ?? '';
+                if (! is_string($value) || mb_strlen($value) > $max) { return false; }
+                $clean[$field] = trim($value);
+            }
+            $items = $section['items'] ?? [];
+            if (! is_array($items) || count($items) > 50) { return false; }
+            $clean['items'] = [];
+            foreach ($items as $item) {
+                if (! is_string($item) || mb_strlen($item) > 500) { return false; }
+                $clean['items'][] = trim($item);
+            }
+            $clean['enabled'] = (bool) ($section['enabled'] ?? false);
+            $safeSections[$key] = $clean;
+        }
+        $payload['content_sections'] = $safeSections;
+
+        $certificates = $input['certificates'] ?? [];
+        if (! is_array($certificates) || count($certificates) > 50) { return false; }
+        $safeCertificates = [];
+        foreach ($certificates as $certificate) {
+            if (! is_array($certificate)) { return false; }
+            $clean = [];
+            foreach (['title' => 180, 'description' => 1000, 'image_alt' => 240, 'issuer' => 180, 'issued_date' => 80] as $field => $max) {
+                $value = $certificate[$field] ?? '';
+                if (! is_string($value) || mb_strlen($value) > $max) { return false; }
+                $clean[$field] = trim($value);
+            }
+            foreach (['image_url', 'certificate_url'] as $field) {
+                $value = $certificate[$field] ?? '';
+                if (! is_string($value) || ($value !== '' && ! $this->isSafeHttpsUrl($value))) { return false; }
+                $clean[$field] = trim($value);
+            }
+            if ($clean['title'] === '' || $clean['description'] === '' || $clean['image_url'] === '') { return false; }
+            $clean['enabled'] = (bool) ($certificate['enabled'] ?? false);
+            $safeCertificates[] = $clean;
+        }
+        $payload['certificates'] = $safeCertificates;
 
         $payload['faqs_customized'] = (bool) ($input['faqs_customized'] ?? false);
         $payload['projects_customized'] = (bool) ($input['projects_customized'] ?? false);
