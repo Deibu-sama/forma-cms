@@ -84,6 +84,82 @@ final class ContentRepository
         return $settings;
     }
 
+    /**
+     * Persist website settings from the authenticated administration area.
+     * The caller validates request fields; this service applies its own allowlist.
+     */
+    public function saveSettings(array $input): bool
+    {
+        $client = $this->client();
+
+        if (! $client) {
+            return false;
+        }
+
+        $stringFields = [
+            'site_name', 'site_title', 'brand_name', 'favicon_url',
+            'hero_image_url', 'hero_image_alt', 'eyebrow', 'headline',
+            'description', 'about_headline', 'about_text',
+            'contact_headline', 'contact_text', 'contact_email',
+            'availability', 'work_intro', 'footer_note', 'meta_description',
+        ];
+
+        $payload = [];
+
+        foreach ($stringFields as $field) {
+            $value = $input[$field] ?? '';
+
+            if (! is_string($value)) {
+                return false;
+            }
+
+            $payload[$field] = trim($value);
+        }
+
+        foreach (['favicon_url', 'hero_image_url'] as $urlField) {
+            if ($payload[$urlField] !== '' && ! $this->isSafeHttpsUrl($payload[$urlField])) {
+                return false;
+            }
+        }
+
+        if ($payload['contact_email'] !== '' && ! filter_var($payload['contact_email'], FILTER_VALIDATE_EMAIL)) {
+            return false;
+        }
+
+        $colors = $input['custom_colors'] ?? null;
+
+        if (! is_array($colors)) {
+            return false;
+        }
+
+        $colorFields = ['primary', 'background', 'accent', 'surface', 'text', 'muted'];
+        $safeColors = [];
+
+        foreach ($colorFields as $field) {
+            $value = $colors[$field] ?? null;
+
+            if (! is_string($value) || ! preg_match('/^#[0-9a-fA-F]{6}$/', $value)) {
+                return false;
+            }
+
+            $safeColors[$field] = strtoupper($value);
+        }
+
+        $payload['custom_colors'] = $safeColors;
+        $payload['theme'] = 'classic-corporate';
+        $payload['updated_at'] = new Timestamp(new \DateTimeImmutable());
+
+        try {
+            $client->collection('site_settings')->document('main')->set($payload, ['merge' => true]);
+
+            return true;
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return false;
+        }
+    }
+
     public function publishedProjects(): array
     {
         $client = $this->client();
