@@ -14,6 +14,7 @@ on:
       - "bootstrap/**/*.php"
       - "database/migrations/**"
       - "tests/**"
+      - "scripts/**"
       - "phpunit.xml"
       - "vite.config.js"
       - "package.json"
@@ -47,6 +48,9 @@ jobs:
 
       - name: Lint Laravel PHP source
         run: find app routes config bootstrap database/migrations tests -type f -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      - name: Check deployment script syntax
+        run: bash -n scripts/sync-abasthan.sh
 
       - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
