@@ -227,7 +227,7 @@ final class AdminAccessTest extends TestCase
 
     public function test_privacy_notice_and_sitemap_are_public_and_exclude_admin_routes(): void
     {
-        $this->get('/privacy')->assertOk()->assertSee('Privacy notice')->assertSee('Do not submit passwords');
+        $this->get('/privacy')->assertOk()->assertSee('Privacy notice')->assertSee('do not submit passwords');
         $this->get('/sitemap.xml')->assertOk()
             ->assertHeader('Content-Type', 'application/xml; charset=UTF-8')
             ->assertSee('/privacy')
