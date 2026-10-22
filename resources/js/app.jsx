@@ -843,7 +843,7 @@ function App() {
           </div>
           <div className="mt-7 flex flex-col gap-2 border-t border-brand-primary/10 pt-4 text-[10px] text-brand-muted sm:flex-row sm:items-center sm:justify-between">
             <span>Thoughtful work. Clear communication.</span>
-            <a href="#home" className="w-fit text-brand-muted no-underline transition hover:text-brand-primary">Back to top ↑</a>
+            <div className="flex flex-wrap items-center gap-4"><a href="/privacy" className="w-fit text-brand-muted no-underline transition hover:text-brand-primary">Privacy notice</a><a href="#home" className="w-fit text-brand-muted no-underline transition hover:text-brand-primary">Back to top ↑</a></div>
           </div>
         </div>
       </footer>
