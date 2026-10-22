@@ -95,6 +95,30 @@ final class FirestoreRestClient
         return $projects;
     }
 
+    public function listDocuments(string $collection, int $pageSize = 100): array
+    {
+        $path = sprintf(
+            'projects/%s/databases/(default)/documents/%s?pageSize=%d',
+            rawurlencode($this->projectId),
+            rawurlencode($collection),
+            max(1, min(100, $pageSize)),
+        );
+
+        [$status, $response] = $this->send('GET', $path);
+        $this->assertSuccess($status, $response);
+
+        $documents = [];
+        foreach (($response['documents'] ?? []) as $document) {
+            if (! is_array($document) || ! isset($document['fields'], $document['name'])) {
+                continue;
+            }
+
+            $documents[] = ['id' => basename((string) $document['name'])] + $this->decodeFields($document['fields']);
+        }
+
+        return $documents;
+    }
+
     public function setDocument(string $collection, string $documentId, array $data): void
     {
         if ($data === []) {
