@@ -266,6 +266,27 @@ final class AdminController
         return view('admin.faqs', ['faqs' => $content->settings()['faqs'] ?? []]);
     }
 
+    public function inquiries(ContentRepository $content): View
+    {
+        return view('admin.inquiries', [
+            'inquiries' => $content->recentInquiries(),
+            'firestoreReady' => ! $content->isDemoMode(),
+        ]);
+    }
+
+    public function updateInquiryStatus(Request $request, string $id, ContentRepository $content): RedirectResponse
+    {
+        $data = $request->validate([
+            'status' => ['required', 'in:new,contacted,in_discussion,closed'],
+        ]);
+
+        if (! $content->updateInquiryStatus($id, $data['status'])) {
+            return back()->withInput()->with('error', 'The enquiry status could not be saved. Confirm Firestore access and try again.');
+        }
+
+        return redirect()->route('admin.inquiries')->with('success', 'Enquiry status updated.');
+    }
+
     public function projects(ContentRepository $content): View
     {
         return view('admin.projects', ['projects' => $content->settings()['projects'] ?? []]);
