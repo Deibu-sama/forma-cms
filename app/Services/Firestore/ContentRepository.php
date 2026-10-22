@@ -121,7 +121,7 @@ final class ContentRepository
             $payload[$field] = trim($value);
         }
 
-        foreach (['favicon_url', 'hero_image_url'] as $urlField) {
+        foreach (['favicon_url', 'hero_image_url', 'profile_image_url'] as $urlField) {
             if ($payload[$urlField] !== '' && ! $this->isSafeHttpsUrl($payload[$urlField])) {
                 return false;
             }
