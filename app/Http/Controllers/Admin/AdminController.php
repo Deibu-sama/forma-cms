@@ -7,6 +7,7 @@ use App\Services\Firestore\ContentRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 final class AdminController
@@ -74,6 +75,9 @@ final class AdminController
             'site_name' => ['required', 'string', 'max:100'],
             'site_title' => ['required', 'string', 'max:180'],
             'brand_name' => ['required', 'string', 'max:100'],
+            'tagline' => ['nullable', 'string', 'max:160'],
+            'theme' => ['required', 'in:classic-corporate,sage-editorial,modern-lavender,ocean-professional,warm-minimal'],
+            'profile_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'favicon_url' => ['nullable', 'url:https', 'max:2048'],
             'hero_image_url' => ['nullable', 'url:https', 'max:2048'],
             'hero_image_alt' => ['nullable', 'string', 'max:240'],
@@ -96,6 +100,13 @@ final class AdminController
             'custom_colors.text' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'custom_colors.muted' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
         ]);
+
+        if ($request->hasFile('profile_image')) {
+            $path = $request->file('profile_image')->store('profile-photos', 'public');
+            $validated['profile_image_url'] = asset('storage/'.$path);
+        } else {
+            $validated['profile_image_url'] = $content->settings()['profile_image_url'] ?? '';
+        }
 
         $savedTo = $content->saveSettings($validated);
 
