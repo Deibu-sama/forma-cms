@@ -1,71 +1,116 @@
-# FormaCMS
+# Bookkeeper Pro Portfolio
 
-**A theme-driven, customizable portfolio CMS starter built with Laravel, Tailwind CSS, and Firebase Cloud Firestore.**
+**A polished bookkeeping portfolio built with Laravel, React, Tailwind CSS, Vite, and Google Cloud Firestore.**
 
-FormaCMS is an open-source foundation for portfolio, freelancer, consultant, and small-business websites. It is intended to be configured for different brands, not hardcoded for one person.
+Bookkeeper Pro Portfolio is a responsive professional website for presenting bookkeeping support, showing illustrative work samples, explaining the working process, answering common questions, and receiving enquiries. It uses a navy, ivory, and muted-gold visual system designed to feel calm, clear, and dependable.
 
-## Project status
+## Stack
 
-The repository contains a Laravel application foundation, a read-only Firestore content adapter, a responsive Blade homepage, a standalone UI prototype, and technical documentation. Full admin CRUD, admin login screens, inquiry processing, comprehensive tests, and production deployment automation remain roadmap work. Do not deploy as a production CMS until those milestones are complete.
+- **Laravel 12 / PHP 8.2+** — server-side routing, validation, CSRF protection, rate limiting, and Firestore access.
+- **React 19** — interactive public interface, mobile navigation, FAQ accordion, and contact form states.
+- **Tailwind CSS v4** — design system, responsive layouts, spacing, type scale, color tokens, and component styling.
+- **Vite** — frontend development server and production asset bundling.
+- **Google Cloud Firestore** — public site settings and published portfolio entries; private enquiry records are written server-side.
+- **SQL / Laravel sessions** — reserved for future authenticated administration. A complete admin CMS is not implemented yet.
 
-## Features in the foundation
+Laravel remains the backend. React runs in the browser and never receives Firestore service-account credentials. Tailwind is used for UI styling, not server-side business logic.
 
-- Generic branding and sample content.
-- Three visual theme tokens: Classic Corporate, Modern Minimal, and Premium Dark.
-- Responsive public homepage and portfolio cards.
-- Firestore-backed settings/projects with generic demo fallback when Firestore is not configured.
-- Standalone interactive UI prototype.
-- Firestore data model, security guidance, and implementation roadmap.
-- Docker build option for platforms requiring a Dockerfile.
+## Implemented in this starter
 
-## Planned stack
+- Responsive hero, services, process, portfolio examples, trust/scope information, FAQs, enquiry form, and footer.
+- Brand colors default to navy `#14283F`, ivory `#F5F1E8`, and muted gold `#B99A61`.
+- React receives an allowlisted initial page-data payload from Laravel.
+- Public settings and published projects are read by the Laravel Firestore adapter.
+- The contact endpoint validates input, has a honeypot and request rate limit, and attempts to save enquiries to Firestore.
+- SEO title/description, favicon URL support, social sharing metadata, reduced-motion support, keyboard focus styling, and mobile navigation.
+- A GitHub Actions workflow builds the Vite production assets for PHP-only hosting.
 
-- PHP and Laravel 12
-- Blade templates, Tailwind CSS v4, and Vite
-- Google Cloud Firestore PHP client
-- Laravel authentication with SQL-backed admin users/sessions
-- Laravel Mail and queue-backed inquiry notifications
+The project uses clearly labelled illustrative bookkeeping workflows in fallback mode. It does not invent client testimonials, credentials, revenue outcomes, or years of experience.
 
-Laravel's conventional authentication stack is simpler with a relational database. FormaCMS uses Firestore for website content and inquiries, with SQL for admin users and sessions.
+## Current limitations
 
-## Quick preview
+This is a public portfolio starter, **not yet a full content management system**. Admin login, settings editor, project CRUD, service/FAQ editors, inquiry review screens, automated email notifications, privacy notice, and retention/deletion workflows are not implemented. Enquiries can be saved only when Firestore is configured and the server account has write permission to the `inquiries` collection. Email notifications are not sent by the current endpoint.
 
-### Standalone prototype
-Open [prototype/index.html](prototype/index.html) in a browser, or run:
+The portfolio describes bookkeeping, record organization, reconciliation support, and reporting preparation. It does not promise regulated tax, legal, audit, or investment advice. Define the actual permitted service scope for the operator’s jurisdiction before publishing.
+
+## Local development
+
+Requirements: PHP 8.2+, Composer, Node.js 22 recommended, npm, and a Firestore project if you want remote content and enquiry persistence.
+
+1. Install backend dependencies and create a local environment:
+
+   ```bash
+   composer install
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+   Configure a writable local SQL database and run migrations if required by the local environment:
+
+   ```bash
+   php artisan migrate
+   ```
+
+2. Install frontend dependencies and start the app:
+
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+   In a second terminal, run `php artisan serve`, or use the project’s combined development script:
+
+   ```bash
+   composer run dev
+   ```
+
+3. For a production-like frontend build:
+
+   ```bash
+   npm run build
+   ```
+
+The development server is used for local work. The production PHP deployment needs the Vite build output at `public/build/manifest.json`.
+
+## Firestore configuration
+
+Set the following values in the Laravel environment, not in React or other browser code:
+
+- `FIRESTORE_PROJECT_ID`
+- `FIREBASE_CREDENTIALS_BASE64`
+
+The credentials variable contains a Base64-encoded service-account JSON document. Generate the Base64 value locally and store it in your hosting provider’s secret/environment settings. Never commit the service-account JSON, `.env`, API credentials, or private financial records.
+
+The adapter uses the Firestore REST transport for environments such as managed PHP hosting that do not provide the native gRPC extension.
+
+### Public content
+
+- `site_settings/main` — public brand, page copy, contact email, SEO description, and approved color tokens.
+- `portfolio_projects` — public portfolio records with `status = "published"`.
+- `inquiries` — private contact enquiries stored by Laravel. Visitors cannot fetch inquiry records through a public route.
+
+Read [docs/FIRESTORE_SCHEMA.md](docs/FIRESTORE_SCHEMA.md) for the suggested fields. Keep Firestore client rules deny-by-default when the browser never accesses Firestore directly. Use least-privilege IAM permissions for the Laravel service account.
+
+## Deploying on Abasthan
+
+Create a **PHP App**, not a Node.js Web Service, for Laravel.
+
+The GitHub Actions workflow `.github/workflows/build-frontend-assets.yml` runs on pushes to `main`, installs npm dependencies, builds React and Tailwind through Vite, and commits `public/build` for a PHP-only hosting environment. Check that workflow succeeds and the generated-asset commit exists before redeploying.
+
+Example managed-PHP build command:
 
 ```bash
-php -S 127.0.0.1:8080 -t prototype
+mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs
+chmod -R u+rwX bootstrap/cache storage
+composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc
 ```
 
-Visit http://127.0.0.1:8080. The prototype lets you switch themes and edit sample headings locally; it saves only to that browser and does not connect to Laravel or Firestore.
+Set production environment values including `APP_NAME="Bookkeeper Pro Portfolio"`, `APP_ENV=production`, `APP_DEBUG=false`, `APP_KEY`, `APP_URL`, Firestore settings, and database/session settings appropriate to your host. After changing environment variables, restart or redeploy and run `php artisan optimize:clear`.
 
-### Deploying on Abasthan
+**Database warning:** Do not rely on ephemeral SQLite storage for production admin accounts or durable sessions. Configure a managed SQL database before introducing the authenticated admin CMS.
 
-**Create a PHP App, not a Node.js Web Service.** Abasthan has a dedicated PHP runtime that supports Laravel and Composer. If the dashboard logs say `Environment: node 22` or `composer: not found`, the app was created with the wrong runtime. Create a new app from **Create App → PHP App**, connect this repository and the `main` branch, then let Abasthan detect Laravel/PHP. Do not use the Node.js runtime with Laravel's Composer build command.
+## Project documentation
 
-The Laravel views use Vite, so `public/build/manifest.json` and its assets must exist. This repository includes a GitHub Actions workflow that builds Vite assets with Node.js and commits `public/build` to `main` for PHP-only hosting. Wait for the **Build frontend assets** workflow to complete and for its asset commit to appear before redeploying Abasthan.
-
-Use this build command on Abasthan's managed PHP runtime (no npm required there):
-
-```bash
-mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs && chmod -R u+rwX bootstrap/cache storage && composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc
-```
-
-The public content adapter explicitly selects Firestore's REST transport, which supports the current read-only document/query operations without the native gRPC extension. Do not remove that REST transport setting while deploying on a runtime without `ext-grpc`. If you later need gRPC-only features, deploy with the repository's Dockerfile on a platform that supports Docker and keep the extension installed there.
-
-If the GitHub Actions workflow fails or cannot push its generated assets, check the workflow logs and repository Actions permissions before redeploying.
-
-Set `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, `FIRESTORE_PROJECT_ID`, and `FIREBASE_CREDENTIALS_BASE64` in the host environment. `FIREBASE_CREDENTIALS_BASE64` must contain the Base64 encoding of the entire Google Cloud service-account JSON file; Laravel decodes it in memory and passes the credentials to the Firestore client using REST transport. Do not paste raw JSON into this variable, commit the JSON file, or expose either variable to browser code. Create the Base64 value locally and paste the one-line output into Abasthan's secret/environment variable field. After changing environment variables, redeploy or restart the app and run `php artisan optimize:clear`.
-
-**Database warning:** SQLite in ephemeral hosting can lose data on replacement. For production admin accounts and sessions, configure a managed SQL database and set the database environment variables. The current starter does not yet include the full admin dashboard or CMS write operations.
-
-### Docker deployment on hosts that require it
-
-The root [Dockerfile](Dockerfile) installs and enables the native PHP `grpc` extension required by the Firestore SDK, builds Composer dependencies and Tailwind/Vite assets in separate stages, and runs the app on PHP 8.3. Use this on a hosting platform that explicitly supports Dockerfile/container deployments. A managed PHP runtime must separately provide/enable `grpc`; ignoring the Composer platform requirement is not a production fix.
-
-## Documentation
-
-- [Local setup](docs/LOCAL_SETUP.md)
 - [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
 - [Firestore data model](docs/FIRESTORE_SCHEMA.md)
 - [Security model](docs/SECURITY.md)
@@ -75,14 +120,11 @@ The root [Dockerfile](Dockerfile) installs and enables the native PHP `grpc` ext
 
 ## Security basics
 
-- Never commit `.env`, service-account JSON, credentials, real client data, or database dumps.
-- Keep privileged Firestore access on the Laravel server.
-- Use least-privilege Google Cloud IAM.
-- If browsers do not access Firestore directly, deny client access in Firestore Security Rules.
-- Validate form input and external image URLs; do not fetch arbitrary URLs from the server.
-- Protect admin routes with authentication and authorization before adding CMS write operations.
-- Add rate limiting and spam protection to public forms.
-- Define inquiry retention and privacy practices before production.
+- Never commit `.env`, service-account JSON, secrets, real client records, or database dumps.
+- Keep privileged Firestore access on Laravel; never place credentials in React.
+- Keep inquiry records private; restrict Firestore IAM and do not add public inquiry-read endpoints.
+- Validate public submissions, retain CSRF protection, use request throttling, and avoid collecting sensitive financial details through the contact form.
+- Confirm privacy, retention, deletion, and service-scope requirements before production launch.
 
 ## License
 
