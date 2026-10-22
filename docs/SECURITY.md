@@ -24,7 +24,7 @@ service cloud.firestore {
 }
 ```
 
-Server Firestore SDKs bypass Firestore Security Rules and are authorized through Google Cloud IAM. Therefore this ruleset does not replace IAM or Laravel authorization.
+Server-side Google service-account access through the Firestore REST API is authorized through Google Cloud IAM and is not constrained by client Firestore Security Rules. Therefore deny-by-default client rules do not replace least-privilege IAM or Laravel authorization.
 
 ## IAM and credentials
 
