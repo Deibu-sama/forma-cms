@@ -7,6 +7,7 @@ use App\Services\Firestore\ContentRepository;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 final class AdminController
@@ -145,19 +146,19 @@ final class AdminController
 
     public function storeCertificate(Request $request, ContentRepository $content): RedirectResponse
     {
-        $certificate = $this->validateCertificate($request);
         $settings = $content->settings();
         $certificates = $settings['certificates'] ?? [];
+        $certificate = $this->validateCertificate($request);
         $certificates[] = $certificate;
         return $this->saveCertificates($content, $settings, $certificates, 'Certificate added.');
     }
 
     public function updateCertificate(Request $request, ContentRepository $content, int $index): RedirectResponse
     {
-        $certificate = $this->validateCertificate($request);
         $settings = $content->settings();
         $certificates = $settings['certificates'] ?? [];
         if (! array_key_exists($index, $certificates)) return back()->with('error', 'Certificate not found.');
+        $certificate = $this->validateCertificate($request, $certificates[$index]);
         $certificates[$index] = $certificate;
         return $this->saveCertificates($content, $settings, array_values($certificates), 'Certificate updated.');
     }
@@ -167,32 +168,64 @@ final class AdminController
         $settings = $content->settings();
         $certificates = $settings['certificates'] ?? [];
         if (! array_key_exists($index, $certificates)) return back()->with('error', 'Certificate not found.');
+        $this->deleteManagedUpload($certificates[$index]['image_url'] ?? '');
         array_splice($certificates, $index, 1);
         return $this->saveCertificates($content, $settings, $certificates, 'Certificate deleted.');
     }
 
-    private function validateCertificate(Request $request): array
+    private function validateCertificate(Request $request, array $current = []): array
     {
         $data = $request->validate([
             'title' => ['required', 'string', 'max:180'],
             'description' => ['required', 'string', 'max:1000'],
-            'image_url' => ['required', 'url:https', 'max:2048'],
+            'image_url' => ['nullable', 'url:https', 'max:2048'],
+            'image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:5120'],
             'image_alt' => ['nullable', 'string', 'max:240'],
             'issuer' => ['nullable', 'string', 'max:180'],
             'issued_date' => ['nullable', 'string', 'max:80'],
             'certificate_url' => ['nullable', 'url:https', 'max:2048'],
             'enabled' => ['nullable', 'boolean'],
         ]);
+
+        $imageUrl = $this->resolveImageUrl($request, $data, $current['image_url'] ?? '', 'certificates');
+        if ($imageUrl === '') {
+            return back()->withErrors(['image_file' => 'Upload a certificate image or provide a public HTTPS image URL.'])->withInput()->throwResponse();
+        }
+
         return [
             'title' => trim($data['title']),
             'description' => trim($data['description']),
-            'image_url' => trim($data['image_url']),
+            'image_url' => $imageUrl,
             'image_alt' => trim($data['image_alt'] ?? ''),
             'issuer' => trim($data['issuer'] ?? ''),
             'issued_date' => trim($data['issued_date'] ?? ''),
             'certificate_url' => trim($data['certificate_url'] ?? ''),
             'enabled' => $request->boolean('enabled'),
         ];
+    }
+
+    private function resolveImageUrl(Request $request, array $data, string $currentUrl, string $directory): string
+    {
+        if ($request->hasFile('image_file')) {
+            $path = $request->file('image_file')->storePublicly($directory, 'public');
+            return $path ? asset('storage/' . $path) : '';
+        }
+
+        $providedUrl = trim((string) ($data['image_url'] ?? ''));
+        return $providedUrl !== '' ? $providedUrl : $currentUrl;
+    }
+
+    private function deleteManagedUpload(string $url): void
+    {
+        $prefix = rtrim((string) config('app.url'), '/') . '/storage/';
+        if ($url === '' || ! str_starts_with($url, $prefix)) {
+            return;
+        }
+
+        $path = substr($url, strlen($prefix));
+        if ($path !== '' && ! str_contains($path, '..')) {
+            Storage::disk('public')->delete($path);
+        }
     }
 
     private function saveCertificates(ContentRepository $content, array $settings, array $certificates, string $message): RedirectResponse
@@ -252,19 +285,19 @@ final class AdminController
 
     public function storeProject(Request $request, ContentRepository $content): RedirectResponse
     {
-        $item = $this->validateProject($request);
         $settings = $content->settings();
         $items = $settings['projects'] ?? [];
+        $item = $this->validateProject($request);
         $items[] = $item;
         return $this->saveContentCollection($content, $settings, 'projects', $items, 'Project added.');
     }
 
     public function updateProject(Request $request, ContentRepository $content, int $index): RedirectResponse
     {
-        $item = $this->validateProject($request);
         $settings = $content->settings();
         $items = $settings['projects'] ?? [];
         if (! array_key_exists($index, $items)) return back()->with('error', 'That project could not be found.');
+        $item = $this->validateProject($request, $items[$index]);
         $items[$index] = $item;
         return $this->saveContentCollection($content, $settings, 'projects', array_values($items), 'Project updated.');
     }
@@ -274,11 +307,12 @@ final class AdminController
         $settings = $content->settings();
         $items = $settings['projects'] ?? [];
         if (! array_key_exists($index, $items)) return back()->with('error', 'That project could not be found.');
+        $this->deleteManagedUpload($items[$index]['image_url'] ?? '');
         array_splice($items, $index, 1);
         return $this->saveContentCollection($content, $settings, 'projects', $items, 'Project deleted.');
     }
 
-    private function validateProject(Request $request): array
+    private function validateProject(Request $request, array $current = []): array
     {
         $data = $request->validate([
             'title' => ['required', 'string', 'max:140'],
@@ -286,6 +320,7 @@ final class AdminController
             'summary' => ['required', 'string', 'max:800'],
             'description' => ['nullable', 'string', 'max:1800'],
             'image_url' => ['nullable', 'url:https', 'max:2048'],
+            'image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:5120'],
             'image_alt' => ['nullable', 'string', 'max:240'],
             'art_label' => ['nullable', 'string', 'max:140'],
             'project_url' => ['nullable', 'url:https', 'max:2048'],
@@ -297,7 +332,7 @@ final class AdminController
             'category' => trim($data['category'] ?? ''),
             'summary' => trim($data['summary']),
             'description' => trim($data['description'] ?? ''),
-            'image_url' => trim($data['image_url'] ?? ''),
+            'image_url' => $this->resolveImageUrl($request, $data, $current['image_url'] ?? '', 'projects'),
             'image_alt' => trim($data['image_alt'] ?? ''),
             'art_label' => trim($data['art_label'] ?? ''),
             'project_url' => trim($data['project_url'] ?? ''),
