@@ -122,7 +122,12 @@ final class ContentRepository
         }
 
         try {
-            $this->client = new FirestoreClient(['projectId' => $projectId]);
+            $this->client = new FirestoreClient([
+                'projectId' => $projectId,
+                // Abasthan's managed PHP runtime does not provide ext-grpc.
+                // REST transport supports the read operations used by this adapter.
+                'transport' => 'rest',
+            ]);
         } catch (Throwable $exception) {
             report($exception);
             $this->client = null;
