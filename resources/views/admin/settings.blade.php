@@ -19,7 +19,7 @@
         <div>
             <p class="mb-2 text-[10px] font-bold uppercase tracking-[.2em] text-[#a18755]">Configuration</p>
             <h2 class="text-3xl font-semibold tracking-[-.055em] sm:text-4xl">Make it yours.</h2>
-            <p class="mt-3 max-w-2xl text-sm leading-6 text-[#68727b]">Update your identity, professional photo, contact details, placeholder image, theme, and brand colors. Edit page-specific text in the dedicated portfolio section editors.</p>
+            <p class="mt-3 max-w-2xl text-sm leading-6 text-[#68727b]">Update your identity, professional photo, contact details, theme, and brand colors. Edit page-specific text and individual software logos in the dedicated portfolio section editors.</p>
         </div>
         <a href="{{ route('home') }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-10 items-center justify-center gap-2 self-start rounded-md border border-[#14283f]/15 bg-[#fffdf8] px-4 py-2 text-xs font-bold text-[#14283f] no-underline transition hover:border-[#b99a61] xl:self-auto">Preview public website <span class="text-[#b99a61]">↗</span></a>
     </div>
