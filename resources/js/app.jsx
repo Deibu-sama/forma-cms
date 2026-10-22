@@ -300,11 +300,11 @@ function App() {
                 {settings.availability && <span className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-brand-accent" /> {settings.availability}</span>}
               </div>
             </div>
-            {settings.hero_image_url ? (
+            {(settings.profile_image_url || settings.hero_image_url) ? (
               <div className="relative mx-auto w-full max-w-[540px]">
                 <div className="absolute -right-5 -top-5 h-28 w-28 rounded-full border border-brand-accent/30 sm:-right-8 sm:-top-8 sm:h-36 sm:w-36" />
                 <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-2xl">
-                  <img src={settings.hero_image_url} alt={settings.hero_image_alt || 'Bookkeeping workspace illustration'} loading="eager" fetchPriority="high" className="aspect-[4/5] max-h-[620px] w-full object-cover" />
+                  <img src={settings.profile_image_url || settings.hero_image_url} alt={settings.hero_image_alt || (settings.brand_name ? settings.brand_name + ' — professional portrait' : 'Professional portrait')} loading="eager" fetchPriority="high" className="aspect-[4/5] max-h-[620px] w-full object-cover" />
                 </div>
                 <div className="absolute -bottom-4 -left-3 flex items-center gap-3 rounded-xl border border-brand-primary/10 bg-brand-surface px-4 py-3 text-brand-primary shadow-xl sm:-left-5">
                   <span className="grid h-9 w-9 place-items-center rounded-lg bg-[#e6ecdf] text-[#48644a]"><Icon name="checkCircle" size={19} /></span>
