@@ -32,7 +32,7 @@ Abasthan PHP documentation describes Composer support for PHP apps. Use the PHP 
 The Blade layout uses Vite's `@vite` helper, so compiled assets must be available at `public/build/manifest.json`. For Abasthan's managed PHP runtime, use this build command if npm is available:
 
 ```bash
-composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc && npm install && npm run build
+mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs && chmod -R u+rwX bootstrap/cache storage && composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-grpc && npm install && npm run build
 ```
 
 This is intentionally paired with the application's explicit Firestore REST transport in `ContentRepository`. The current public content adapter only performs document reads and a filtered query, which the REST transport supports. Do not remove the explicit `'transport' => 'rest'` setting while deploying without ext-grpc. This is different from blindly ignoring the platform requirement while leaving the client on its default gRPC transport.
