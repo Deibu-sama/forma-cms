@@ -35,8 +35,8 @@ final class ContentRepository
             'site_name' => 'Bookkeeper Pro Portfolio',
             'site_title' => 'Bookkeeper Pro Portfolio | Bookkeeping & Reporting Support',
             'favicon_url' => '',
-            'brand_name' => 'Bookkeeper Pro',
-            'tagline' => 'Bookkeeping support for clearer business decisions.',
+            'brand_name' => 'Your Name',
+            'tagline' => 'Bookkeeping Professional',
             'eyebrow' => 'BOOKKEEPING · RECONCILIATION · REPORTING',
             'headline' => "Clear books.\nConfident decisions.",
             'description' => 'Reliable bookkeeping support that helps you keep records organized, understand what needs attention, and feel more prepared for your next business decision.',
@@ -56,6 +56,7 @@ final class ContentRepository
             ],
             'contact_email' => '',
             'hero_image_url' => '',
+            'profile_image_url' => '',
             'hero_image_alt' => '',
             'availability' => '',
             'work_intro' => '',
@@ -75,7 +76,7 @@ final class ContentRepository
             }
         }
 
-        foreach (['favicon_url', 'hero_image_url'] as $urlKey) {
+        foreach (['favicon_url', 'hero_image_url', 'profile_image_url'] as $urlKey) {
             if (! $this->isSafeHttpsUrl($settings[$urlKey])) {
                 $settings[$urlKey] = '';
             }
@@ -101,7 +102,7 @@ final class ContentRepository
     public function saveSettings(array $input): string|false
     {
         $stringFields = [
-            'site_name', 'site_title', 'brand_name', 'favicon_url',
+            'site_name', 'site_title', 'brand_name', 'tagline', 'favicon_url', 'profile_image_url',
             'hero_image_url', 'hero_image_alt', 'eyebrow', 'headline',
             'description', 'about_headline', 'about_text',
             'contact_headline', 'contact_text', 'contact_email',
@@ -150,7 +151,9 @@ final class ContentRepository
         }
 
         $payload['custom_colors'] = $safeColors;
-        $payload['theme'] = 'classic-corporate';
+        $allowedThemes = ['classic-corporate', 'sage-editorial', 'modern-lavender', 'ocean-professional', 'warm-minimal'];
+        $theme = $input['theme'] ?? 'classic-corporate';
+        $payload['theme'] = in_array($theme, $allowedThemes, true) ? $theme : 'classic-corporate';
 
         $client = $this->client();
 
