@@ -177,7 +177,7 @@ final class AdminController
             'site_title' => ['required', 'string', 'max:180'],
             'brand_name' => ['required', 'string', 'max:100'],
             'tagline' => ['nullable', 'string', 'max:160'],
-            'theme' => ['required', 'in:classic-corporate,sage-editorial,modern-lavender,ocean-professional,warm-minimal'],
+            'theme' => ['nullable', 'in:classic-corporate,sage-editorial,modern-lavender,ocean-professional,warm-minimal'],
             'favicon_url' => ['nullable', 'url:https', 'max:2048'],
             'profile_image_url' => ['nullable', 'url:https', 'max:2048'],
             'hero_image_url' => ['nullable', 'url:https', 'max:2048'],
@@ -202,6 +202,7 @@ final class AdminController
             'custom_colors.muted' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
         ]);
 
+        $validated['theme'] = $validated['theme'] ?? 'classic-corporate';
         $currentSettings = $content->settings();
         $validated['faqs_json'] = json_encode($currentSettings['faqs'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $validated['projects_json'] = json_encode($currentSettings['projects'] ?? [], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
