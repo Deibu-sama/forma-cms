@@ -42,6 +42,15 @@ This is intentionally paired with the application's explicit Firestore REST tran
 
 If Node/npm is unavailable in the PHP build environment, build the frontend assets in CI and deploy the resulting `public/build` directory with the PHP application. Do not switch back to a Node runtime for the Laravel app. If you need gRPC-only Firestore operations later (for example streaming listeners), use a runtime with ext-grpc installed.
 
+If this Abasthan app does not automatically deploy the latest GitHub `main` branch, run the repository sync script from the deployed Laravel application root:
+
+```bash
+curl -fLsS https://raw.githubusercontent.com/Deibu-sama/forma-cms/main/scripts/sync-abasthan.sh -o /tmp/sync-abasthan.sh
+bash /tmp/sync-abasthan.sh
+```
+
+The script overlays the latest application files and built Vite assets, clears Laravel caches, and applies pending migrations. It deliberately preserves `.env`, `vendor`, `storage`, and the existing database. After it completes, create the administrator if needed with `php artisan bookkeeper:make-admin your-admin-email@example.com`.
+
 Set `APP_NAME="Bookkeeper Pro Portfolio"`, `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, `FIRESTORE_PROJECT_ID`, and `FIREBASE_CREDENTIALS_BASE64` as environment variables. Use a managed SQL database or persistent storage for Laravel's SQL-backed session/cache/job tables. Never commit service-account credentials.
 
 ## Docker
