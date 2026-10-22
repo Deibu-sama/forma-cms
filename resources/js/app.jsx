@@ -244,6 +244,27 @@ function App() {
   const [openFaq, setOpenFaq] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [submission, setSubmission] = useState({ type: 'idle', message: '' });
+  useEffect(() => {
+    const targets = document.querySelectorAll('main section, main .service-card, main .project-panel');
+    if (!targets.length || !('IntersectionObserver' in window)) return undefined;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return undefined;
+    targets.forEach((element, index) => {
+      element.classList.add('motion-reveal');
+      element.style.setProperty('--reveal-delay', (index % 4) * 65 + 'ms');
+    });
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -36px 0px' });
+    targets.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+
   const formRef = useRef(null);
   const palette = settings.custom_colors || {};
   const themeStyle = {
